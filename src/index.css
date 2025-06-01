@@ -118,12 +118,12 @@
   }
 
   .gentle-hover:hover {
-    @apply scale-[1.05] shadow-2xl;
+    @apply scale-[1.05] shadow-lg;
   }
 
   /* Voice interface visual feedback */
   .voice-listening {
-    @apply animate-pulse ring-8 ring-red-200;
+    @apply animate-pulse ring-8 ring-gray-300;
   }
 
   .voice-speaking {
@@ -132,12 +132,12 @@
 
   /* Clean, high-contrast design */
   .senior-card {
-    @apply bg-white border-4 border-gray-200 shadow-2xl rounded-3xl;
+    @apply bg-white border-4 border-gray-200 shadow-lg rounded-3xl;
   }
 
   /* Accessibility improvements with larger focus indicators */
   .focus-visible {
-    @apply outline-none ring-4 ring-blue-500 ring-offset-4;
+    @apply outline-none ring-4 ring-gray-500 ring-offset-4;
   }
 
   /* Japanese text optimizations for large sizes */

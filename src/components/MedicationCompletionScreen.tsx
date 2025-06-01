@@ -19,24 +19,24 @@ export const MedicationCompletionScreen: React.FC<MedicationCompletionScreenProp
   onReturnToHome
 }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
       {/* Back button */}
       <div className="w-full max-w-2xl mb-4">
         <Button
           onClick={onReturnToHome}
           variant="outline"
-          className="h-12 px-6 text-lg border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-xl transition-all duration-300 hover:scale-105"
+          className="h-12 px-6 text-lg border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-100 rounded-xl transition-all duration-300 hover:scale-105"
         >
           <ArrowLeft className="h-5 w-5 mr-2" />
           ホームに戻る
         </Button>
       </div>
 
-      <Card className="w-full max-w-2xl shadow-xl border-0 rounded-3xl overflow-hidden bg-white/80 backdrop-blur-sm">
+      <Card className="w-full max-w-2xl shadow-lg border border-gray-200 rounded-3xl overflow-hidden bg-white">
         <CardContent className="p-12 text-center space-y-8">
           <div className="relative">
             <div className="absolute -inset-4 bg-green-100 rounded-full animate-ping opacity-20"></div>
-            <CheckCircle className="h-24 w-24 text-green-500 mx-auto relative z-10" />
+            <CheckCircle className="h-24 w-24 text-green-600 mx-auto relative z-10" />
           </div>
           
           <div className="space-y-4">
@@ -48,7 +48,7 @@ export const MedicationCompletionScreen: React.FC<MedicationCompletionScreenProp
             </p>
           </div>
 
-          <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl p-6 shadow-lg">
+          <div className="bg-green-600 text-white rounded-2xl p-6 shadow-lg">
             <div className="flex items-center justify-center space-x-3 mb-2">
               <Users className="h-6 w-6" />
               <span className="text-2xl font-semibold">ご家族にもお知らせしました</span>
@@ -56,7 +56,7 @@ export const MedicationCompletionScreen: React.FC<MedicationCompletionScreenProp
           </div>
 
           {/* Countdown display */}
-          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-2xl p-4 shadow-lg">
+          <div className="bg-gray-700 text-white rounded-2xl p-4 shadow-lg">
             <div className="flex items-center justify-center space-x-3">
               <Clock className="h-6 w-6" />
               <span className="text-xl font-medium">
@@ -69,7 +69,7 @@ export const MedicationCompletionScreen: React.FC<MedicationCompletionScreenProp
             <Button
               onClick={onShowNotificationStatus}
               variant="outline"
-              className="text-xl border-2 border-blue-300 hover:border-blue-400 hover:bg-blue-50 rounded-2xl px-8 py-4 transition-all duration-300 hover:scale-105"
+              className="text-xl border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-2xl px-8 py-4 transition-all duration-300 hover:scale-105"
             >
               通知結果を確認する
             </Button>
