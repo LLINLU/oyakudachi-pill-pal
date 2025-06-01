@@ -61,12 +61,6 @@ export const HomePage: React.FC<HomePageProps> = ({
               <div className="text-2xl font-bold text-gray-800">
                 {nextMedication.name}
               </div>
-              <div className="flex items-center justify-center space-x-2">
-                <Calendar className="h-4 w-4 text-gray-600" />
-                <span className="text-lg text-gray-700">
-                  {nextMedication.time}
-                </span>
-              </div>
             </div>
 
             <div className="space-y-2">
@@ -94,7 +88,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <Button
                   onClick={handleCheckMedicineRecord}
                   variant="outline"
-                  className="w-full h-10 hover:bg-purple-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-purple-700"
+                  className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
                 >
                   <FileText className="h-4 w-4 mr-2" />
                   服薬記録を確認
@@ -104,7 +98,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <Button
                     onClick={onScanHandbook}
                     variant="outline"
-                    className="w-full h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                    className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
                   >
                     <FileText className="h-4 w-4 mr-2" />
                     薬手帳を確認
@@ -127,7 +121,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <Button
                 onClick={handleCheckMedicineRecord}
                 variant="outline"
-                className="w-full h-10 hover:bg-purple-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-purple-700"
+                className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
               >
                 <FileText className="h-4 w-4 mr-2" />
                 服薬記録を確認
@@ -137,7 +131,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <Button
                   onClick={onScanHandbook}
                   variant="outline"
-                  className="w-full h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                  className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
                 >
                   <FileText className="h-4 w-4 mr-2" />
                   薬手帳を確認
