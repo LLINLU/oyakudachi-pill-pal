@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useMedicationReminder } from '@/hooks/useMedicationReminder';
 import { MedicationCard } from '@/components/MedicationCard';
@@ -83,17 +82,6 @@ const Index = () => {
     );
   }
 
-  // Show postponed screen after postponing medication
-  if (showPostponedScreen) {
-    return (
-      <MobileAppContainer>
-        <MedicationPostponedScreen
-          onReturnToReminder={handleReturnToReminder}
-        />
-      </MobileAppContainer>
-    );
-  }
-
   // Show medication reminder when active
   if (showReminder && currentMedication) {
     return (
@@ -133,6 +121,12 @@ const Index = () => {
         isVisible={showNotificationStatus}
         onClose={() => setShowNotificationStatus(false)}
       />
+
+      {showPostponedScreen && (
+        <MedicationPostponedScreen
+          onReturnToReminder={handleReturnToHome}
+        />
+      )}
       
       <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
     </MobileAppContainer>
