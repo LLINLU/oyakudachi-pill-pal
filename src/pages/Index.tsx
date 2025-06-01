@@ -4,6 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Volume2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { sendFamilyNotifications, FamilyContact, NotificationResult } from '@/utils/familyNotifications';
+import { NotificationStatus } from '@/components/NotificationStatus';
 
 const Index = () => {
   const [currentMedication, setCurrentMedication] = useState({
@@ -15,11 +17,28 @@ const Index = () => {
   });
 
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
+  const [notificationResults, setNotificationResults] = useState<NotificationResult[]>([]);
+  const [showNotificationStatus, setShowNotificationStatus] = useState(false);
+  const [isSendingNotifications, setIsSendingNotifications] = useState(false);
 
-  // Family contact information
-  const familyContacts = [
-    { name: '田中 花子', relationship: '娘', phone: '090-1234-5678' },
-    { name: '田中 太郎', relationship: '息子', phone: '090-8765-4321' }
+  // Enhanced family contact information with more details
+  const familyContacts: FamilyContact[] = [
+    { 
+      id: '1',
+      name: '田中 花子', 
+      relationship: '娘', 
+      phone: '090-1234-5678',
+      email: 'hanako@example.com',
+      preferredMethod: 'both'
+    },
+    { 
+      id: '2',
+      name: '田中 太郎', 
+      relationship: '息子', 
+      phone: '090-8765-4321',
+      email: 'taro@example.com',
+      preferredMethod: 'sms'
+    }
   ];
 
   useEffect(() => {
@@ -40,47 +59,84 @@ const Index = () => {
     }, 3000);
   };
 
-  const sendFamilyNotification = () => {
-    // Simulate sending notification to family
-    familyContacts.forEach(contact => {
-      console.log(`Sending notification to ${contact.name} (${contact.relationship}): お薬を飲みました - ${new Date().toLocaleTimeString('ja-JP')}`);
-    });
-
-    // Show confirmation toast
-    toast.success('ご家族に連絡しました', {
-      description: `${familyContacts.map(c => c.name).join('、')}さんにお知らせを送りました`,
-      duration: 5000
-    });
+  const handleSendFamilyNotifications = async () => {
+    setIsSendingNotifications(true);
+    
+    try {
+      const results = await sendFamilyNotifications(familyContacts, currentMedication.name);
+      setNotificationResults(results);
+      
+      const successCount = results.filter(r => r.status === 'success').length;
+      const totalCount = results.length;
+      
+      if (successCount === totalCount) {
+        toast.success('ご家族への通知が完了しました', {
+          description: `${successCount}件すべての通知が正常に送信されました`,
+          duration: 5000
+        });
+      } else {
+        toast.warning('一部の通知が送信できませんでした', {
+          description: `${successCount}/${totalCount}件が送信されました`,
+          duration: 5000
+        });
+      }
+      
+      setShowNotificationStatus(true);
+    } catch (error) {
+      console.error('Notification error:', error);
+      toast.error('通知の送信中にエラーが発生しました', {
+        description: 'しばらく経ってから再度お試しください',
+        duration: 5000
+      });
+    } finally {
+      setIsSendingNotifications(false);
+    }
   };
 
-  const handleMedicationTaken = () => {
+  const handleMedicationTaken = async () => {
     setCurrentMedication(prev => ({ ...prev, taken: true }));
     
-    // Send notification to family
-    sendFamilyNotification();
-    
     toast.success('お薬を飲みました', {
-      description: 'ありがとうございます',
+      description: 'ご家族に通知を送信しています...',
       duration: 3000
     });
+
+    // Send enhanced family notifications
+    await handleSendFamilyNotifications();
   };
 
   if (currentMedication.taken) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-8">
-        <div className="text-center space-y-12 max-w-2xl">
-          <CheckCircle className="h-32 w-32 text-green-500 mx-auto" />
-          <h1 className="text-6xl font-bold text-gray-800">
-            お疲れ様でした
-          </h1>
-          <p className="text-4xl text-gray-600">
-            本日のお薬は完了です
-          </p>
-          <p className="text-3xl text-green-600">
-            ご家族にもお知らせしました
-          </p>
+      <>
+        <div className="min-h-screen bg-white flex items-center justify-center p-8">
+          <div className="text-center space-y-12 max-w-2xl">
+            <CheckCircle className="h-32 w-32 text-green-500 mx-auto" />
+            <h1 className="text-6xl font-bold text-gray-800">
+              お疲れ様でした
+            </h1>
+            <p className="text-4xl text-gray-600">
+              本日のお薬は完了です
+            </p>
+            <p className="text-3xl text-green-600">
+              ご家族にもお知らせしました
+            </p>
+            {notificationResults.length > 0 && (
+              <button
+                onClick={() => setShowNotificationStatus(true)}
+                className="text-2xl text-blue-600 underline hover:text-blue-800"
+              >
+                通知結果を確認する
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+        
+        <NotificationStatus
+          results={notificationResults}
+          isVisible={showNotificationStatus}
+          onClose={() => setShowNotificationStatus(false)}
+        />
+      </>
     );
   }
 
@@ -135,10 +191,11 @@ const Index = () => {
           {/* Confirmation button */}
           <Button
             onClick={handleMedicationTaken}
-            className="w-full h-32 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-5xl font-bold rounded-2xl shadow-xl"
+            disabled={isSendingNotifications}
+            className="w-full h-32 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-5xl font-bold rounded-2xl shadow-xl disabled:opacity-70"
           >
             <CheckCircle className="h-16 w-16 mr-6" />
-            飲みました
+            {isSendingNotifications ? '送信中...' : '飲みました'}
           </Button>
         </CardContent>
       </Card>
