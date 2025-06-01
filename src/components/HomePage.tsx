@@ -87,7 +87,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <Button
                 onClick={handleCheckMedicineRecord}
                 variant="outline"
-                className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
+                className="w-full h-10 hover:bg-[#016a5e]/10 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
               >
                 <FileText className="h-4 w-4 mr-2" />
                 服薬記録を確認
@@ -107,7 +107,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <Button
               onClick={handleCheckMedicineRecord}
               variant="outline"
-              className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
+              className="w-full h-10 hover:bg-[#016a5e]/10 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
             >
               <FileText className="h-4 w-4 mr-2" />
               服薬記録を確認
