@@ -23,8 +23,11 @@ export const VoiceControlButton: React.FC<VoiceControlButtonProps> = ({
             ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
             : isSpeaking
             ? 'bg-green-500 hover:bg-green-600'
-            : 'bg-green-600 hover:bg-green-700'
+            : 'hover:opacity-90'
         }`}
+        style={{
+          backgroundColor: !isListening && !isSpeaking ? '#078272' : undefined
+        }}
       >
         <div className="text-center space-y-1">
           {isListening ? (
