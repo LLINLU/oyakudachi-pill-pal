@@ -17,8 +17,8 @@ export const MedicationPostponedScreen: React.FC<MedicationPostponedScreenProps>
         <CardContent className="p-8">
           <div className="text-center space-y-6">
             <div className="relative">
-              <div className="absolute -inset-4 bg-orange-200 rounded-full animate-pulse opacity-30"></div>
-              <Clock className="h-16 w-16 text-orange-600 mx-auto relative z-10" />
+              <div className="absolute -inset-4 bg-gray-200 rounded-full animate-pulse opacity-30"></div>
+              <Clock className="h-16 w-16 text-gray-600 mx-auto relative z-10" />
             </div>
             
             <div className="space-y-4">
@@ -27,7 +27,7 @@ export const MedicationPostponedScreen: React.FC<MedicationPostponedScreenProps>
               </h1>
             </div>
 
-            <div className="bg-orange-600 text-white rounded-2xl p-6 shadow-lg">
+            <div className="bg-gray-100 text-gray-800 rounded-2xl p-6 shadow-lg">
               <p className="text-2xl font-semibold">
                 5分後にもう一度お知らせします
               </p>
@@ -36,7 +36,8 @@ export const MedicationPostponedScreen: React.FC<MedicationPostponedScreenProps>
             <div className="space-y-3">
               <Button
                 onClick={onReturnToReminder}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg text-xl"
+                className="w-full text-white font-bold py-3 px-6 rounded-lg text-xl"
+                style={{ backgroundColor: '#078272' }}
               >
                 閉じる
               </Button>
