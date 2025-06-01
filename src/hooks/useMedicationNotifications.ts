@@ -83,7 +83,8 @@ export const useMedicationNotifications = () => {
         });
       }
       
-      setShowNotificationStatus(true);
+      // Don't automatically show notification status for postponed notifications
+      // setShowNotificationStatus(true); - Removed this line
     } catch (error) {
       console.error('Postponed notification error:', error);
       toast.error('通知の送信中にエラーが発生しました', {
