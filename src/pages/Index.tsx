@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import { useMedicationReminder } from '@/hooks/useMedicationReminder';
 import { MedicationCard } from '@/components/MedicationCard';
-import { MedicationCompletionScreen } from '@/components/MedicationCompletionScreen';
-import { MedicationPostponedScreen } from '@/components/MedicationPostponedScreen';
+import { HomePage } from '@/components/HomePage';
 import { NotificationStatus } from '@/components/NotificationStatus';
 import { VoiceConversationPage } from '@/components/VoiceConversationPage';
 import { FloatingVoiceButton } from '@/components/FloatingVoiceButton';
@@ -13,15 +12,16 @@ const Index = () => {
   
   const {
     currentMedication,
+    showReminder,
     isVoicePlaying,
     notificationResults,
     showNotificationStatus,
     isSendingNotifications,
-    countdown,
+    getNextMedication,
     playVoiceReminder,
     handleMedicationTaken,
     handleMedicationPostponed,
-    handleReturnToReminder,
+    startMedicationReminder,
     handleReturnToHome,
     setShowNotificationStatus
   } = useMedicationReminder();
@@ -35,15 +35,17 @@ const Index = () => {
     );
   }
 
-  // Show completion screen
-  if (currentMedication.taken) {
+  // Show medication reminder when active
+  if (showReminder && currentMedication) {
     return (
       <>
-        <MedicationCompletionScreen
-          notificationResults={notificationResults}
-          countdown={countdown}
-          onShowNotificationStatus={() => setShowNotificationStatus(true)}
-          onReturnToHome={handleReturnToHome}
+        <MedicationCard
+          medication={currentMedication}
+          isVoicePlaying={isVoicePlaying}
+          isSendingNotifications={isSendingNotifications}
+          onPlayVoice={playVoiceReminder}
+          onMedicationTaken={handleMedicationTaken}
+          onMedicationPostponed={handleMedicationPostponed}
         />
         
         <NotificationStatus
@@ -57,29 +59,12 @@ const Index = () => {
     );
   }
 
-  // Show postponed screen
-  if (currentMedication.postponed) {
-    return (
-      <>
-        <MedicationPostponedScreen
-          onReturnToReminder={handleReturnToReminder}
-        />
-        
-        <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
-      </>
-    );
-  }
-
-  // Show main medication reminder
+  // Show home page by default
   return (
     <>
-      <MedicationCard
-        medication={currentMedication}
-        isVoicePlaying={isVoicePlaying}
-        isSendingNotifications={isSendingNotifications}
-        onPlayVoice={playVoiceReminder}
-        onMedicationTaken={handleMedicationTaken}
-        onMedicationPostponed={handleMedicationPostponed}
+      <HomePage
+        nextMedication={getNextMedication()}
+        onStartReminder={startMedicationReminder}
       />
       
       <NotificationStatus

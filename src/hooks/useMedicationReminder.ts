@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { sendFamilyNotifications, sendPostponedNotifications, FamilyContact, NotificationResult } from '@/utils/familyNotifications';
@@ -12,23 +13,42 @@ interface Medication {
 }
 
 export const useMedicationReminder = () => {
-  const [currentMedication, setCurrentMedication] = useState<Medication>({
-    id: 1,
-    name: '血圧の薬',
-    time: '08:00',
-    image: '/lovable-uploads/e5c8b098-e715-4c25-87e2-959f940c4784.png',
-    taken: false,
-    postponed: false
-  });
+  // Sample daily medication schedule
+  const [medications, setMedications] = useState<Medication[]>([
+    {
+      id: 1,
+      name: '血圧の薬',
+      time: '08:00',
+      image: '/lovable-uploads/e5c8b098-e715-4c25-87e2-959f940c4784.png',
+      taken: true, // Already taken
+      postponed: false
+    },
+    {
+      id: 2,
+      name: '糖尿病の薬',
+      time: '12:00',
+      image: '/lovable-uploads/e5c8b098-e715-4c25-87e2-959f940c4784.png',
+      taken: false,
+      postponed: false
+    },
+    {
+      id: 3,
+      name: 'ビタミン剤',
+      time: '18:00',
+      image: '/lovable-uploads/e5c8b098-e715-4c25-87e2-959f940c4784.png',
+      taken: false,
+      postponed: false
+    }
+  ]);
 
+  const [currentMedication, setCurrentMedication] = useState<Medication | null>(null);
+  const [showReminder, setShowReminder] = useState(false);
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
   const [notificationResults, setNotificationResults] = useState<NotificationResult[]>([]);
   const [showNotificationStatus, setShowNotificationStatus] = useState(false);
   const [isSendingNotifications, setIsSendingNotifications] = useState(false);
-  const [countdown, setCountdown] = useState(30);
   
   const autoRedirectTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Enhanced family contact information with more details
   const familyContacts: FamilyContact[] = [
@@ -50,39 +70,14 @@ export const useMedicationReminder = () => {
     }
   ];
 
-  useEffect(() => {
-    // Auto-play voice reminder when component loads
-    if (!currentMedication.taken && !currentMedication.postponed) {
-      playVoiceReminder();
-    }
-  }, []);
-
-  // Auto-redirect timer when medication is taken
-  useEffect(() => {
-    if (currentMedication.taken) {
-      setCountdown(30);
-      
-      // Start countdown timer
-      countdownTimerRef.current = setInterval(() => {
-        setCountdown(prev => {
-          if (prev <= 1) {
-            clearInterval(countdownTimerRef.current!);
-            handleReturnToHome();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => {
-        if (countdownTimerRef.current) {
-          clearInterval(countdownTimerRef.current);
-        }
-      };
-    }
-  }, [currentMedication.taken]);
+  // Get next medication that hasn't been taken
+  const getNextMedication = () => {
+    return medications.find(med => !med.taken) || null;
+  };
 
   const playVoiceReminder = () => {
+    if (!currentMedication) return;
+    
     setIsVoicePlaying(true);
     
     // Use real speech synthesis
@@ -127,11 +122,11 @@ export const useMedicationReminder = () => {
     }
   };
 
-  const handleSendFamilyNotifications = async () => {
+  const handleSendFamilyNotifications = async (medicationName: string) => {
     setIsSendingNotifications(true);
     
     try {
-      const results = await sendFamilyNotifications(familyContacts, currentMedication.name);
+      const results = await sendFamilyNotifications(familyContacts, medicationName);
       setNotificationResults(results);
       
       const successCount = results.filter(r => r.status === 'success').length;
@@ -161,11 +156,11 @@ export const useMedicationReminder = () => {
     }
   };
 
-  const handleSendPostponedNotifications = async () => {
+  const handleSendPostponedNotifications = async (medicationName: string) => {
     setIsSendingNotifications(true);
     
     try {
-      const results = await sendPostponedNotifications(familyContacts, currentMedication.name);
+      const results = await sendPostponedNotifications(familyContacts, medicationName);
       setNotificationResults(results);
       
       const successCount = results.filter(r => r.status === 'success').length;
@@ -196,7 +191,16 @@ export const useMedicationReminder = () => {
   };
 
   const handleMedicationTaken = async () => {
-    setCurrentMedication(prev => ({ ...prev, taken: true }));
+    if (!currentMedication) return;
+
+    // Mark medication as taken
+    setMedications(prev => 
+      prev.map(med => 
+        med.id === currentMedication.id 
+          ? { ...med, taken: true }
+          : med
+      )
+    );
     
     toast.success('お薬を飲みました', {
       description: 'ご家族に通知を送信しています...',
@@ -204,11 +208,23 @@ export const useMedicationReminder = () => {
     });
 
     // Send enhanced family notifications
-    await handleSendFamilyNotifications();
+    await handleSendFamilyNotifications(currentMedication.name);
+
+    // Return to home page immediately
+    setShowReminder(false);
+    setCurrentMedication(null);
   };
 
   const handleMedicationPostponed = async () => {
-    setCurrentMedication(prev => ({ ...prev, postponed: true }));
+    if (!currentMedication) return;
+
+    setMedications(prev => 
+      prev.map(med => 
+        med.id === currentMedication.id 
+          ? { ...med, postponed: true }
+          : med
+      )
+    );
     
     toast.info('お薬を後で飲むことにしました', {
       description: 'ご家族に通知を送信しています...',
@@ -216,55 +232,59 @@ export const useMedicationReminder = () => {
     });
 
     // Send postponed notification to family
-    await handleSendPostponedNotifications();
+    await handleSendPostponedNotifications(currentMedication.name);
+
+    // Return to home page
+    setShowReminder(false);
+    setCurrentMedication(null);
 
     // Set a reminder for later (in a real app, this would set an actual timer)
     setTimeout(() => {
-      if (!currentMedication.taken) {
+      const postponedMed = medications.find(med => med.id === currentMedication.id);
+      if (postponedMed && !postponedMed.taken) {
         playVoiceReminder();
       }
     }, 30 * 60 * 1000); // 30 minutes
   };
 
-  const handleReturnToReminder = () => {
-    setCurrentMedication(prev => ({ ...prev, postponed: false }));
+  const startMedicationReminder = () => {
+    const nextMed = getNextMedication();
+    if (nextMed) {
+      setCurrentMedication(nextMed);
+      setShowReminder(true);
+      // Auto-play voice reminder
+      setTimeout(() => {
+        playVoiceReminder();
+      }, 500);
+    }
   };
 
   const handleReturnToHome = () => {
     // Clear any active timers
-    if (countdownTimerRef.current) {
-      clearInterval(countdownTimerRef.current);
-    }
     if (autoRedirectTimerRef.current) {
       clearTimeout(autoRedirectTimerRef.current);
     }
     
-    // Reset medication state
-    setCurrentMedication(prev => ({ 
-      ...prev, 
-      taken: false, 
-      postponed: false 
-    }));
-    
-    // Reset other states
+    // Reset states
+    setShowReminder(false);
+    setCurrentMedication(null);
     setNotificationResults([]);
     setShowNotificationStatus(false);
-    setCountdown(30);
-    
-    toast.info('ホーム画面に戻りました');
   };
 
   return {
+    medications,
     currentMedication,
+    showReminder,
     isVoicePlaying,
     notificationResults,
     showNotificationStatus,
     isSendingNotifications,
-    countdown,
+    getNextMedication,
     playVoiceReminder,
     handleMedicationTaken,
     handleMedicationPostponed,
-    handleReturnToReminder,
+    startMedicationReminder,
     handleReturnToHome,
     setShowNotificationStatus
   };
