@@ -10,7 +10,7 @@ const Index = () => {
     id: 1,
     name: '血圧の薬',
     time: '08:00',
-    image: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=center',
+    image: '/lovable-uploads/e5c8b098-e715-4c25-87e2-959f940c4784.png',
     taken: false
   });
 
