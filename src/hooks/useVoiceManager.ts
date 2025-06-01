@@ -42,10 +42,17 @@ export const useVoiceManager = () => {
     });
   }, [isSupported, addToQueue]);
 
-  const speakMedicationReminder = useCallback((medicationName: string, time?: string) => {
-    const message = time 
-      ? `${time}です。${medicationName}をお飲みください。`
-      : `お薬を飲む時間です。${medicationName}をお飲みください。`;
+  const speakMedicationReminder = useCallback((medicationName: string, time?: string, includePillCount?: boolean) => {
+    let message = '';
+    
+    if (includePillCount) {
+      // Include pill count information for the "もう一度聞く" button
+      message = `${medicationName}2粒お飲みください。`;
+    } else {
+      message = time 
+        ? `${time}です。${medicationName}をお飲みください。`
+        : `お薬を飲む時間です。${medicationName}をお飲みください。`;
+    }
     
     return speak(message, { 
       id: `medication-${medicationName}`,

@@ -13,7 +13,8 @@ export const useMedicationVoice = () => {
         duration: 3000
       });
 
-      await speakMedicationReminder(medication.name, medication.time);
+      // Include pill count in the voice message
+      await speakMedicationReminder(medication.name, medication.time, true);
     } catch (error) {
       console.error('Voice reminder error:', error);
       // Fallback to toast notification
