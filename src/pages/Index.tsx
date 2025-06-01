@@ -6,9 +6,11 @@ import { HomePage } from '@/components/HomePage';
 import { NotificationStatus } from '@/components/NotificationStatus';
 import { VoiceConversationPage } from '@/components/VoiceConversationPage';
 import { FloatingVoiceButton } from '@/components/FloatingVoiceButton';
+import MedicationHandbookScanner from '@/components/MedicationHandbookScanner';
 
 const Index = () => {
   const [showVoiceChat, setShowVoiceChat] = useState(false);
+  const [showHandbookScanner, setShowHandbookScanner] = useState(false);
   
   const {
     currentMedication,
@@ -24,8 +26,22 @@ const Index = () => {
     handleMedicationPostponed,
     startMedicationReminder,
     handleReturnToHome,
-    setShowNotificationStatus
+    setShowNotificationStatus,
+    addScannedMedications
   } = useMedicationReminder();
+
+  // Show medication handbook scanner
+  if (showHandbookScanner) {
+    return (
+      <MedicationHandbookScanner
+        onBack={() => setShowHandbookScanner(false)}
+        onMedicationsScanned={(medications) => {
+          addScannedMedications(medications);
+          setShowHandbookScanner(false);
+        }}
+      />
+    );
+  }
 
   // Show voice chat page
   if (showVoiceChat) {
@@ -68,6 +84,7 @@ const Index = () => {
         onStartReminder={startMedicationReminder}
         onPlayHomePageVoice={playHomePageVoiceReminder}
         isVoicePlaying={isVoicePlaying}
+        onScanHandbook={() => setShowHandbookScanner(true)}
       />
       
       <NotificationStatus

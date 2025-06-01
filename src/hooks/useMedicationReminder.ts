@@ -11,6 +11,14 @@ interface Medication {
   postponed: boolean;
 }
 
+interface ScannedMedication {
+  name: string;
+  dosage: string;
+  frequency: string;
+  time: string;
+  instructions: string;
+}
+
 export const useMedicationReminder = () => {
   // Sample daily medication schedule
   const [medications, setMedications] = useState<Medication[]>([
@@ -314,6 +322,25 @@ export const useMedicationReminder = () => {
     setShowNotificationStatus(false);
   };
 
+  // Add function to handle scanned medications
+  const addScannedMedications = (scannedMeds: ScannedMedication[]) => {
+    const newMedications: Medication[] = scannedMeds.map((scanned, index) => ({
+      id: Date.now() + index, // Generate unique ID
+      name: `${scanned.name} (${scanned.dosage})`,
+      time: scanned.time.split(',')[0], // Use first time if multiple times
+      image: '/lovable-uploads/e5c8b098-e715-4c25-87e2-959f940c4784.png',
+      taken: false,
+      postponed: false
+    }));
+
+    setMedications(prev => [...prev, ...newMedications]);
+    
+    toast.success('薬手帳から追加しました', {
+      description: `${newMedications.length}種類のお薬が追加されました`,
+      duration: 4000
+    });
+  };
+
   return {
     medications,
     currentMedication,
@@ -329,6 +356,7 @@ export const useMedicationReminder = () => {
     handleMedicationPostponed,
     startMedicationReminder,
     handleReturnToHome,
-    setShowNotificationStatus
+    setShowNotificationStatus,
+    addScannedMedications
   };
 };

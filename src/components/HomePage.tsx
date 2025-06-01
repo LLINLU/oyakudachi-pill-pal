@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, Pill, Calendar } from 'lucide-react';
+import { Clock, Pill, Calendar, Camera } from 'lucide-react';
 
 interface NextMedication {
   id: number;
@@ -16,13 +16,15 @@ interface HomePageProps {
   onStartReminder: () => void;
   onPlayHomePageVoice?: () => void;
   isVoicePlaying?: boolean;
+  onScanHandbook?: () => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
   nextMedication,
   onStartReminder,
   onPlayHomePageVoice,
-  isVoicePlaying = false
+  isVoicePlaying = false,
+  onScanHandbook
 }) => {
   const currentTime = new Date().toLocaleTimeString('ja-JP', {
     hour: '2-digit',
@@ -98,23 +100,47 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </div>
               </div>
 
-              <Button
-                onClick={onStartReminder}
-                className="w-full h-16 bg-blue-600 hover:bg-blue-700 text-2xl font-bold rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 text-white mt-6"
-              >
-                <Pill className="h-6 w-6 mr-3" />
-                お薬の確認
-              </Button>
+              <div className="space-y-3">
+                <Button
+                  onClick={onStartReminder}
+                  className="w-full h-16 bg-blue-600 hover:bg-blue-700 text-2xl font-bold rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 text-white"
+                >
+                  <Pill className="h-6 w-6 mr-3" />
+                  お薬の確認
+                </Button>
+
+                {onScanHandbook && (
+                  <Button
+                    onClick={onScanHandbook}
+                    variant="outline"
+                    className="w-full h-14 border-2 border-green-200 hover:border-green-300 hover:bg-green-50 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                  >
+                    <Camera className="h-5 w-5 mr-3" />
+                    薬手帳をスキャン
+                  </Button>
+                )}
+              </div>
             </div>
           ) : (
-            <div className="bg-green-50 border-2 border-green-200 rounded-3xl p-6">
+            <div className="bg-green-50 border-2 border-green-200 rounded-3xl p-6 space-y-4">
               <div className="flex items-center justify-center space-x-3 mb-4">
                 <Pill className="h-8 w-8 text-green-600" />
                 <span className="text-3xl font-bold text-green-800">完了</span>
               </div>
-              <p className="text-2xl text-gray-700">
+              <p className="text-2xl text-gray-700 mb-4">
                 本日のお薬はすべて完了です
               </p>
+              
+              {onScanHandbook && (
+                <Button
+                  onClick={onScanHandbook}
+                  variant="outline"
+                  className="w-full h-14 border-2 border-green-200 hover:border-green-300 hover:bg-green-50 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                >
+                  <Camera className="h-5 w-5 mr-3" />
+                  薬手帳をスキャン
+                </Button>
+              )}
             </div>
           )}
         </CardContent>
