@@ -11,6 +11,8 @@ import { MobileAppContainer } from '@/components/MobileAppContainer';
 import { MedicationCompletionScreen } from '@/components/MedicationCompletionScreen';
 import { MedicationPostponedScreen } from '@/components/MedicationPostponedScreen';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Volume2 } from 'lucide-react';
 
 const Index = () => {
   const [showVoiceChat, setShowVoiceChat] = useState(false);
@@ -100,11 +102,13 @@ const Index = () => {
     );
   }
 
+  const nextMedication = getNextMedication();
+
   // Show home page by default
   return (
     <MobileAppContainer>
       <HomePage
-        nextMedication={getNextMedication()}
+        nextMedication={nextMedication}
         onStartReminder={startMedicationReminder}
         onPlayHomePageVoice={playHomePageVoiceReminder}
         isVoicePlaying={isVoicePlaying}
@@ -136,7 +140,27 @@ const Index = () => {
         </DialogContent>
       </Dialog>
       
-      <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
+      {/* Bottom button container with both buttons in the same row */}
+      <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
+        {/* Voice confirmation button - only show when there's a next medication and it's not tomorrow's schedule */}
+        {nextMedication && !showTomorrowSchedule && (
+          <Button
+            onClick={playHomePageVoiceReminder}
+            variant="outline"
+            className="h-16 px-6 hover:bg-blue-50 text-base font-semibold rounded-full transition-all duration-300 hover:scale-105 text-blue-700 border-blue-200"
+            disabled={isVoicePlaying}
+          >
+            <Volume2 className={`h-5 w-5 mr-2 ${isVoicePlaying ? 'animate-pulse' : ''}`} />
+            {isVoicePlaying ? '音声再生中...' : '音声で確認'}
+          </Button>
+        )}
+        
+        {/* Spacer when voice button is not shown */}
+        {(!nextMedication || showTomorrowSchedule) && <div />}
+        
+        {/* Floating voice chat button */}
+        <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
+      </div>
     </MobileAppContainer>
   );
 };

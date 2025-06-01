@@ -34,7 +34,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   };
 
   return (
-    <div className="relative w-full max-w-md">
+    <div className="w-full max-w-md">
       <Card className="w-full rounded-3xl overflow-hidden bg-white border-0 shadow-none">
         <CardContent className="p-6 text-center space-y-6">
           {/* Welcome message */}
@@ -116,21 +116,6 @@ export const HomePage: React.FC<HomePageProps> = ({
           )}
         </CardContent>
       </Card>
-
-      {/* Voice confirmation button positioned outside card, aligned with floating button */}
-      {onPlayHomePageVoice && nextMedication && !isTomorrowSchedule && (
-        <div className="absolute bottom-4 left-4">
-          <Button
-            onClick={onPlayHomePageVoice}
-            variant="outline"
-            className="h-16 px-6 hover:bg-blue-50 text-base font-semibold rounded-full transition-all duration-300 hover:scale-105 text-blue-700 border-blue-200"
-            disabled={isVoicePlaying}
-          >
-            <Volume2 className={`h-5 w-5 mr-2 ${isVoicePlaying ? 'animate-pulse' : ''}`} />
-            {isVoicePlaying ? '音声再生中...' : '音声で確認'}
-          </Button>
-        </div>
-      )}
     </div>
   );
 };
