@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -39,7 +38,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   });
 
   return (
-    <Card className="w-full max-w-md shadow-lg border border-gray-200 rounded-3xl overflow-hidden bg-white">
+    <Card className="w-full max-w-md shadow-lg rounded-3xl overflow-hidden bg-white">
       <CardContent className="p-6 text-center space-y-6">
         {/* Current time and date */}
         <div className="space-y-3">
