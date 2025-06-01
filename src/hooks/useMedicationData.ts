@@ -10,7 +10,7 @@ export const useMedicationData = () => {
       name: '血圧の薬',
       time: '08:00',
       image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
-      taken: true,
+      taken: false,
       postponed: false
     },
     {
