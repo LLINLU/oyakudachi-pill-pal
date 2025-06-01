@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => void) => {
@@ -52,9 +51,9 @@ export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => 
     // Calculate the difference in milliseconds
     const diffMs = now.getTime() - scheduledDate.getTime();
     
-    // If current time is before scheduled time, show 0 minutes
+    // If current time is before scheduled time, show 0分:0秒
     if (diffMs < 0) {
-      return '0分';
+      return '0分:00秒';
     }
     
     // Convert to total seconds
@@ -62,21 +61,15 @@ export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => 
     const totalMinutes = Math.floor(totalSeconds / 60);
     const remainingSeconds = totalSeconds % 60;
     
+    // Format seconds with leading zero
+    const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
+    
     if (totalMinutes < 60) {
-      if (totalMinutes === 0) {
-        return `${remainingSeconds}秒`;
-      }
-      return remainingSeconds > 0 ? `${totalMinutes}分${remainingSeconds}秒` : `${totalMinutes}分`;
+      return `${totalMinutes}分:${formattedSeconds}秒`;
     } else {
       const hours = Math.floor(totalMinutes / 60);
       const remainingMinutes = totalMinutes % 60;
-      if (remainingMinutes === 0 && remainingSeconds === 0) {
-        return `${hours}時間`;
-      } else if (remainingSeconds === 0) {
-        return `${hours}時間${remainingMinutes}分`;
-      } else {
-        return `${hours}時間${remainingMinutes}分${remainingSeconds}秒`;
-      }
+      return `${hours}時間${remainingMinutes}分:${formattedSeconds}秒`;
     }
   }, [scheduledTime]);
 
