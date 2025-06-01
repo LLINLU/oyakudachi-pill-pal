@@ -10,11 +10,17 @@ const Index = () => {
     id: 1,
     name: '血圧の薬',
     time: '08:00',
-    image: '/api/placeholder/300/300',
+    image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop&crop=center',
     taken: false
   });
 
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
+
+  // Family contact information
+  const familyContacts = [
+    { name: '田中 花子', relationship: '娘', phone: '090-1234-5678' },
+    { name: '田中 太郎', relationship: '息子', phone: '090-8765-4321' }
+  ];
 
   useEffect(() => {
     // Auto-play voice reminder when component loads
@@ -34,8 +40,25 @@ const Index = () => {
     }, 3000);
   };
 
+  const sendFamilyNotification = () => {
+    // Simulate sending notification to family
+    familyContacts.forEach(contact => {
+      console.log(`Sending notification to ${contact.name} (${contact.relationship}): お薬を飲みました - ${new Date().toLocaleTimeString('ja-JP')}`);
+    });
+
+    // Show confirmation toast
+    toast.success('ご家族に連絡しました', {
+      description: `${familyContacts.map(c => c.name).join('、')}さんにお知らせを送りました`,
+      duration: 5000
+    });
+  };
+
   const handleMedicationTaken = () => {
     setCurrentMedication(prev => ({ ...prev, taken: true }));
+    
+    // Send notification to family
+    sendFamilyNotification();
+    
     toast.success('お薬を飲みました', {
       description: 'ありがとうございます',
       duration: 3000
@@ -52,6 +75,9 @@ const Index = () => {
           </h1>
           <p className="text-4xl text-gray-600">
             本日のお薬は完了です
+          </p>
+          <p className="text-3xl text-green-600">
+            ご家族にもお知らせしました
           </p>
         </div>
       </div>
@@ -78,8 +104,17 @@ const Index = () => {
           </Button>
 
           {/* Medication photo */}
-          <div className="relative mx-auto w-80 h-80 bg-gradient-to-br from-blue-100 to-blue-200 rounded-3xl flex items-center justify-center shadow-xl">
-            <div className="w-60 h-60 bg-blue-500 rounded-full shadow-lg"></div>
+          <div className="relative mx-auto w-80 h-80 bg-gradient-to-br from-blue-100 to-blue-200 rounded-3xl flex items-center justify-center shadow-xl overflow-hidden">
+            <img 
+              src={currentMedication.image}
+              alt={currentMedication.name}
+              className="w-full h-full object-cover rounded-3xl"
+              onError={(e) => {
+                // Fallback to blue circle if image fails to load
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.parentElement!.innerHTML = '<div class="w-60 h-60 bg-blue-500 rounded-full shadow-lg"></div>';
+              }}
+            />
           </div>
 
           {/* Time */}
