@@ -50,12 +50,12 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
           {isVoicePlaying ? 'お話ししています...' : 'もう一度聞く'}
         </Button>
 
-        {/* Time display */}
-        <div className="bg-gray-800 text-white rounded-2xl p-6 shadow-lg w-full text-center">
-          <div className="text-4xl font-bold mb-1">
+        {/* Time display - made more compact and less highlighted */}
+        <div className="bg-gray-100 text-gray-800 rounded-xl p-3 w-full text-center border border-gray-200">
+          <div className="text-2xl font-semibold mb-1">
             {medication.time}
           </div>
-          <div className="text-lg opacity-90">
+          <div className="text-base text-gray-600">
             お薬の時間です
           </div>
         </div>
