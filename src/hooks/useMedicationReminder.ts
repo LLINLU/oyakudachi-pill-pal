@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
-import { sendFamilyNotifications, FamilyContact, NotificationResult } from '@/utils/familyNotifications';
+import { sendFamilyNotifications, sendPostponedNotifications, FamilyContact, NotificationResult } from '@/utils/familyNotifications';
 
 interface Medication {
   id: number;
