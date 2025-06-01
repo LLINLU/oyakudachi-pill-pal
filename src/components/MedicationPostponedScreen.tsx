@@ -13,12 +13,12 @@ export const MedicationPostponedScreen: React.FC<MedicationPostponedScreenProps>
 }) => {
   return (
     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-lg bg-white shadow-lg border-0">
+      <Card className="w-full max-w-lg bg-white border-0">
         <CardContent className="p-8">
           <div className="text-center space-y-6">
             <div className="relative">
               <div className="absolute -inset-4 bg-gray-200 rounded-full animate-pulse opacity-30"></div>
-              <Clock className="h-16 w-16 text-gray-600 mx-auto relative z-10" />
+              <Clock className="h-16 w-16 mx-auto relative z-10" style={{ color: '#ff7d00' }} />
             </div>
             
             <div className="space-y-4">
@@ -27,7 +27,7 @@ export const MedicationPostponedScreen: React.FC<MedicationPostponedScreenProps>
               </h1>
             </div>
 
-            <div className="bg-gray-100 text-gray-800 rounded-2xl p-6 shadow-lg">
+            <div className="bg-gray-100 text-gray-800 rounded-2xl p-6">
               <p className="text-2xl font-semibold">
                 5分後にもう一度お知らせします
               </p>
