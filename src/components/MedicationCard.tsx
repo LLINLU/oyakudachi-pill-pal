@@ -92,23 +92,36 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
   return (
     <div className="w-full h-full bg-gray-50 flex flex-col items-center justify-start p-4 relative overflow-hidden">
       <div className="w-full max-w-sm flex flex-col items-center space-y-6 mt-4">
-        {/* Voice reminder button */}
-        <Button
-          onClick={() => {
-            handleUserInteraction();
-            onPlayVoice();
-          }}
-          variant="outline"
-          className={`h-12 px-6 text-lg rounded-full transition-all duration-300 ${
-            isVoicePlaying 
-              ? 'border-gray-400 bg-gray-100 text-gray-700 shadow-md' 
-              : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50 hover:scale-105'
-          }`}
-          disabled={isVoicePlaying}
-        >
-          <Volume2 className={`h-5 w-5 mr-2 ${isVoicePlaying ? 'animate-pulse' : ''}`} />
-          {isVoicePlaying ? 'お話ししています...' : 'もう一度聞く'}
-        </Button>
+        {/* Voice reminder and chat buttons in the same row */}
+        <div className="flex space-x-3 w-full">
+          <Button
+            onClick={() => {
+              handleUserInteraction();
+              onPlayVoice();
+            }}
+            variant="outline"
+            className={`flex-1 h-12 px-4 text-base rounded-full transition-all duration-300 ${
+              isVoicePlaying 
+                ? 'border-gray-400 bg-gray-100 text-gray-700 shadow-md' 
+                : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50 hover:scale-105'
+            }`}
+            disabled={isVoicePlaying}
+          >
+            <Volume2 className={`h-4 w-4 mr-2 ${isVoicePlaying ? 'animate-pulse' : ''}`} />
+            {isVoicePlaying ? 'お話ししています...' : 'もう一度聞く'}
+          </Button>
+          
+          <Button
+            onClick={() => {
+              handleUserInteraction();
+              onVoiceChat();
+            }}
+            className="h-12 w-12 rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg transition-all duration-300 hover:scale-105"
+            aria-label="音声相談"
+          >
+            <MessageCircle className="h-5 w-5" />
+          </Button>
+        </div>
 
         {/* Time display - now shows current system time */}
         <div className="bg-gray-100 text-gray-800 rounded-xl p-3 w-full text-center border border-gray-200">
@@ -176,18 +189,6 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
           </Button>
         </div>
       </div>
-
-      {/* Floating Chat Icon */}
-      <Button
-        onClick={() => {
-          handleUserInteraction();
-          onVoiceChat();
-        }}
-        className="absolute bottom-6 right-6 h-12 w-12 rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg z-50 transition-all duration-300 hover:scale-110"
-        aria-label="音声相談"
-      >
-        <MessageCircle className="h-5 w-5" />
-      </Button>
 
       {/* Reminder Popup */}
       <MedicationReminderPopup
