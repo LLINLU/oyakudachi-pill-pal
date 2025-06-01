@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Volume2, Pill } from 'lucide-react';
+import { Volume2, Pill, MessageCircle } from 'lucide-react';
 
 interface Medication {
   id: number;
@@ -20,6 +20,7 @@ interface MedicationCardProps {
   onPlayVoice: () => void;
   onMedicationTaken: () => void;
   onMedicationPostponed: () => void;
+  onVoiceChat: () => void;
 }
 
 export const MedicationCard: React.FC<MedicationCardProps> = ({
@@ -28,7 +29,8 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
   isSendingNotifications,
   onPlayVoice,
   onMedicationTaken,
-  onMedicationPostponed
+  onMedicationPostponed,
+  onVoiceChat
 }) => {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -102,6 +104,16 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
               className="w-full h-20 border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-2xl font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-gray-700"
             >
               後で飲む
+            </Button>
+
+            {/* Chat button */}
+            <Button
+              onClick={onVoiceChat}
+              variant="outline"
+              className="w-full h-20 border-2 border-green-300 hover:border-green-400 hover:bg-green-50 text-2xl font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+            >
+              <MessageCircle className="h-6 w-6 mr-3" />
+              音声相談
             </Button>
           </div>
         </CardContent>

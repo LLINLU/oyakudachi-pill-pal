@@ -63,6 +63,7 @@ const Index = () => {
           onPlayVoice={playVoiceReminder}
           onMedicationTaken={handleMedicationTaken}
           onMedicationPostponed={handleMedicationPostponed}
+          onVoiceChat={() => setShowVoiceChat(true)}
         />
         
         <NotificationStatus
@@ -70,8 +71,6 @@ const Index = () => {
           isVisible={showNotificationStatus}
           onClose={() => setShowNotificationStatus(false)}
         />
-        
-        <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
       </>
     );
   }
