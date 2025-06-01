@@ -1,8 +1,8 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, Pill, Calendar, Camera } from 'lucide-react';
+import { Clock, Pill, Calendar, Camera, Volume2 } from 'lucide-react';
 
 interface NextMedication {
   id: number;
@@ -37,17 +37,6 @@ export const HomePage: React.FC<HomePageProps> = ({
     day: 'numeric',
     weekday: 'long'
   });
-
-  // Auto-play voice reminder when component mounts if there's a next medication
-  useEffect(() => {
-    if (nextMedication && onPlayHomePageVoice) {
-      const timer = setTimeout(() => {
-        onPlayHomePageVoice();
-      }, 1500); // 1.5 second delay to ensure page is loaded
-
-      return () => clearTimeout(timer);
-    }
-  }, [nextMedication, onPlayHomePageVoice]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -108,6 +97,18 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <Pill className="h-6 w-6 mr-3" />
                   お薬の確認
                 </Button>
+
+                {onPlayHomePageVoice && (
+                  <Button
+                    onClick={onPlayHomePageVoice}
+                    variant="outline"
+                    className="w-full h-14 border-2 border-blue-200 hover:border-blue-300 hover:bg-blue-50 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-blue-700"
+                    disabled={isVoicePlaying}
+                  >
+                    <Volume2 className={`h-5 w-5 mr-3 ${isVoicePlaying ? 'animate-pulse' : ''}`} />
+                    {isVoicePlaying ? '音声再生中...' : '音声で確認'}
+                  </Button>
+                )}
 
                 {onScanHandbook && (
                   <Button

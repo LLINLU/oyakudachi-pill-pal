@@ -1,6 +1,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
+import { useVoiceManager } from './useVoiceManager';
 
 interface UseWebSpeechAPIReturn {
   isListening: boolean;
@@ -15,11 +16,10 @@ interface UseWebSpeechAPIReturn {
 
 export const useWebSpeechAPI = (): UseWebSpeechAPIReturn => {
   const [isListening, setIsListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const [transcript, setTranscript] = useState('');
   
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const speechSynthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const voiceManager = useVoiceManager();
 
   const isSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
 
@@ -37,6 +37,7 @@ export const useWebSpeechAPI = (): UseWebSpeechAPIReturn => {
     recognition.onstart = () => {
       setIsListening(true);
       setTranscript('');
+      console.log('Speech recognition started');
     };
 
     recognition.onresult = (event) => {
@@ -50,11 +51,13 @@ export const useWebSpeechAPI = (): UseWebSpeechAPIReturn => {
       
       if (finalTranscript) {
         setTranscript(finalTranscript);
+        console.log('Speech recognition result:', finalTranscript);
       }
     };
 
     recognition.onend = () => {
       setIsListening(false);
+      console.log('Speech recognition ended');
     };
 
     recognition.onerror = (event) => {
@@ -93,6 +96,11 @@ export const useWebSpeechAPI = (): UseWebSpeechAPIReturn => {
       return;
     }
 
+    // Stop any current speech before starting to listen
+    if (voiceManager.isSpeaking) {
+      voiceManager.stopSpeaking();
+    }
+
     try {
       recognitionRef.current = initializeSpeechRecognition();
       recognitionRef.current?.start();
@@ -100,7 +108,7 @@ export const useWebSpeechAPI = (): UseWebSpeechAPIReturn => {
       console.error('Failed to start speech recognition:', error);
       toast.error('音声認識を開始できませんでした');
     }
-  }, [initializeSpeechRecognition, isSupported]);
+  }, [initializeSpeechRecognition, isSupported, voiceManager]);
 
   const stopListening = useCallback(() => {
     recognitionRef.current?.stop();
@@ -108,51 +116,21 @@ export const useWebSpeechAPI = (): UseWebSpeechAPIReturn => {
   }, []);
 
   const speak = useCallback((text: string) => {
-    if (!('speechSynthesis' in window)) {
-      toast.error('お使いのブラウザは音声合成に対応していません');
-      return;
-    }
-
-    // Stop any current speech
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ja-JP';
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-
-    utterance.onstart = () => {
-      setIsSpeaking(true);
-    };
-
-    utterance.onend = () => {
-      setIsSpeaking(false);
-    };
-
-    utterance.onerror = (event) => {
-      setIsSpeaking(false);
-      console.error('Speech synthesis error:', event.error);
-      toast.error('音声合成エラーが発生しました');
-    };
-
-    speechSynthesisRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
-  }, []);
+    voiceManager.speak(text, { id: `conversation-${Date.now()}` });
+  }, [voiceManager]);
 
   const stopSpeaking = useCallback(() => {
-    window.speechSynthesis.cancel();
-    setIsSpeaking(false);
-  }, []);
+    voiceManager.stopSpeaking();
+  }, [voiceManager]);
 
   return {
     isListening,
-    isSpeaking,
+    isSpeaking: voiceManager.isSpeaking,
     transcript,
     startListening,
     stopListening,
     speak,
     stopSpeaking,
-    isSupported
+    isSupported: isSupported && voiceManager.isSupported
   };
 };
