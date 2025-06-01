@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -67,11 +66,10 @@ export const HomePage: React.FC<HomePageProps> = ({
               <div className="text-2xl font-bold text-gray-800">
                 {nextMedication.name}
               </div>
-              {isTomorrowSchedule && (
-                <div className="text-lg text-gray-600">
-                  明日 {nextMedication.time}
-                </div>
-              )}
+              <div className="text-lg text-gray-600 flex items-center justify-center gap-2">
+                <Clock className="h-5 w-5" />
+                {isTomorrowSchedule ? `明日 ${nextMedication.time}` : nextMedication.time}
+              </div>
             </div>
 
             <div className="space-y-2">
