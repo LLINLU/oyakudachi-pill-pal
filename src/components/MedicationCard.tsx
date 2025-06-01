@@ -33,7 +33,7 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
   onVoiceChat
 }) => {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 relative">
       <Card className="w-full max-w-3xl shadow-lg border border-gray-200 rounded-3xl overflow-hidden bg-white">
         <CardContent className="p-8 text-center space-y-8">
           {/* Voice reminder button */}
@@ -105,19 +105,18 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
             >
               後で飲む
             </Button>
-
-            {/* Chat button */}
-            <Button
-              onClick={onVoiceChat}
-              variant="outline"
-              className="w-full h-20 border-2 border-green-300 hover:border-green-400 hover:bg-green-50 text-2xl font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
-            >
-              <MessageCircle className="h-6 w-6 mr-3" />
-              音声相談
-            </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Floating Chat Icon */}
+      <Button
+        onClick={onVoiceChat}
+        className="absolute bottom-6 right-6 h-16 w-16 rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg z-50 transition-all duration-300 hover:scale-110"
+        aria-label="音声相談"
+      >
+        <MessageCircle className="h-8 w-8" />
+      </Button>
     </div>
   );
 };
