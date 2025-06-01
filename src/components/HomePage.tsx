@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -31,7 +32,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   };
 
   return (
-    <Card className="w-full max-w-md rounded-3xl overflow-hidden bg-white">
+    <Card className="w-full max-w-md rounded-3xl overflow-hidden bg-white border-0 shadow-none">
       <CardContent className="p-6 text-center space-y-6">
         {/* Welcome message */}
         <div className="space-y-2">
@@ -83,27 +84,14 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </Button>
               )}
 
-              <div className="space-y-2">
-                <Button
-                  onClick={handleCheckMedicineRecord}
-                  variant="outline"
-                  className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
-                >
-                  <FileText className="h-4 w-4 mr-2" />
-                  服薬記録を確認
-                </Button>
-
-                {onScanHandbook && (
-                  <Button
-                    onClick={onScanHandbook}
-                    variant="outline"
-                    className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
-                  >
-                    <FileText className="h-4 w-4 mr-2" />
-                    薬手帳を確認
-                  </Button>
-                )}
-              </div>
+              <Button
+                onClick={handleCheckMedicineRecord}
+                variant="outline"
+                className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                服薬記録を確認
+              </Button>
             </div>
           </div>
         ) : (
@@ -116,27 +104,14 @@ export const HomePage: React.FC<HomePageProps> = ({
               本日のお薬はすべて完了です
             </p>
             
-            <div className="space-y-2">
-              <Button
-                onClick={handleCheckMedicineRecord}
-                variant="outline"
-                className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
-              >
-                <FileText className="h-4 w-4 mr-2" />
-                服薬記録を確認
-              </Button>
-
-              {onScanHandbook && (
-                <Button
-                  onClick={onScanHandbook}
-                  variant="outline"
-                  className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
-                >
-                  <FileText className="h-4 w-4 mr-2" />
-                  薬手帳を確認
-                </Button>
-              )}
-            </div>
+            <Button
+              onClick={handleCheckMedicineRecord}
+              variant="outline"
+              className="w-full h-10 hover:bg-[#016a5e]/10 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-[#016a5e] border-[#016a5e]"
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              服薬記録を確認
+            </Button>
           </div>
         )}
       </CardContent>
