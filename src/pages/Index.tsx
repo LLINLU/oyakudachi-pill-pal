@@ -145,7 +145,8 @@ const Index = () => {
         <Button
           onClick={() => setShowHandbookScanner(true)}
           variant="outline"
-          className="h-16 w-16 rounded-full bg-blue-400 hover:bg-blue-500 text-white border-blue-400 transition-all duration-300 hover:scale-105"
+          className="h-16 w-16 rounded-full text-blue-600 border-blue-200 transition-all duration-300 hover:scale-105"
+          style={{ backgroundColor: 'aliceblue' }}
           aria-label="薬手帳をスキャン"
         >
           <Camera className="h-6 w-6" />
