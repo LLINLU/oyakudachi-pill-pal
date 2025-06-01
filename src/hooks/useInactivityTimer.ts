@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => void) => {
@@ -48,12 +49,38 @@ export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => 
     const scheduledDate = new Date();
     scheduledDate.setHours(hours, minutes, 0, 0);
     
-    // Calculate the difference in milliseconds
-    const diffMs = now.getTime() - scheduledDate.getTime();
+    // Debug logging
+    console.log('Current time:', now.toLocaleTimeString());
+    console.log('Scheduled time:', scheduledDate.toLocaleTimeString());
+    console.log('Raw scheduled time input:', scheduledTime);
     
-    // If current time is before scheduled time, show 0分:0秒
+    // Calculate the difference in milliseconds
+    let diffMs = now.getTime() - scheduledDate.getTime();
+    
+    // Debug the time difference
+    console.log('Time difference (ms):', diffMs);
+    
+    // If the difference is negative (current time is before scheduled time today),
+    // check if the scheduled time was actually yesterday
     if (diffMs < 0) {
-      return '0分:00秒';
+      // Try yesterday's scheduled time
+      const yesterdayScheduled = new Date(scheduledDate);
+      yesterdayScheduled.setDate(yesterdayScheduled.getDate() - 1);
+      
+      console.log('Trying yesterday scheduled time:', yesterdayScheduled.toLocaleTimeString());
+      
+      const yesterdayDiff = now.getTime() - yesterdayScheduled.getTime();
+      console.log('Yesterday difference (ms):', yesterdayDiff);
+      
+      // If yesterday's time makes more sense (positive and reasonable), use it
+      if (yesterdayDiff > 0) {
+        diffMs = yesterdayDiff;
+        console.log('Using yesterday as reference point');
+      } else {
+        // Current time is genuinely before today's scheduled time
+        console.log('Current time is before scheduled time, showing 0');
+        return '0分:00秒';
+      }
     }
     
     // Convert to total seconds
@@ -61,16 +88,25 @@ export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => 
     const totalMinutes = Math.floor(totalSeconds / 60);
     const remainingSeconds = totalSeconds % 60;
     
+    // Debug the calculated values
+    console.log('Total seconds:', totalSeconds);
+    console.log('Total minutes:', totalMinutes);
+    console.log('Remaining seconds:', remainingSeconds);
+    
     // Format seconds with leading zero
     const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
     
+    let result = '';
     if (totalMinutes < 60) {
-      return `${totalMinutes}分:${formattedSeconds}秒`;
+      result = `${totalMinutes}分:${formattedSeconds}秒`;
     } else {
       const hours = Math.floor(totalMinutes / 60);
       const remainingMinutes = totalMinutes % 60;
-      return `${hours}時間${remainingMinutes}分:${formattedSeconds}秒`;
+      result = `${hours}時間${remainingMinutes}分:${formattedSeconds}秒`;
     }
+    
+    console.log('Final elapsed time result:', result);
+    return result;
   }, [scheduledTime]);
 
   useEffect(() => {
