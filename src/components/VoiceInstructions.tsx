@@ -8,9 +8,6 @@ interface VoiceInstructionsProps {
 export const VoiceInstructions: React.FC<VoiceInstructionsProps> = ({ transcript }) => {
   return (
     <div className="text-center">
-      <p className="text-lg text-gray-600">
-        ボタンを押してお話しください。お薬のこと、体調のこと、何でもご相談ください。
-      </p>
       {transcript && (
         <div className="mt-4 p-4 bg-blue-50 rounded-lg">
           <p className="text-sm text-gray-600 mb-1">認識されたテキスト:</p>

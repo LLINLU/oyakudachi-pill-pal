@@ -25,7 +25,7 @@ export const VoiceConversationHeader: React.FC<VoiceConversationHeaderProps> = (
       {/* Title */}
       <div className="text-center mb-6">
         <h1 className="text-4xl font-bold text-gray-800 mb-2">音声相談</h1>
-        <p className="text-xl text-gray-600">お話しください。お手伝いします</p>
+        <p className="text-xl text-gray-600">ボタンを押してお話しください。お薬のこと、体調のこと、何でもご相談ください。</p>
       </div>
     </>
   );

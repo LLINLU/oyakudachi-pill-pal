@@ -38,10 +38,7 @@ export const VoiceControlButton: React.FC<VoiceControlButtonProps> = ({
               <div className="text-xs font-medium">話しています</div>
             </>
           ) : (
-            <>
-              <Mic className="h-10 w-10 mx-auto" />
-              <div className="text-xs font-medium">話しかける</div>
-            </>
+            <Mic className="h-10 w-10 mx-auto" />
           )}
         </div>
       </Button>
