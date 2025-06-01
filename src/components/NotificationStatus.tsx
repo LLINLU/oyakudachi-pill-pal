@@ -21,7 +21,7 @@ export const NotificationStatus: React.FC<NotificationStatusProps> = ({
   const totalCount = results.length;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <Card className="w-full max-w-lg bg-white">
         <CardContent className="p-8">
           <div className="text-center mb-6">
