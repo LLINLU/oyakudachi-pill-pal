@@ -21,12 +21,16 @@ export const MobileAppContainer: React.FC<MobileAppContainerProps> = ({
         {/* Phone body */}
         <div className="relative w-[393px] h-[852px] bg-black rounded-[3rem] p-1 shadow-2xl">
           {/* Screen */}
-          <div className="w-full h-full bg-white rounded-[2.7rem] overflow-hidden relative">
-            {/* Status bar */}
-            {showStatusBar && <IOSStatusBar />}
+          <div className="w-full h-full bg-white rounded-[2.7rem] overflow-hidden relative flex flex-col">
+            {/* Status bar - always at the top */}
+            {showStatusBar && (
+              <div className="flex-shrink-0">
+                <IOSStatusBar />
+              </div>
+            )}
             
             {/* Content area */}
-            <div className={`w-full ${showStatusBar ? 'h-[calc(100%-44px)]' : 'h-full'} overflow-hidden`}>
+            <div className="flex-1 overflow-hidden">
               {children}
             </div>
           </div>

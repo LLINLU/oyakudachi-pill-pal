@@ -24,19 +24,19 @@ export const IOSStatusBar: React.FC = () => {
   }, []);
 
   return (
-    <div className="h-11 bg-white px-6 flex items-center justify-between text-black font-semibold text-sm relative z-50">
+    <div className="h-11 bg-white px-6 flex items-center justify-between text-black font-semibold text-sm relative z-50 border-b border-gray-100">
       {/* Left side - Time */}
       <div className="flex-1">
-        <span className="font-semibold">{currentTime}</span>
+        <span className="font-semibold text-black">{currentTime}</span>
       </div>
       
       {/* Center - Dynamic Island placeholder */}
-      <div className="absolute left-1/2 top-2 transform -translate-x-1/2">
-        <div className="w-32 h-7 bg-black rounded-full"></div>
+      <div className="absolute left-1/2 top-2 transform -translate-x-1/2 z-10">
+        <div className="w-32 h-7 bg-black rounded-full shadow-sm"></div>
       </div>
       
       {/* Right side - Status indicators */}
-      <div className="flex-1 flex items-center justify-end space-x-1">
+      <div className="flex-1 flex items-center justify-end space-x-2">
         {/* Signal bars */}
         <div className="flex items-end space-x-0.5 mr-1">
           <div className="w-1 h-1 bg-black rounded-full"></div>
@@ -46,13 +46,13 @@ export const IOSStatusBar: React.FC = () => {
         </div>
         
         {/* WiFi */}
-        <Wifi className="h-4 w-4" />
+        <Wifi className="h-4 w-4 text-black" />
         
         {/* Battery */}
         <div className="flex items-center space-x-1">
-          <span className="text-xs font-medium">{batteryLevel}%</span>
+          <span className="text-xs font-medium text-black">{batteryLevel}%</span>
           <div className="relative">
-            <Battery className="h-4 w-4" />
+            <Battery className="h-4 w-4 text-black" />
             <div 
               className="absolute top-0.5 left-0.5 bg-green-500 rounded-sm"
               style={{ 
