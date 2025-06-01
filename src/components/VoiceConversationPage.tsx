@@ -112,23 +112,22 @@ export const VoiceConversationPage: React.FC<VoiceConversationPageProps> = ({ on
       <VoiceConversationHeader onBack={onBack} />
 
       <div className="flex-1 flex flex-col space-y-4 max-w-sm mx-auto w-full overflow-hidden">
-        {/* Conversation and Voice Control in the same row */}
-        <div className="flex items-end space-x-3">
-          <div className="flex-1">
-            <ConversationHistory 
-              conversation={conversation}
-              isListening={isListening}
-              isSpeaking={isSpeaking}
-            />
-          </div>
-          
-          <div className="flex-shrink-0">
-            <VoiceControlButton
-              isListening={isListening}
-              isSpeaking={isSpeaking}
-              onClick={handleVoiceButtonClick}
-            />
-          </div>
+        {/* Conversation History */}
+        <div className="flex-1">
+          <ConversationHistory 
+            conversation={conversation}
+            isListening={isListening}
+            isSpeaking={isSpeaking}
+          />
+        </div>
+
+        {/* Centered Voice Control Button */}
+        <div className="flex justify-center py-4">
+          <VoiceControlButton
+            isListening={isListening}
+            isSpeaking={isSpeaking}
+            onClick={handleVoiceButtonClick}
+          />
         </div>
 
         <VoiceInstructions transcript={transcript} />
