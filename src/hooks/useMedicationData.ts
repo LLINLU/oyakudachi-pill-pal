@@ -31,7 +31,42 @@ export const useMedicationData = () => {
     }
   ]);
 
+  const [showTomorrowSchedule, setShowTomorrowSchedule] = useState(false);
+
+  const getTomorrowMedications = (): Medication[] => {
+    return [
+      {
+        id: 101,
+        name: '血圧の薬',
+        time: '08:00',
+        image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
+        taken: false,
+        postponed: false
+      },
+      {
+        id: 102,
+        name: '糖尿病の薬',
+        time: '12:00',
+        image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
+        taken: false,
+        postponed: false
+      },
+      {
+        id: 103,
+        name: 'ビタミン剤',
+        time: '18:00',
+        image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
+        taken: false,
+        postponed: false
+      }
+    ];
+  };
+
   const getNextMedication = () => {
+    if (showTomorrowSchedule) {
+      const tomorrowMeds = getTomorrowMedications();
+      return tomorrowMeds.find(med => !med.taken) || null;
+    }
     return medications.find(med => !med.taken) || null;
   };
 
@@ -77,12 +112,18 @@ export const useMedicationData = () => {
     });
   };
 
+  const switchToTomorrowSchedule = () => {
+    setShowTomorrowSchedule(true);
+  };
+
   return {
     medications,
     getNextMedication,
     areAllMedicationsTaken,
     markMedicationTaken,
     markMedicationPostponed,
-    addScannedMedications
+    addScannedMedications,
+    showTomorrowSchedule,
+    switchToTomorrowSchedule
   };
 };

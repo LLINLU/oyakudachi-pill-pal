@@ -19,7 +19,9 @@ export const useMedicationReminder = () => {
     areAllMedicationsTaken,
     markMedicationTaken,
     markMedicationPostponed,
-    addScannedMedications
+    addScannedMedications,
+    showTomorrowSchedule,
+    switchToTomorrowSchedule
   } = useMedicationData();
 
   const {
@@ -96,7 +98,7 @@ export const useMedicationReminder = () => {
 
   const startMedicationReminder = () => {
     const nextMed = getNextMedication();
-    if (nextMed) {
+    if (nextMed && !showTomorrowSchedule) {
       setCurrentMedication(nextMed);
       setShowReminder(true);
       setTimeout(() => {
@@ -108,6 +110,11 @@ export const useMedicationReminder = () => {
   const handleReturnToHome = () => {
     if (autoRedirectTimerRef.current) {
       clearTimeout(autoRedirectTimerRef.current);
+    }
+    
+    // If returning from completion screen and all medications are taken, switch to tomorrow's schedule
+    if (showCompletionScreen && areAllMedicationsTaken()) {
+      switchToTomorrowSchedule();
     }
     
     setShowReminder(false);
@@ -132,6 +139,7 @@ export const useMedicationReminder = () => {
     notificationResults,
     showNotificationStatus,
     isSendingNotifications,
+    showTomorrowSchedule,
     getNextMedication,
     playVoiceReminder: playVoiceReminderForCurrent,
     playHomePageVoiceReminder: playHomePageVoiceReminderWrapper,

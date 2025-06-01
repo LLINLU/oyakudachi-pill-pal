@@ -17,6 +17,7 @@ interface HomePageProps {
   onPlayHomePageVoice?: () => void;
   isVoicePlaying?: boolean;
   onScanHandbook?: () => void;
+  isTomorrowSchedule?: boolean;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
@@ -24,7 +25,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   onStartReminder,
   onPlayHomePageVoice,
   isVoicePlaying = false,
-  onScanHandbook
+  onScanHandbook,
+  isTomorrowSchedule = false
 }) => {
   const handleCheckMedicineRecord = () => {
     // Placeholder function for checking medicine record
@@ -39,9 +41,11 @@ export const HomePage: React.FC<HomePageProps> = ({
           <h1 className="text-3xl font-bold text-gray-800 leading-tight">
             お疲れ様でした
           </h1>
-          <p className="text-lg text-gray-600">
-            今日も健康管理を頑張りましょう
-          </p>
+          {!isTomorrowSchedule && (
+            <p className="text-lg text-gray-600">
+              今日も健康管理を頑張りましょう
+            </p>
+          )}
         </div>
 
         {/* Next medication info */}
@@ -49,7 +53,9 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="bg-blue-50 rounded-3xl p-4 space-y-3">
             <div className="flex items-center justify-center space-x-2 mb-3">
               <Clock className="h-6 w-6 text-blue-600" />
-              <span className="text-2xl font-bold text-blue-800">次のお薬</span>
+              <span className="text-2xl font-bold text-blue-800">
+                {isTomorrowSchedule ? '明日のお薬' : '次のお薬'}
+              </span>
               {isVoicePlaying && (
                 <div className="animate-pulse">
                   <div className="h-2 w-2 bg-blue-600 rounded-full"></div>
@@ -61,18 +67,24 @@ export const HomePage: React.FC<HomePageProps> = ({
               <div className="text-2xl font-bold text-gray-800">
                 {nextMedication.name}
               </div>
+              {isTomorrowSchedule && (
+                <div className="text-lg text-gray-600">
+                  明日 {nextMedication.time}
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
               <Button
                 onClick={onStartReminder}
                 className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-lg font-bold rounded-2xl transition-all duration-300 hover:scale-105 text-white"
+                disabled={isTomorrowSchedule}
               >
                 <Pill className="h-4 w-4 mr-2" />
-                お薬の確認
+                {isTomorrowSchedule ? '明日のお薬' : 'お薬の確認'}
               </Button>
 
-              {onPlayHomePageVoice && (
+              {onPlayHomePageVoice && !isTomorrowSchedule && (
                 <Button
                   onClick={onPlayHomePageVoice}
                   variant="outline"

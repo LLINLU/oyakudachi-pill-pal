@@ -26,6 +26,7 @@ const Index = () => {
     notificationResults,
     showNotificationStatus,
     isSendingNotifications,
+    showTomorrowSchedule,
     getNextMedication,
     playVoiceReminder,
     playHomePageVoiceReminder,
@@ -108,6 +109,7 @@ const Index = () => {
         onPlayHomePageVoice={playHomePageVoiceReminder}
         isVoicePlaying={isVoicePlaying}
         onScanHandbook={() => setShowHandbookScanner(true)}
+        isTomorrowSchedule={showTomorrowSchedule}
       />
       
       <NotificationStatus
