@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,7 @@ export const MedicationCompletionScreen: React.FC<MedicationCompletionScreenProp
   onReturnToHome
 }) => {
   return (
-    <Card className="w-full max-w-lg bg-white shadow-lg">
+    <Card className="w-full max-w-lg bg-white">
       <CardContent className="p-8">
         <div className="text-center space-y-6">
           <div className="relative">
