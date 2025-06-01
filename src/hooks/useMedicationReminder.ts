@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { sendFamilyNotifications, FamilyContact, NotificationResult } from '@/utils/familyNotifications';
@@ -85,15 +84,47 @@ export const useMedicationReminder = () => {
 
   const playVoiceReminder = () => {
     setIsVoicePlaying(true);
-    // Simulate voice reminder
-    toast.success('「お薬を飲む時間です」', {
-      description: `${currentMedication.name}をお飲みください`,
-      duration: 4000
-    });
     
-    setTimeout(() => {
+    // Use real speech synthesis
+    if ('speechSynthesis' in window) {
+      // Stop any current speech
+      window.speechSynthesis.cancel();
+
+      const message = `お薬を飲む時間です。${currentMedication.name}をお飲みください。`;
+      const utterance = new SpeechSynthesisUtterance(message);
+      
+      utterance.lang = 'ja-JP';
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+
+      utterance.onstart = () => {
+        toast.success('音声でお知らせしています', {
+          description: currentMedication.name,
+          duration: 3000
+        });
+      };
+
+      utterance.onend = () => {
+        setIsVoicePlaying(false);
+      };
+
+      utterance.onerror = () => {
+        setIsVoicePlaying(false);
+        toast.error('音声が再生できませんでした', {
+          description: 'ブラウザが音声合成に対応していません'
+        });
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } else {
+      // Fallback for unsupported browsers
       setIsVoicePlaying(false);
-    }, 3000);
+      toast.info('「お薬を飲む時間です」', {
+        description: `${currentMedication.name}をお飲みください`,
+        duration: 4000
+      });
+    }
   };
 
   const handleSendFamilyNotifications = async () => {
