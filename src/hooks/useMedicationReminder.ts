@@ -1,4 +1,3 @@
-
 import { useState, useRef } from 'react';
 import { toast } from 'sonner';
 import { Medication } from '@/types/medication';
@@ -16,6 +15,7 @@ export const useMedicationReminder = () => {
   const {
     medications,
     getNextMedication,
+    areAllMedicationsTaken,
     markMedicationTaken,
     markMedicationPostponed,
     addScannedMedications
@@ -60,7 +60,14 @@ export const useMedicationReminder = () => {
     await handleSendFamilyNotifications(currentMedication.name);
 
     setShowReminder(false);
-    setShowCompletionScreen(true);
+    
+    // Only show completion screen if ALL medications are now taken
+    if (areAllMedicationsTaken()) {
+      setShowCompletionScreen(true);
+    } else {
+      // If there are more medications, just return to home
+      setCurrentMedication(null);
+    }
   };
 
   const handleMedicationPostponed = async () => {

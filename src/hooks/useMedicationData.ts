@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Medication, ScannedMedication } from '@/types/medication';
@@ -32,6 +33,10 @@ export const useMedicationData = () => {
 
   const getNextMedication = () => {
     return medications.find(med => !med.taken) || null;
+  };
+
+  const areAllMedicationsTaken = () => {
+    return medications.every(med => med.taken);
   };
 
   const markMedicationTaken = (medicationId: number) => {
@@ -75,6 +80,7 @@ export const useMedicationData = () => {
   return {
     medications,
     getNextMedication,
+    areAllMedicationsTaken,
     markMedicationTaken,
     markMedicationPostponed,
     addScannedMedications
