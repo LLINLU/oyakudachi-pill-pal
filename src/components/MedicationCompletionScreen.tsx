@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Users, Clock } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 
 interface MedicationCompletionScreenProps {
   notificationResults: any;
@@ -33,17 +34,8 @@ export const MedicationCompletionScreen: React.FC<MedicationCompletionScreenProp
               した
             </h2>
             <p className="text-xl text-gray-600 font-medium">
-              本日のお薬は完了です
+              本日のお薬は完了です。ご家族にもお知らせしました！
             </p>
-          </div>
-
-          <div className="bg-green-600 text-white rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-center space-x-3">
-              <Users className="h-6 w-6" />
-              <p className="text-2xl font-semibold">
-                ご家族にもお知らせしました
-              </p>
-            </div>
           </div>
 
           <div className="space-y-3">
