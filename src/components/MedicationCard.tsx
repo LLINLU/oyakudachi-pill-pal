@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -178,7 +177,7 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
             }}
             disabled={isSendingNotifications}
             className="w-full h-14 text-xl font-bold rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-70 text-white hover:opacity-90"
-            style={{ backgroundColor: '#078272' }}
+            style={{ backgroundColor: '#0f172a' }}
           >
             {isSendingNotifications ? '送信中...' : '飲みました'}
           </Button>
