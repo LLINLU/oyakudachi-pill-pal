@@ -33,7 +33,7 @@ export const MedicationReminderPopup: React.FC<MedicationReminderPopupProps> = (
       };
       
       updateElapsedTime();
-      const interval = setInterval(updateElapsedTime, 60000); // Update every minute
+      const interval = setInterval(updateElapsedTime, 1000); // Update every second for real-time display
       
       return () => clearInterval(interval);
     }
@@ -78,7 +78,7 @@ export const MedicationReminderPopup: React.FC<MedicationReminderPopupProps> = (
                 {elapsedTime}
               </div>
               <div className="text-sm text-orange-700 mt-1">
-                経過しています（{scheduledTime}予定）
+                経過しています
               </div>
             </div>
 

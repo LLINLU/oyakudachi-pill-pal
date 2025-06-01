@@ -57,15 +57,26 @@ export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => 
       return '0分';
     }
     
-    // Convert to minutes
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    // Convert to total seconds
+    const totalSeconds = Math.floor(diffMs / 1000);
+    const totalMinutes = Math.floor(totalSeconds / 60);
+    const remainingSeconds = totalSeconds % 60;
     
-    if (diffMinutes < 60) {
-      return `${diffMinutes}分`;
+    if (totalMinutes < 60) {
+      if (totalMinutes === 0) {
+        return `${remainingSeconds}秒`;
+      }
+      return remainingSeconds > 0 ? `${totalMinutes}分${remainingSeconds}秒` : `${totalMinutes}分`;
     } else {
-      const hours = Math.floor(diffMinutes / 60);
-      const remainingMinutes = diffMinutes % 60;
-      return remainingMinutes > 0 ? `${hours}時間${remainingMinutes}分` : `${hours}時間`;
+      const hours = Math.floor(totalMinutes / 60);
+      const remainingMinutes = totalMinutes % 60;
+      if (remainingMinutes === 0 && remainingSeconds === 0) {
+        return `${hours}時間`;
+      } else if (remainingSeconds === 0) {
+        return `${hours}時間${remainingMinutes}分`;
+      } else {
+        return `${hours}時間${remainingMinutes}分${remainingSeconds}秒`;
+      }
     }
   }, [scheduledTime]);
 
