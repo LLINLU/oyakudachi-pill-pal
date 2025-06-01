@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Medication, ScannedMedication } from '@/types/medication';
@@ -9,7 +8,7 @@ export const useMedicationData = () => {
       id: 1,
       name: '血圧の薬',
       time: '08:00',
-      image: '/lovable-uploads/e5c8b098-e715-4c25-87e2-959f940c4784.png',
+      image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
       taken: true,
       postponed: false
     },
@@ -17,7 +16,7 @@ export const useMedicationData = () => {
       id: 2,
       name: '糖尿病の薬',
       time: '12:00',
-      image: '/lovable-uploads/e5c8b098-e715-4c25-87e2-959f940c4784.png',
+      image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
       taken: false,
       postponed: false
     },
@@ -25,7 +24,7 @@ export const useMedicationData = () => {
       id: 3,
       name: 'ビタミン剤',
       time: '18:00',
-      image: '/lovable-uploads/e5c8b098-e715-4c25-87e2-959f940c4784.png',
+      image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
       taken: false,
       postponed: false
     }
@@ -60,7 +59,7 @@ export const useMedicationData = () => {
       id: Date.now() + index,
       name: `${scanned.name} (${scanned.dosage})`,
       time: scanned.time.split(',')[0],
-      image: '/lovable-uploads/e5c8b098-e715-4c25-87e2-959f940c4784.png',
+      image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
       taken: false,
       postponed: false
     }));
