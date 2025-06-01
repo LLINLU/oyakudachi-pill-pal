@@ -13,10 +13,12 @@ const Index = () => {
     notificationResults,
     showNotificationStatus,
     isSendingNotifications,
+    countdown,
     playVoiceReminder,
     handleMedicationTaken,
     handleMedicationPostponed,
     handleReturnToReminder,
+    handleReturnToHome,
     setShowNotificationStatus
   } = useMedicationReminder();
 
@@ -25,7 +27,9 @@ const Index = () => {
       <>
         <MedicationCompletionScreen
           notificationResults={notificationResults}
+          countdown={countdown}
           onShowNotificationStatus={() => setShowNotificationStatus(true)}
+          onReturnToHome={handleReturnToHome}
         />
         
         <NotificationStatus

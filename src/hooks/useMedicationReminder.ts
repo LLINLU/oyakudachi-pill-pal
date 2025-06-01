@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { sendFamilyNotifications, FamilyContact, NotificationResult } from '@/utils/familyNotifications';
 
@@ -26,6 +26,10 @@ export const useMedicationReminder = () => {
   const [notificationResults, setNotificationResults] = useState<NotificationResult[]>([]);
   const [showNotificationStatus, setShowNotificationStatus] = useState(false);
   const [isSendingNotifications, setIsSendingNotifications] = useState(false);
+  const [countdown, setCountdown] = useState(30);
+  
+  const autoRedirectTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Enhanced family contact information with more details
   const familyContacts: FamilyContact[] = [
@@ -49,8 +53,35 @@ export const useMedicationReminder = () => {
 
   useEffect(() => {
     // Auto-play voice reminder when component loads
-    playVoiceReminder();
+    if (!currentMedication.taken && !currentMedication.postponed) {
+      playVoiceReminder();
+    }
   }, []);
+
+  // Auto-redirect timer when medication is taken
+  useEffect(() => {
+    if (currentMedication.taken) {
+      setCountdown(30);
+      
+      // Start countdown timer
+      countdownTimerRef.current = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(countdownTimerRef.current!);
+            handleReturnToHome();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => {
+        if (countdownTimerRef.current) {
+          clearInterval(countdownTimerRef.current);
+        }
+      };
+    }
+  }, [currentMedication.taken]);
 
   const playVoiceReminder = () => {
     setIsVoicePlaying(true);
@@ -131,16 +162,42 @@ export const useMedicationReminder = () => {
     setCurrentMedication(prev => ({ ...prev, postponed: false }));
   };
 
+  const handleReturnToHome = () => {
+    // Clear any active timers
+    if (countdownTimerRef.current) {
+      clearInterval(countdownTimerRef.current);
+    }
+    if (autoRedirectTimerRef.current) {
+      clearTimeout(autoRedirectTimerRef.current);
+    }
+    
+    // Reset medication state
+    setCurrentMedication(prev => ({ 
+      ...prev, 
+      taken: false, 
+      postponed: false 
+    }));
+    
+    // Reset other states
+    setNotificationResults([]);
+    setShowNotificationStatus(false);
+    setCountdown(30);
+    
+    toast.info('ホーム画面に戻りました');
+  };
+
   return {
     currentMedication,
     isVoicePlaying,
     notificationResults,
     showNotificationStatus,
     isSendingNotifications,
+    countdown,
     playVoiceReminder,
     handleMedicationTaken,
     handleMedicationPostponed,
     handleReturnToReminder,
+    handleReturnToHome,
     setShowNotificationStatus
   };
 };
