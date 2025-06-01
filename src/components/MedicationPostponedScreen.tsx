@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, ArrowLeft } from 'lucide-react';
+import { Clock } from 'lucide-react';
 
 interface MedicationPostponedScreenProps {
   onReturnToReminder: () => void;
@@ -34,15 +34,6 @@ export const MedicationPostponedScreen: React.FC<MedicationPostponedScreenProps>
             </div>
 
             <div className="space-y-3">
-              <Button
-                onClick={onReturnToReminder}
-                variant="outline"
-                className="w-full h-12 px-6 text-lg border-2 border-orange-300 hover:border-orange-400 hover:bg-orange-50 rounded-lg transition-all duration-300 hover:scale-105"
-              >
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                今すぐ飲む画面に戻る
-              </Button>
-
               <Button
                 onClick={onReturnToReminder}
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg text-xl"
