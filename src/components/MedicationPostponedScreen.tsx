@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,6 @@ export const MedicationPostponedScreen: React.FC<MedicationPostponedScreenProps>
         <CardContent className="p-8">
           <div className="text-center space-y-6">
             <div className="relative">
-              <div className="absolute -inset-4 bg-gray-200 rounded-full animate-pulse opacity-30"></div>
               <Clock className="h-16 w-16 mx-auto relative z-10" style={{ color: '#ff7d00' }} />
             </div>
             
