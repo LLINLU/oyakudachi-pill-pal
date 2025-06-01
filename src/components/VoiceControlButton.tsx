@@ -29,16 +29,16 @@ export const VoiceControlButton: React.FC<VoiceControlButtonProps> = ({
         <div className="text-center space-y-1">
           {isListening ? (
             <>
-              <MicOff className="h-10 w-10 mx-auto animate-pulse" />
+              <MicOff className="h-16 w-16 mx-auto animate-pulse" />
               <div className="text-xs font-medium">聞いています</div>
             </>
           ) : isSpeaking ? (
             <>
-              <Volume2 className="h-10 w-10 mx-auto animate-bounce" />
+              <Volume2 className="h-16 w-16 mx-auto animate-bounce" />
               <div className="text-xs font-medium">話しています</div>
             </>
           ) : (
-            <Mic className="h-10 w-10 mx-auto" />
+            <Mic className="h-16 w-16 mx-auto" />
           )}
         </div>
       </Button>
