@@ -161,6 +161,40 @@ export const useMedicationReminder = () => {
     }
   };
 
+  const handleSendPostponedNotifications = async () => {
+    setIsSendingNotifications(true);
+    
+    try {
+      const results = await sendPostponedNotifications(familyContacts, currentMedication.name);
+      setNotificationResults(results);
+      
+      const successCount = results.filter(r => r.status === 'success').length;
+      const totalCount = results.length;
+      
+      if (successCount === totalCount) {
+        toast.success('ご家族に延期の通知を送信しました', {
+          description: `${successCount}件すべての通知が正常に送信されました`,
+          duration: 5000
+        });
+      } else {
+        toast.warning('一部の通知が送信できませんでした', {
+          description: `${successCount}/${totalCount}件が送信されました`,
+          duration: 5000
+        });
+      }
+      
+      setShowNotificationStatus(true);
+    } catch (error) {
+      console.error('Postponed notification error:', error);
+      toast.error('通知の送信中にエラーが発生しました', {
+        description: 'しばらく経ってから再度お試しください',
+        duration: 5000
+      });
+    } finally {
+      setIsSendingNotifications(false);
+    }
+  };
+
   const handleMedicationTaken = async () => {
     setCurrentMedication(prev => ({ ...prev, taken: true }));
     
@@ -173,13 +207,16 @@ export const useMedicationReminder = () => {
     await handleSendFamilyNotifications();
   };
 
-  const handleMedicationPostponed = () => {
+  const handleMedicationPostponed = async () => {
     setCurrentMedication(prev => ({ ...prev, postponed: true }));
     
     toast.info('お薬を後で飲むことにしました', {
-      description: '30分後にもう一度お知らせします',
+      description: 'ご家族に通知を送信しています...',
       duration: 4000
     });
+
+    // Send postponed notification to family
+    await handleSendPostponedNotifications();
 
     // Set a reminder for later (in a real app, this would set an actual timer)
     setTimeout(() => {
