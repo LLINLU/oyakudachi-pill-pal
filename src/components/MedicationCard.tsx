@@ -1,8 +1,10 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Volume2, Pill, MessageCircle } from 'lucide-react';
+import { useInactivityTimer } from '@/hooks/useInactivityTimer';
+import { MedicationReminderPopup } from './MedicationReminderPopup';
 
 interface Medication {
   id: number;
@@ -32,12 +34,70 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
   onMedicationPostponed,
   onVoiceChat
 }) => {
+  const [currentTime, setCurrentTime] = useState('');
+  const [showReminderPopup, setShowReminderPopup] = useState(false);
+
+  const { startTimer, resetTimer, stopTimer, getElapsedTime } = useInactivityTimer(
+    medication.time,
+    () => setShowReminderPopup(true)
+  );
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('ja-JP', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+      setCurrentTime(timeString);
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 60000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    // Start the inactivity timer when component mounts
+    startTimer();
+    
+    return () => {
+      stopTimer();
+    };
+  }, [startTimer, stopTimer]);
+
+  const handleUserInteraction = () => {
+    resetTimer();
+  };
+
+  const handleMedicationTaken = () => {
+    stopTimer();
+    setShowReminderPopup(false);
+    onMedicationTaken();
+  };
+
+  const handleMedicationPostponed = () => {
+    stopTimer();
+    setShowReminderPopup(false);
+    onMedicationPostponed();
+  };
+
+  const handleClosePopup = () => {
+    setShowReminderPopup(false);
+    resetTimer(); // Restart the 30-second timer
+  };
+
   return (
     <div className="w-full h-full bg-gray-50 flex flex-col items-center justify-start p-4 relative overflow-hidden">
       <div className="w-full max-w-sm flex flex-col items-center space-y-6 mt-4">
         {/* Voice reminder button */}
         <Button
-          onClick={onPlayVoice}
+          onClick={() => {
+            handleUserInteraction();
+            onPlayVoice();
+          }}
           variant="outline"
           className={`h-12 px-6 text-lg rounded-full transition-all duration-300 ${
             isVoicePlaying 
@@ -50,10 +110,10 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
           {isVoicePlaying ? 'お話ししています...' : 'もう一度聞く'}
         </Button>
 
-        {/* Time display - made more compact and less highlighted */}
+        {/* Time display - now shows current system time */}
         <div className="bg-gray-100 text-gray-800 rounded-xl p-3 w-full text-center border border-gray-200">
           <div className="text-2xl font-semibold mb-1">
-            {medication.time}
+            {currentTime}
           </div>
           <div className="text-base text-gray-600">
             お薬の時間です
@@ -94,7 +154,10 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
         {/* Action buttons */}
         <div className="space-y-3 w-full mt-6">
           <Button
-            onClick={onMedicationTaken}
+            onClick={() => {
+              handleUserInteraction();
+              handleMedicationTaken();
+            }}
             disabled={isSendingNotifications}
             className="w-full h-14 bg-green-600 hover:bg-green-700 text-xl font-bold rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-70 text-white"
           >
@@ -102,7 +165,10 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
           </Button>
           
           <Button
-            onClick={onMedicationPostponed}
+            onClick={() => {
+              handleUserInteraction();
+              handleMedicationPostponed();
+            }}
             variant="outline"
             className="w-full h-12 border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-gray-700"
           >
@@ -113,12 +179,27 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
 
       {/* Floating Chat Icon */}
       <Button
-        onClick={onVoiceChat}
+        onClick={() => {
+          handleUserInteraction();
+          onVoiceChat();
+        }}
         className="absolute bottom-6 right-6 h-12 w-12 rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg z-50 transition-all duration-300 hover:scale-110"
         aria-label="音声相談"
       >
         <MessageCircle className="h-5 w-5" />
       </Button>
+
+      {/* Reminder Popup */}
+      <MedicationReminderPopup
+        isOpen={showReminderPopup}
+        onClose={handleClosePopup}
+        onTakeMedicine={handleMedicationTaken}
+        onPostpone={handleMedicationPostponed}
+        medicationName={medication.name}
+        scheduledTime={medication.time}
+        getElapsedTime={getElapsedTime}
+        isSendingNotifications={isSendingNotifications}
+      />
     </div>
   );
 };
