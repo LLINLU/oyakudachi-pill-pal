@@ -110,10 +110,10 @@ export const VoiceConversationPage: React.FC<VoiceConversationPageProps> = ({ on
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="h-full bg-gray-50 p-3 flex flex-col">
       <VoiceConversationHeader onBack={onBack} />
 
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="flex-1 flex flex-col space-y-4 max-w-sm mx-auto w-full overflow-hidden">
         <ConversationHistory 
           conversation={conversation}
           isListening={isListening}

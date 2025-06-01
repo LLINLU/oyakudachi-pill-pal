@@ -33,8 +33,8 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
   onVoiceChat
 }) => {
   return (
-    <div className="w-[393px] h-[852px] bg-gray-50 flex flex-col items-center justify-start p-4 mx-auto relative overflow-hidden">
-      <div className="w-full max-w-sm flex flex-col items-center space-y-6 mt-8">
+    <div className="w-full h-full bg-gray-50 flex flex-col items-center justify-start p-4 relative overflow-hidden">
+      <div className="w-full max-w-sm flex flex-col items-center space-y-6 mt-4">
         {/* Voice reminder button */}
         <Button
           onClick={onPlayVoice}
@@ -61,7 +61,7 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
         </div>
 
         {/* Medication photo */}
-        <div className="relative mx-auto w-60 h-60 bg-red-300 rounded-3xl flex items-center justify-center shadow-lg overflow-hidden border-4 border-white">
+        <div className="relative mx-auto w-48 h-48 bg-red-300 rounded-3xl flex items-center justify-center shadow-lg overflow-hidden border-4 border-white">
           <img 
             src={medication.image}
             alt={medication.name}
@@ -73,30 +73,30 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
           />
           {/* Pill illustration overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-32 h-16 bg-gradient-to-r from-white via-gray-100 to-red-400 rounded-full shadow-lg opacity-90"></div>
+            <div className="w-24 h-12 bg-gradient-to-r from-white via-gray-100 to-red-400 rounded-full shadow-lg opacity-90"></div>
           </div>
         </div>
 
         {/* Medication name */}
-        <div className="space-y-4 text-center w-full">
-          <h1 className="text-4xl font-bold text-gray-800 leading-tight tracking-tight">
+        <div className="space-y-3 text-center w-full">
+          <h1 className="text-3xl font-bold text-gray-800 leading-tight tracking-tight">
             {medication.name}
           </h1>
           
           {/* Pill count information */}
-          <div className="flex items-center justify-center space-x-3 bg-gray-100 border-2 border-gray-200 rounded-2xl p-4 mx-auto">
-            <Pill className="h-6 w-6 text-gray-600" />
-            <span className="text-2xl font-bold text-gray-800">2粒</span>
-            <span className="text-xl text-gray-700">お飲みください</span>
+          <div className="flex items-center justify-center space-x-3 bg-gray-100 border-2 border-gray-200 rounded-2xl p-3 mx-auto">
+            <Pill className="h-5 w-5 text-gray-600" />
+            <span className="text-xl font-bold text-gray-800">2粒</span>
+            <span className="text-lg text-gray-700">お飲みください</span>
           </div>
         </div>
 
         {/* Action buttons */}
-        <div className="space-y-4 w-full mt-8">
+        <div className="space-y-3 w-full mt-6">
           <Button
             onClick={onMedicationTaken}
             disabled={isSendingNotifications}
-            className="w-full h-16 bg-green-600 hover:bg-green-700 text-2xl font-bold rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-70 text-white"
+            className="w-full h-14 bg-green-600 hover:bg-green-700 text-xl font-bold rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-70 text-white"
           >
             {isSendingNotifications ? '送信中...' : '飲みました'}
           </Button>
@@ -104,7 +104,7 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
           <Button
             onClick={onMedicationPostponed}
             variant="outline"
-            className="w-full h-14 border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-xl font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-gray-700"
+            className="w-full h-12 border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-gray-700"
           >
             後で飲む
           </Button>
@@ -114,10 +114,10 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
       {/* Floating Chat Icon */}
       <Button
         onClick={onVoiceChat}
-        className="absolute bottom-6 right-6 h-14 w-14 rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg z-50 transition-all duration-300 hover:scale-110"
+        className="absolute bottom-6 right-6 h-12 w-12 rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg z-50 transition-all duration-300 hover:scale-110"
         aria-label="音声相談"
       >
-        <MessageCircle className="h-6 w-6" />
+        <MessageCircle className="h-5 w-5" />
       </Button>
     </div>
   );

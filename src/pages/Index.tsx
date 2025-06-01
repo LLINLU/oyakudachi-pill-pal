@@ -7,6 +7,7 @@ import { NotificationStatus } from '@/components/NotificationStatus';
 import { VoiceConversationPage } from '@/components/VoiceConversationPage';
 import { FloatingVoiceButton } from '@/components/FloatingVoiceButton';
 import MedicationHandbookScanner from '@/components/MedicationHandbookScanner';
+import { MobileAppContainer } from '@/components/MobileAppContainer';
 
 const Index = () => {
   const [showVoiceChat, setShowVoiceChat] = useState(false);
@@ -33,29 +34,33 @@ const Index = () => {
   // Show medication handbook scanner
   if (showHandbookScanner) {
     return (
-      <MedicationHandbookScanner
-        onBack={() => setShowHandbookScanner(false)}
-        onMedicationsScanned={(medications) => {
-          addScannedMedications(medications);
-          setShowHandbookScanner(false);
-        }}
-      />
+      <MobileAppContainer>
+        <MedicationHandbookScanner
+          onBack={() => setShowHandbookScanner(false)}
+          onMedicationsScanned={(medications) => {
+            addScannedMedications(medications);
+            setShowHandbookScanner(false);
+          }}
+        />
+      </MobileAppContainer>
     );
   }
 
   // Show voice chat page
   if (showVoiceChat) {
     return (
-      <VoiceConversationPage
-        onBack={() => setShowVoiceChat(false)}
-      />
+      <MobileAppContainer>
+        <VoiceConversationPage
+          onBack={() => setShowVoiceChat(false)}
+        />
+      </MobileAppContainer>
     );
   }
 
   // Show medication reminder when active
   if (showReminder && currentMedication) {
     return (
-      <>
+      <MobileAppContainer>
         <MedicationCard
           medication={currentMedication}
           isVoicePlaying={isVoicePlaying}
@@ -71,13 +76,13 @@ const Index = () => {
           isVisible={showNotificationStatus}
           onClose={() => setShowNotificationStatus(false)}
         />
-      </>
+      </MobileAppContainer>
     );
   }
 
   // Show home page by default
   return (
-    <>
+    <MobileAppContainer>
       <HomePage
         nextMedication={getNextMedication()}
         onStartReminder={startMedicationReminder}
@@ -93,7 +98,7 @@ const Index = () => {
       />
       
       <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
-    </>
+    </MobileAppContainer>
   );
 };
 
