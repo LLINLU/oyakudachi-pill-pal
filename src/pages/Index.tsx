@@ -1,12 +1,16 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useMedicationReminder } from '@/hooks/useMedicationReminder';
 import { MedicationCard } from '@/components/MedicationCard';
 import { MedicationCompletionScreen } from '@/components/MedicationCompletionScreen';
 import { MedicationPostponedScreen } from '@/components/MedicationPostponedScreen';
 import { NotificationStatus } from '@/components/NotificationStatus';
+import { VoiceConversationPage } from '@/components/VoiceConversationPage';
+import { FloatingVoiceButton } from '@/components/FloatingVoiceButton';
 
 const Index = () => {
+  const [showVoiceChat, setShowVoiceChat] = useState(false);
+  
   const {
     currentMedication,
     isVoicePlaying,
@@ -22,6 +26,16 @@ const Index = () => {
     setShowNotificationStatus
   } = useMedicationReminder();
 
+  // Show voice chat page
+  if (showVoiceChat) {
+    return (
+      <VoiceConversationPage
+        onBack={() => setShowVoiceChat(false)}
+      />
+    );
+  }
+
+  // Show completion screen
   if (currentMedication.taken) {
     return (
       <>
@@ -37,18 +51,26 @@ const Index = () => {
           isVisible={showNotificationStatus}
           onClose={() => setShowNotificationStatus(false)}
         />
+        
+        <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
       </>
     );
   }
 
+  // Show postponed screen
   if (currentMedication.postponed) {
     return (
-      <MedicationPostponedScreen
-        onReturnToReminder={handleReturnToReminder}
-      />
+      <>
+        <MedicationPostponedScreen
+          onReturnToReminder={handleReturnToReminder}
+        />
+        
+        <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
+      </>
     );
   }
 
+  // Show main medication reminder
   return (
     <>
       <MedicationCard
@@ -65,6 +87,8 @@ const Index = () => {
         isVisible={showNotificationStatus}
         onClose={() => setShowNotificationStatus(false)}
       />
+      
+      <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
     </>
   );
 };
