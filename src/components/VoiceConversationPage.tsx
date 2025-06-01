@@ -1,9 +1,12 @@
+
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Mic, MicOff, Volume2, ArrowLeft, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useWebSpeechAPI } from '@/hooks/useWebSpeechAPI';
+import { VoiceConversationHeader } from './VoiceConversationHeader';
+import { ConversationHistory } from './ConversationHistory';
+import { VoiceControlButton } from './VoiceControlButton';
+import { VoiceInstructions } from './VoiceInstructions';
+import { UnsupportedBrowserView } from './UnsupportedBrowserView';
 
 interface VoiceConversationPageProps {
   onBack: () => void;
@@ -103,146 +106,27 @@ export const VoiceConversationPage: React.FC<VoiceConversationPageProps> = ({ on
   };
 
   if (!isSupported) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-4">
-        <div className="mb-6">
-          <Button
-            onClick={onBack}
-            variant="outline"
-            className="h-12 px-6 text-lg border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-100 rounded-xl"
-          >
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            戻る
-          </Button>
-        </div>
-
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">音声相談</h1>
-            <Card className="w-full shadow-lg border border-red-200 rounded-3xl bg-red-50">
-              <CardContent className="p-8 text-center">
-                <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold text-red-700 mb-4">音声機能をご利用いただけません</h2>
-                <p className="text-lg text-red-600 mb-4">
-                  お使いのブラウザは音声認識に対応していません。
-                </p>
-                <p className="text-gray-600">
-                  Chrome、Edge、Safari の最新版をご利用ください。
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    );
+    return <UnsupportedBrowserView onBack={onBack} />;
   }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      {/* Header with back button */}
-      <div className="mb-6">
-        <Button
-          onClick={onBack}
-          variant="outline"
-          className="h-12 px-6 text-lg border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-100 rounded-xl"
-        >
-          <ArrowLeft className="h-5 w-5 mr-2" />
-          戻る
-        </Button>
-      </div>
+      <VoiceConversationHeader onBack={onBack} />
 
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Title */}
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">音声相談</h1>
-          <p className="text-xl text-gray-600">お話しください。お手伝いします</p>
-        </div>
+        <ConversationHistory 
+          conversation={conversation}
+          isListening={isListening}
+          isSpeaking={isSpeaking}
+        />
 
-        {/* Conversation history */}
-        <Card className="w-full shadow-lg border border-gray-200 rounded-3xl bg-white min-h-[400px]">
-          <CardContent className="p-8">
-            <div className="space-y-6 max-h-[500px] overflow-y-auto">
-              {conversation.map((message, index) => (
-                <div
-                  key={index}
-                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[80%] p-4 rounded-2xl ${
-                      message.role === 'user'
-                        ? 'bg-gray-100 text-gray-800'
-                        : 'bg-green-600 text-white'
-                    }`}
-                  >
-                    <p className="text-lg font-medium">{message.content}</p>
-                  </div>
-                </div>
-              ))}
-              
-              {isListening && (
-                <div className="flex justify-end">
-                  <div className="bg-gray-200 text-gray-600 p-4 rounded-2xl animate-pulse">
-                    <p className="text-lg">聞いています...</p>
-                  </div>
-                </div>
-              )}
-              
-              {isSpeaking && (
-                <div className="flex justify-start">
-                  <div className="bg-green-500 text-white p-4 rounded-2xl animate-pulse">
-                    <p className="text-lg">お答えしています...</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <VoiceControlButton
+          isListening={isListening}
+          isSpeaking={isSpeaking}
+          onClick={handleVoiceButtonClick}
+        />
 
-        {/* Voice control */}
-        <div className="flex justify-center">
-          <Button
-            onClick={handleVoiceButtonClick}
-            className={`h-32 w-32 rounded-full text-white shadow-lg transition-all duration-300 ${
-              isListening 
-                ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                : isSpeaking
-                ? 'bg-green-500 hover:bg-green-600'
-                : 'bg-green-600 hover:bg-green-700'
-            }`}
-          >
-            <div className="text-center space-y-2">
-              {isListening ? (
-                <>
-                  <MicOff className="h-12 w-12 mx-auto animate-pulse" />
-                  <div className="text-sm font-medium">聞いています</div>
-                </>
-              ) : isSpeaking ? (
-                <>
-                  <Volume2 className="h-12 w-12 mx-auto animate-bounce" />
-                  <div className="text-sm font-medium">話しています</div>
-                </>
-              ) : (
-                <>
-                  <Mic className="h-12 w-12 mx-auto" />
-                  <div className="text-sm font-medium">話しかける</div>
-                </>
-              )}
-            </div>
-          </Button>
-        </div>
-
-        {/* Instructions */}
-        <div className="text-center">
-          <p className="text-lg text-gray-600">
-            ボタンを押してお話しください。お薬のこと、体調のこと、何でもご相談ください。
-          </p>
-          {transcript && (
-            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-gray-600 mb-1">認識されたテキスト:</p>
-              <p className="text-lg font-medium text-blue-800">{transcript}</p>
-            </div>
-          )}
-        </div>
+        <VoiceInstructions transcript={transcript} />
       </div>
     </div>
   );
