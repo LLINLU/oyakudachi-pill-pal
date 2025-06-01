@@ -19,6 +19,7 @@ const Index = () => {
     isSendingNotifications,
     getNextMedication,
     playVoiceReminder,
+    playHomePageVoiceReminder,
     handleMedicationTaken,
     handleMedicationPostponed,
     startMedicationReminder,
@@ -65,6 +66,8 @@ const Index = () => {
       <HomePage
         nextMedication={getNextMedication()}
         onStartReminder={startMedicationReminder}
+        onPlayHomePageVoice={playHomePageVoiceReminder}
+        isVoicePlaying={isVoicePlaying}
       />
       
       <NotificationStatus

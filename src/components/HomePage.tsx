@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Clock, Pill, Calendar } from 'lucide-react';
@@ -14,11 +14,15 @@ interface NextMedication {
 interface HomePageProps {
   nextMedication: NextMedication | null;
   onStartReminder: () => void;
+  onPlayHomePageVoice?: () => void;
+  isVoicePlaying?: boolean;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
   nextMedication,
-  onStartReminder
+  onStartReminder,
+  onPlayHomePageVoice,
+  isVoicePlaying = false
 }) => {
   const currentTime = new Date().toLocaleTimeString('ja-JP', {
     hour: '2-digit',
@@ -31,6 +35,17 @@ export const HomePage: React.FC<HomePageProps> = ({
     day: 'numeric',
     weekday: 'long'
   });
+
+  // Auto-play voice reminder when component mounts if there's a next medication
+  useEffect(() => {
+    if (nextMedication && onPlayHomePageVoice) {
+      const timer = setTimeout(() => {
+        onPlayHomePageVoice();
+      }, 1500); // 1.5 second delay to ensure page is loaded
+
+      return () => clearTimeout(timer);
+    }
+  }, [nextMedication, onPlayHomePageVoice]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -64,6 +79,11 @@ export const HomePage: React.FC<HomePageProps> = ({
               <div className="flex items-center justify-center space-x-3 mb-4">
                 <Clock className="h-8 w-8 text-blue-600" />
                 <span className="text-3xl font-bold text-blue-800">次のお薬</span>
+                {isVoicePlaying && (
+                  <div className="animate-pulse">
+                    <div className="h-3 w-3 bg-blue-600 rounded-full"></div>
+                  </div>
+                )}
               </div>
               
               <div className="space-y-3">

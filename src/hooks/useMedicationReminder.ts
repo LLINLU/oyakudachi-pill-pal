@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { sendFamilyNotifications, sendPostponedNotifications, FamilyContact, NotificationResult } from '@/utils/familyNotifications';
@@ -117,6 +116,49 @@ export const useMedicationReminder = () => {
       setIsVoicePlaying(false);
       toast.info('「お薬を飲む時間です」', {
         description: `${currentMedication.name}をお飲みください`,
+        duration: 4000
+      });
+    }
+  };
+
+  const playHomePageVoiceReminder = () => {
+    const nextMed = getNextMedication();
+    if (!nextMed) return;
+    
+    setIsVoicePlaying(true);
+    
+    // Use real speech synthesis
+    if ('speechSynthesis' in window) {
+      // Stop any current speech
+      window.speechSynthesis.cancel();
+
+      const message = `次のお薬は${nextMed.name}です。時間は${nextMed.time}です。`;
+      const utterance = new SpeechSynthesisUtterance(message);
+      
+      utterance.lang = 'ja-JP';
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+
+      utterance.onstart = () => {
+        console.log('Home page voice reminder started');
+      };
+
+      utterance.onend = () => {
+        setIsVoicePlaying(false);
+      };
+
+      utterance.onerror = () => {
+        setIsVoicePlaying(false);
+        console.error('Home page voice synthesis error');
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } else {
+      // Fallback for unsupported browsers
+      setIsVoicePlaying(false);
+      toast.info(`次のお薬は${nextMed.name}です`, {
+        description: `時間は${nextMed.time}です`,
         duration: 4000
       });
     }
@@ -282,6 +324,7 @@ export const useMedicationReminder = () => {
     isSendingNotifications,
     getNextMedication,
     playVoiceReminder,
+    playHomePageVoiceReminder,
     handleMedicationTaken,
     handleMedicationPostponed,
     startMedicationReminder,
