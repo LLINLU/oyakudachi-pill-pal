@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -38,11 +39,11 @@ export const HomePage: React.FC<HomePageProps> = ({
   });
 
   return (
-    <Card className="w-full max-w-md shadow-lg rounded-3xl overflow-hidden bg-white">
+    <Card className="w-full max-w-md rounded-3xl overflow-hidden bg-white">
       <CardContent className="p-6 text-center space-y-6">
         {/* Current time and date */}
         <div className="space-y-3">
-          <div className="bg-gray-800 text-white rounded-3xl p-4 shadow-lg">
+          <div className="bg-gray-800 text-white rounded-3xl p-4">
             <div className="text-3xl font-bold mb-1">
               {currentTime}
             </div>
@@ -64,7 +65,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         {/* Next medication info */}
         {nextMedication ? (
-          <div className="bg-blue-50 border-2 border-blue-200 rounded-3xl p-4 space-y-3">
+          <div className="bg-blue-50 rounded-3xl p-4 space-y-3">
             <div className="flex items-center justify-center space-x-2 mb-3">
               <Clock className="h-6 w-6 text-blue-600" />
               <span className="text-2xl font-bold text-blue-800">次のお薬</span>
@@ -90,7 +91,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="space-y-2">
               <Button
                 onClick={onStartReminder}
-                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-lg font-bold rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 text-white"
+                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-lg font-bold rounded-2xl transition-all duration-300 hover:scale-105 text-white"
               >
                 <Pill className="h-4 w-4 mr-2" />
                 お薬の確認
@@ -100,7 +101,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <Button
                   onClick={onPlayHomePageVoice}
                   variant="outline"
-                  className="w-full h-10 border-2 border-blue-200 hover:border-blue-300 hover:bg-blue-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-blue-700"
+                  className="w-full h-10 hover:bg-blue-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-blue-700"
                   disabled={isVoicePlaying}
                 >
                   <Volume2 className={`h-4 w-4 mr-2 ${isVoicePlaying ? 'animate-pulse' : ''}`} />
@@ -112,7 +113,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <Button
                   onClick={onScanHandbook}
                   variant="outline"
-                  className="w-full h-10 border-2 border-green-200 hover:border-green-300 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                  className="w-full h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
                 >
                   <Camera className="h-4 w-4 mr-2" />
                   薬手帳をスキャン
@@ -121,7 +122,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
           </div>
         ) : (
-          <div className="bg-green-50 border-2 border-green-200 rounded-3xl p-4 space-y-3">
+          <div className="bg-green-50 rounded-3xl p-4 space-y-3">
             <div className="flex items-center justify-center space-x-2 mb-3">
               <Pill className="h-6 w-6 text-green-600" />
               <span className="text-2xl font-bold text-green-800">完了</span>
@@ -134,7 +135,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <Button
                 onClick={onScanHandbook}
                 variant="outline"
-                className="w-full h-10 border-2 border-green-200 hover:border-green-300 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                className="w-full h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
               >
                 <Camera className="h-4 w-4 mr-2" />
                 薬手帳をスキャン
