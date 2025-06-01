@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Volume2 } from 'lucide-react';
+import { CheckCircle, Volume2, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { sendFamilyNotifications, FamilyContact, NotificationResult } from '@/utils/familyNotifications';
 import { NotificationStatus } from '@/components/NotificationStatus';
@@ -13,7 +12,8 @@ const Index = () => {
     name: '血圧の薬',
     time: '08:00',
     image: '/lovable-uploads/e5c8b098-e715-4c25-87e2-959f940c4784.png',
-    taken: false
+    taken: false,
+    postponed: false
   });
 
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
@@ -105,6 +105,22 @@ const Index = () => {
     await handleSendFamilyNotifications();
   };
 
+  const handleMedicationPostponed = () => {
+    setCurrentMedication(prev => ({ ...prev, postponed: true }));
+    
+    toast.info('お薬を後で飲むことにしました', {
+      description: '30分後にもう一度お知らせします',
+      duration: 4000
+    });
+
+    // Set a reminder for later (in a real app, this would set an actual timer)
+    setTimeout(() => {
+      if (!currentMedication.taken) {
+        playVoiceReminder();
+      }
+    }, 30 * 60 * 1000); // 30 minutes
+  };
+
   if (currentMedication.taken) {
     return (
       <>
@@ -137,6 +153,31 @@ const Index = () => {
           onClose={() => setShowNotificationStatus(false)}
         />
       </>
+    );
+  }
+
+  if (currentMedication.postponed) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center p-8">
+        <Card className="w-full max-w-2xl shadow-2xl border-4 border-orange-200">
+          <CardContent className="p-12 text-center space-y-12">
+            <Clock className="h-32 w-32 text-orange-500 mx-auto" />
+            <h1 className="text-6xl font-bold text-gray-800">
+              後で飲む予定です
+            </h1>
+            <p className="text-4xl text-orange-600">
+              30分後にもう一度お知らせします
+            </p>
+            <Button
+              onClick={() => setCurrentMedication(prev => ({ ...prev, postponed: false }))}
+              variant="outline"
+              className="h-20 px-8 text-2xl border-2 border-blue-300 hover:bg-blue-50"
+            >
+              今すぐ飲む画面に戻る
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -188,15 +229,26 @@ const Index = () => {
             を飲む時間です
           </p>
 
-          {/* Confirmation button */}
-          <Button
-            onClick={handleMedicationTaken}
-            disabled={isSendingNotifications}
-            className="w-full h-32 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-5xl font-bold rounded-2xl shadow-xl disabled:opacity-70"
-          >
-            <CheckCircle className="h-16 w-16 mr-6" />
-            {isSendingNotifications ? '送信中...' : '飲みました'}
-          </Button>
+          {/* Action buttons */}
+          <div className="space-y-6">
+            <Button
+              onClick={handleMedicationTaken}
+              disabled={isSendingNotifications}
+              className="w-full h-32 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-5xl font-bold rounded-2xl shadow-xl disabled:opacity-70"
+            >
+              <CheckCircle className="h-16 w-16 mr-6" />
+              {isSendingNotifications ? '送信中...' : '飲みました'}
+            </Button>
+            
+            <Button
+              onClick={handleMedicationPostponed}
+              variant="outline"
+              className="w-full h-20 border-2 border-orange-300 hover:bg-orange-50 text-3xl font-bold rounded-2xl"
+            >
+              <Clock className="h-10 w-10 mr-4" />
+              後で飲む
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
