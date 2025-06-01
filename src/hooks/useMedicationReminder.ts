@@ -1,3 +1,4 @@
+
 import { useState, useRef } from 'react';
 import { toast } from 'sonner';
 import { Medication } from '@/types/medication';
@@ -82,8 +83,9 @@ export const useMedicationReminder = () => {
 
     await handleSendPostponedNotifications(currentMedication.name);
 
-    setShowReminder(false);
-    setShowPostponedScreen(true);
+    // Don't immediately redirect - let the MedicationCard handle the popup display
+    // The user will see the postponed popup on the current screen
+    // After they close it, we'll return to home
 
     // Set reminder for 5 minutes instead of 30 minutes
     setTimeout(() => {
@@ -92,6 +94,12 @@ export const useMedicationReminder = () => {
         playVoiceReminder(postponedMed);
       }
     }, 5 * 60 * 1000); // Changed from 30 minutes to 5 minutes
+
+    // Set a delayed return to home after the popup is shown
+    setTimeout(() => {
+      setShowReminder(false);
+      setCurrentMedication(null);
+    }, 3000); // Give time for the popup to be displayed and acknowledged
   };
 
   const startMedicationReminder = () => {

@@ -13,7 +13,7 @@ export const MedicationPostponedScreen: React.FC<MedicationPostponedScreenProps>
 }) => {
   return (
     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-lg bg-white shadow-lg">
+      <Card className="w-full max-w-lg bg-white shadow-lg border-0">
         <CardContent className="p-8">
           <div className="text-center space-y-6">
             <div className="relative">

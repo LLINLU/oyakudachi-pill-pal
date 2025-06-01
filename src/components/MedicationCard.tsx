@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { useInactivityTimer } from '@/hooks/useInactivityTimer';
 import { MedicationReminderPopup } from './MedicationReminderPopup';
+import { MedicationPostponedScreen } from './MedicationPostponedScreen';
 import { TimeDisplay } from './TimeDisplay';
 import { MedicationImage } from './MedicationImage';
 import { MedicationInfo } from './MedicationInfo';
@@ -37,6 +38,7 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
   onVoiceChat
 }) => {
   const [showReminderPopup, setShowReminderPopup] = React.useState(false);
+  const [showLocalPostponedPopup, setShowLocalPostponedPopup] = React.useState(false);
 
   const { startTimer, resetTimer, stopTimer, getElapsedTime } = useInactivityTimer(
     medication.time,
@@ -63,7 +65,13 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
   const handleMedicationPostponed = () => {
     stopTimer();
     setShowReminderPopup(false);
+    setShowLocalPostponedPopup(true);
     onMedicationPostponed();
+  };
+
+  const handleClosePostponedPopup = () => {
+    setShowLocalPostponedPopup(false);
+    // This will trigger the return to home in the parent component
   };
 
   const handleClosePopup = () => {
@@ -108,6 +116,12 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
         getElapsedTime={getElapsedTime}
         isSendingNotifications={isSendingNotifications}
       />
+
+      {showLocalPostponedPopup && (
+        <MedicationPostponedScreen
+          onReturnToReminder={handleClosePostponedPopup}
+        />
+      )}
     </div>
   );
 };
