@@ -19,32 +19,40 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
   isListening,
   isSpeaking
 }) => {
+  console.log('ConversationHistory rendered with:', { conversation, isListening, isSpeaking });
+  
   return (
     <div className="w-full min-h-[400px]">
       <div className="space-y-6 max-h-[500px] overflow-y-auto p-8">
-        {conversation.map((message, index) => (
-          <div
-            key={index}
-            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            {message.role === 'assistant' && (
-              <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0">
-                <AvatarFallback className="bg-green-600 text-white">
-                  <Bot className="h-5 w-5" />
-                </AvatarFallback>
-              </Avatar>
-            )}
+        {conversation.map((message, index) => {
+          console.log(`Rendering message ${index}:`, message);
+          return (
             <div
-              className={`max-w-[80%] p-4 rounded-2xl ${
-                message.role === 'user'
-                  ? 'bg-gray-100 text-gray-800'
-                  : 'bg-green-600 text-white'
-              }`}
+              key={index}
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <p className="text-lg font-medium">{message.content}</p>
+              {message.role === 'assistant' && (
+                <div>
+                  <p>Debug: Should show avatar here</p>
+                  <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0 border-2 border-red-500">
+                    <AvatarFallback className="bg-green-600 text-white">
+                      <Bot className="h-5 w-5" />
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              )}
+              <div
+                className={`max-w-[80%] p-4 rounded-2xl ${
+                  message.role === 'user'
+                    ? 'bg-gray-100 text-gray-800'
+                    : 'bg-green-600 text-white'
+                }`}
+              >
+                <p className="text-lg font-medium">{message.content}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         
         {isListening && (
           <div className="flex justify-end">
@@ -56,11 +64,14 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
         
         {isSpeaking && (
           <div className="flex justify-start">
-            <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0">
-              <AvatarFallback className="bg-green-600 text-white">
-                <Bot className="h-5 w-5" />
-              </AvatarFallback>
-            </Avatar>
+            <div>
+              <p>Debug: Should show speaking avatar here</p>
+              <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0 border-2 border-red-500">
+                <AvatarFallback className="bg-green-600 text-white">
+                  <Bot className="h-5 w-5" />
+                </AvatarFallback>
+              </Avatar>
+            </div>
             <div className="bg-green-500 text-white p-4 rounded-2xl animate-pulse">
               <p className="text-lg">お答えしています...</p>
             </div>
