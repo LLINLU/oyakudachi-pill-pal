@@ -36,6 +36,7 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
 }) => {
   const [currentTime, setCurrentTime] = useState('');
   const [showReminderPopup, setShowReminderPopup] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const { startTimer, resetTimer, stopTimer, getElapsedTime } = useInactivityTimer(
     medication.time,
@@ -89,6 +90,10 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
     resetTimer(); // Restart the 30-second timer
   };
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <div className="w-full h-full bg-gray-50 flex flex-col items-center justify-start p-4 relative overflow-hidden">
       <div className="w-full max-w-sm flex flex-col items-center space-y-6 mt-4">
@@ -135,19 +140,18 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
 
         {/* Medication photo */}
         <div className="relative mx-auto w-48 h-48 bg-red-300 rounded-3xl flex items-center justify-center shadow-lg overflow-hidden border-4 border-white">
-          <img 
-            src={medication.image}
-            alt={medication.name}
-            className="w-full h-full object-cover rounded-3xl transition-transform duration-300 hover:scale-105"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-              e.currentTarget.parentElement!.innerHTML = '<div class="w-32 h-32 bg-gray-300 rounded-full shadow-lg flex items-center justify-center"><div class="w-20 h-12 bg-white rounded-full opacity-80"></div></div>';
-            }}
-          />
-          {/* Pill illustration overlay */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-24 h-12 bg-gradient-to-r from-white via-gray-100 to-red-400 rounded-full shadow-lg opacity-90"></div>
-          </div>
+          {!imageError ? (
+            <img 
+              src={medication.image}
+              alt={medication.name}
+              className="w-full h-full object-cover rounded-3xl transition-transform duration-300 hover:scale-105"
+              onError={handleImageError}
+            />
+          ) : (
+            <div className="w-32 h-32 bg-gray-300 rounded-full shadow-lg flex items-center justify-center">
+              <div className="w-20 h-12 bg-white rounded-full opacity-80"></div>
+            </div>
+          )}
         </div>
 
         {/* Medication name */}
