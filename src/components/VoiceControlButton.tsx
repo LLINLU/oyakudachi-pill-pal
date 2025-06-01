@@ -18,7 +18,7 @@ export const VoiceControlButton: React.FC<VoiceControlButtonProps> = ({
     <div className="flex justify-center">
       <Button
         onClick={onClick}
-        className={`h-32 w-32 rounded-full text-white shadow-lg transition-all duration-300 ${
+        className={`h-24 w-24 rounded-full text-white shadow-lg transition-all duration-300 ${
           isListening 
             ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
             : isSpeaking
@@ -26,21 +26,21 @@ export const VoiceControlButton: React.FC<VoiceControlButtonProps> = ({
             : 'bg-green-600 hover:bg-green-700'
         }`}
       >
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-1">
           {isListening ? (
             <>
-              <MicOff className="h-12 w-12 mx-auto animate-pulse" />
-              <div className="text-sm font-medium">聞いています</div>
+              <MicOff className="h-8 w-8 mx-auto animate-pulse" />
+              <div className="text-xs font-medium">聞いています</div>
             </>
           ) : isSpeaking ? (
             <>
-              <Volume2 className="h-12 w-12 mx-auto animate-bounce" />
-              <div className="text-sm font-medium">話しています</div>
+              <Volume2 className="h-8 w-8 mx-auto animate-bounce" />
+              <div className="text-xs font-medium">話しています</div>
             </>
           ) : (
             <>
-              <Mic className="h-12 w-12 mx-auto" />
-              <div className="text-sm font-medium">話しかける</div>
+              <Mic className="h-8 w-8 mx-auto" />
+              <div className="text-xs font-medium">話しかける</div>
             </>
           )}
         </div>

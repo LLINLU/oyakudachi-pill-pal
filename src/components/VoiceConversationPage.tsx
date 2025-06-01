@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useWebSpeechAPI } from '@/hooks/useWebSpeechAPI';
@@ -73,7 +72,6 @@ export const VoiceConversationPage: React.FC<VoiceConversationPageProps> = ({ on
     });
   };
 
-  // Handle transcript changes
   useEffect(() => {
     if (transcript && !isListening) {
       // Add user input to conversation
@@ -114,17 +112,24 @@ export const VoiceConversationPage: React.FC<VoiceConversationPageProps> = ({ on
       <VoiceConversationHeader onBack={onBack} />
 
       <div className="flex-1 flex flex-col space-y-4 max-w-sm mx-auto w-full overflow-hidden">
-        <ConversationHistory 
-          conversation={conversation}
-          isListening={isListening}
-          isSpeaking={isSpeaking}
-        />
-
-        <VoiceControlButton
-          isListening={isListening}
-          isSpeaking={isSpeaking}
-          onClick={handleVoiceButtonClick}
-        />
+        {/* Conversation and Voice Control in the same row */}
+        <div className="flex items-end space-x-3">
+          <div className="flex-1">
+            <ConversationHistory 
+              conversation={conversation}
+              isListening={isListening}
+              isSpeaking={isSpeaking}
+            />
+          </div>
+          
+          <div className="flex-shrink-0">
+            <VoiceControlButton
+              isListening={isListening}
+              isSpeaking={isSpeaking}
+              onClick={handleVoiceButtonClick}
+            />
+          </div>
+        </div>
 
         <VoiceInstructions transcript={transcript} />
       </div>
