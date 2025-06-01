@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, Pill, Calendar, Camera, Volume2, FileText } from 'lucide-react';
+import { Clock, Pill, Calendar, Volume2, FileText } from 'lucide-react';
 
 interface NextMedication {
   id: number;
@@ -26,18 +26,6 @@ export const HomePage: React.FC<HomePageProps> = ({
   isVoicePlaying = false,
   onScanHandbook
 }) => {
-  const currentTime = new Date().toLocaleTimeString('ja-JP', {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-
-  const currentDate = new Date().toLocaleDateString('ja-JP', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    weekday: 'long'
-  });
-
   const handleCheckMedicineRecord = () => {
     // Placeholder function for checking medicine record
     console.log('Check medicine record clicked');
@@ -46,18 +34,6 @@ export const HomePage: React.FC<HomePageProps> = ({
   return (
     <Card className="w-full max-w-md rounded-3xl overflow-hidden bg-white">
       <CardContent className="p-6 text-center space-y-6">
-        {/* Current time and date */}
-        <div className="space-y-3">
-          <div className="bg-gray-800 text-white rounded-3xl p-4">
-            <div className="text-3xl font-bold mb-1">
-              {currentTime}
-            </div>
-            <div className="text-lg opacity-90">
-              {currentDate}
-            </div>
-          </div>
-        </div>
-
         {/* Welcome message */}
         <div className="space-y-2">
           <h1 className="text-3xl font-bold text-gray-800 leading-tight">
@@ -114,13 +90,13 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </Button>
               )}
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-2">
                 <Button
                   onClick={handleCheckMedicineRecord}
                   variant="outline"
-                  className="h-10 hover:bg-purple-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-purple-700"
+                  className="w-full h-10 hover:bg-purple-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-purple-700"
                 >
-                  <FileText className="h-4 w-4 mr-1" />
+                  <FileText className="h-4 w-4 mr-2" />
                   服薬記録を確認
                 </Button>
 
@@ -128,9 +104,9 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <Button
                     onClick={onScanHandbook}
                     variant="outline"
-                    className="h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                    className="w-full h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
                   >
-                    <Camera className="h-4 w-4 mr-1" />
+                    <FileText className="h-4 w-4 mr-2" />
                     薬手帳を確認
                   </Button>
                 )}
@@ -147,13 +123,13 @@ export const HomePage: React.FC<HomePageProps> = ({
               本日のお薬はすべて完了です
             </p>
             
-            <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
               <Button
                 onClick={handleCheckMedicineRecord}
                 variant="outline"
-                className="h-10 hover:bg-purple-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-purple-700"
+                className="w-full h-10 hover:bg-purple-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-purple-700"
               >
-                <FileText className="h-4 w-4 mr-1" />
+                <FileText className="h-4 w-4 mr-2" />
                 服薬記録を確認
               </Button>
 
@@ -161,9 +137,9 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <Button
                   onClick={onScanHandbook}
                   variant="outline"
-                  className="h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                  className="w-full h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
                 >
-                  <Camera className="h-4 w-4 mr-1" />
+                  <FileText className="h-4 w-4 mr-2" />
                   薬手帳を確認
                 </Button>
               )}
