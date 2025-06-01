@@ -2,18 +2,27 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Mic, MicOff, Volume2, ArrowLeft } from 'lucide-react';
+import { Mic, MicOff, Volume2, ArrowLeft, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useWebSpeechAPI } from '@/hooks/useWebSpeechAPI';
 
 interface VoiceConversationPageProps {
   onBack: () => void;
 }
 
 export const VoiceConversationPage: React.FC<VoiceConversationPageProps> = ({ onBack }) => {
-  const [isListening, setIsListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [userInput, setUserInput] = useState('');
   const [conversation, setConversation] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([]);
+  
+  const { 
+    isListening, 
+    isSpeaking, 
+    transcript, 
+    startListening, 
+    stopListening, 
+    speak, 
+    stopSpeaking,
+    isSupported 
+  } = useWebSpeechAPI();
 
   const responses = {
     medication: [
@@ -38,33 +47,7 @@ export const VoiceConversationPage: React.FC<VoiceConversationPageProps> = ({ on
     ]
   };
 
-  const startListening = () => {
-    setIsListening(true);
-    setUserInput('');
-
-    // Simulate voice recognition
-    setTimeout(() => {
-      const sampleInputs = [
-        'お薬はいつ飲めばいいですか',
-        '体調が悪いです',
-        '家族に連絡してください',
-        '今日のお薬を確認したいです',
-        '血圧のお薬について教えてください'
-      ];
-      
-      const randomInput = sampleInputs[Math.floor(Math.random() * sampleInputs.length)];
-      setUserInput(randomInput);
-      setIsListening(false);
-      
-      // Add to conversation and generate response
-      setConversation(prev => [...prev, { role: 'user', content: randomInput }]);
-      generateResponse(randomInput);
-    }, 2000);
-  };
-
   const generateResponse = (input: string) => {
-    setIsSpeaking(true);
-    
     let responseCategory = 'general';
     if (input.includes('薬') || input.includes('お薬')) {
       responseCategory = 'medication';
@@ -77,21 +60,83 @@ export const VoiceConversationPage: React.FC<VoiceConversationPageProps> = ({ on
     const responseList = responses[responseCategory as keyof typeof responses];
     const response = responseList[Math.floor(Math.random() * responseList.length)];
     
-    setTimeout(() => {
-      setConversation(prev => [...prev, { role: 'assistant', content: response }]);
-      setIsSpeaking(false);
-      toast.success('お答えしました', {
-        description: '他にご質問があればお聞かせください'
-      });
-    }, 1500);
+    // Add response to conversation
+    setConversation(prev => [...prev, { role: 'assistant', content: response }]);
+    
+    // Speak the response
+    speak(response);
+    
+    toast.success('お答えしました', {
+      description: '他にご質問があればお聞かせください'
+    });
   };
+
+  // Handle transcript changes
+  useEffect(() => {
+    if (transcript && !isListening) {
+      // Add user input to conversation
+      setConversation(prev => [...prev, { role: 'user', content: transcript }]);
+      
+      // Generate and speak response
+      setTimeout(() => {
+        generateResponse(transcript);
+      }, 500);
+    }
+  }, [transcript, isListening]);
 
   useEffect(() => {
     // Welcome message
     setTimeout(() => {
-      setConversation([{ role: 'assistant', content: 'こんにちは。どのようなことでお手伝いできますか？' }]);
+      const welcomeMessage = 'こんにちは。どのようなことでお手伝いできますか？';
+      setConversation([{ role: 'assistant', content: welcomeMessage }]);
+      speak(welcomeMessage);
     }, 500);
-  }, []);
+  }, [speak]);
+
+  const handleVoiceButtonClick = () => {
+    if (isListening) {
+      stopListening();
+    } else if (isSpeaking) {
+      stopSpeaking();
+    } else {
+      startListening();
+    }
+  };
+
+  if (!isSupported) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="mb-6">
+          <Button
+            onClick={onBack}
+            variant="outline"
+            className="h-12 px-6 text-lg border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-100 rounded-xl"
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            戻る
+          </Button>
+        </div>
+
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">音声相談</h1>
+            <Card className="w-full shadow-lg border border-red-200 rounded-3xl bg-red-50">
+              <CardContent className="p-8 text-center">
+                <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold text-red-700 mb-4">音声機能をご利用いただけません</h2>
+                <p className="text-lg text-red-600 mb-4">
+                  お使いのブラウザは音声認識に対応していません。
+                </p>
+                <p className="text-gray-600">
+                  Chrome、Edge、Safari の最新版をご利用ください。
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -157,15 +202,14 @@ export const VoiceConversationPage: React.FC<VoiceConversationPageProps> = ({ on
         {/* Voice control */}
         <div className="flex justify-center">
           <Button
-            onClick={isListening ? () => setIsListening(false) : startListening}
+            onClick={handleVoiceButtonClick}
             className={`h-32 w-32 rounded-full text-white shadow-lg transition-all duration-300 ${
               isListening 
                 ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
                 : isSpeaking
-                ? 'bg-green-500 hover:bg-green-600 cursor-not-allowed'
+                ? 'bg-green-500 hover:bg-green-600'
                 : 'bg-green-600 hover:bg-green-700'
             }`}
-            disabled={isSpeaking}
           >
             <div className="text-center space-y-2">
               {isListening ? (
@@ -193,6 +237,12 @@ export const VoiceConversationPage: React.FC<VoiceConversationPageProps> = ({ on
           <p className="text-lg text-gray-600">
             ボタンを押してお話しください。お薬のこと、体調のこと、何でもご相談ください。
           </p>
+          {transcript && (
+            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+              <p className="text-sm text-gray-600 mb-1">認識されたテキスト:</p>
+              <p className="text-lg font-medium text-blue-800">{transcript}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
