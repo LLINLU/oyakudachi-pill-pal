@@ -9,6 +9,8 @@ import { useMedicationNotifications } from './useMedicationNotifications';
 export const useMedicationReminder = () => {
   const [currentMedication, setCurrentMedication] = useState<Medication | null>(null);
   const [showReminder, setShowReminder] = useState(false);
+  const [showCompletionScreen, setShowCompletionScreen] = useState(false);
+  const [showPostponedScreen, setShowPostponedScreen] = useState(false);
   const autoRedirectTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const {
@@ -58,7 +60,7 @@ export const useMedicationReminder = () => {
     await handleSendFamilyNotifications(currentMedication.name);
 
     setShowReminder(false);
-    setCurrentMedication(null);
+    setShowCompletionScreen(true);
   };
 
   const handleMedicationPostponed = async () => {
@@ -74,14 +76,15 @@ export const useMedicationReminder = () => {
     await handleSendPostponedNotifications(currentMedication.name);
 
     setShowReminder(false);
-    setCurrentMedication(null);
+    setShowPostponedScreen(true);
 
+    // Set reminder for 5 minutes instead of 30 minutes
     setTimeout(() => {
       const postponedMed = medications.find(med => med.id === currentMedication.id);
       if (postponedMed && !postponedMed.taken) {
         playVoiceReminder(postponedMed);
       }
-    }, 30 * 60 * 1000);
+    }, 5 * 60 * 1000); // Changed from 30 minutes to 5 minutes
   };
 
   const startMedicationReminder = () => {
@@ -101,14 +104,23 @@ export const useMedicationReminder = () => {
     }
     
     setShowReminder(false);
+    setShowCompletionScreen(false);
+    setShowPostponedScreen(false);
     setCurrentMedication(null);
     setShowNotificationStatus(false);
+  };
+
+  const handleReturnToReminder = () => {
+    setShowPostponedScreen(false);
+    setShowReminder(true);
   };
 
   return {
     medications,
     currentMedication,
     showReminder,
+    showCompletionScreen,
+    showPostponedScreen,
     isVoicePlaying,
     notificationResults,
     showNotificationStatus,
@@ -120,6 +132,7 @@ export const useMedicationReminder = () => {
     handleMedicationPostponed,
     startMedicationReminder,
     handleReturnToHome,
+    handleReturnToReminder,
     setShowNotificationStatus,
     addScannedMedications
   };

@@ -8,14 +8,19 @@ import { VoiceConversationPage } from '@/components/VoiceConversationPage';
 import { FloatingVoiceButton } from '@/components/FloatingVoiceButton';
 import MedicationHandbookScanner from '@/components/MedicationHandbookScanner';
 import { MobileAppContainer } from '@/components/MobileAppContainer';
+import { MedicationCompletionScreen } from '@/components/MedicationCompletionScreen';
+import { MedicationPostponedScreen } from '@/components/MedicationPostponedScreen';
 
 const Index = () => {
   const [showVoiceChat, setShowVoiceChat] = useState(false);
   const [showHandbookScanner, setShowHandbookScanner] = useState(false);
+  const [countdown, setCountdown] = useState(10);
   
   const {
     currentMedication,
     showReminder,
+    showCompletionScreen,
+    showPostponedScreen,
     isVoicePlaying,
     notificationResults,
     showNotificationStatus,
@@ -27,6 +32,7 @@ const Index = () => {
     handleMedicationPostponed,
     startMedicationReminder,
     handleReturnToHome,
+    handleReturnToReminder,
     setShowNotificationStatus,
     addScannedMedications
   } = useMedicationReminder();
@@ -52,6 +58,37 @@ const Index = () => {
       <MobileAppContainer>
         <VoiceConversationPage
           onBack={() => setShowVoiceChat(false)}
+        />
+      </MobileAppContainer>
+    );
+  }
+
+  // Show completion screen after taking medication
+  if (showCompletionScreen) {
+    return (
+      <MobileAppContainer>
+        <MedicationCompletionScreen
+          notificationResults={notificationResults}
+          countdown={countdown}
+          onShowNotificationStatus={() => setShowNotificationStatus(true)}
+          onReturnToHome={handleReturnToHome}
+        />
+        
+        <NotificationStatus
+          results={notificationResults}
+          isVisible={showNotificationStatus}
+          onClose={() => setShowNotificationStatus(false)}
+        />
+      </MobileAppContainer>
+    );
+  }
+
+  // Show postponed screen after postponing medication
+  if (showPostponedScreen) {
+    return (
+      <MobileAppContainer>
+        <MedicationPostponedScreen
+          onReturnToReminder={handleReturnToReminder}
         />
       </MobileAppContainer>
     );

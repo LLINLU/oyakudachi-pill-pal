@@ -28,7 +28,7 @@ export const MedicationPostponedScreen: React.FC<MedicationPostponedScreenProps>
 
           <div className="bg-gray-700 text-white rounded-2xl p-6 shadow-lg">
             <p className="text-3xl font-semibold">
-              30分後にもう一度お知らせします
+              5分後にもう一度お知らせします
             </p>
           </div>
 
