@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Bot } from 'lucide-react';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -28,11 +29,9 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
           >
             {message.role === 'assistant' && (
               <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0">
-                <AvatarImage 
-                  src="https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=40&h=40&fit=crop&crop=face"
-                  alt="AI Assistant"
-                />
-                <AvatarFallback>AI</AvatarFallback>
+                <AvatarFallback className="bg-green-600 text-white">
+                  <Bot className="h-5 w-5" />
+                </AvatarFallback>
               </Avatar>
             )}
             <div
@@ -58,11 +57,9 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
         {isSpeaking && (
           <div className="flex justify-start">
             <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0">
-              <AvatarImage 
-                src="https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=40&h=40&fit=crop&crop=face"
-                alt="AI Assistant"
-              />
-              <AvatarFallback>AI</AvatarFallback>
+              <AvatarFallback className="bg-green-600 text-white">
+                <Bot className="h-5 w-5" />
+              </AvatarFallback>
             </Avatar>
             <div className="bg-green-500 text-white p-4 rounded-2xl animate-pulse">
               <p className="text-lg">お答えしています...</p>
