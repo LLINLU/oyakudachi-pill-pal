@@ -32,9 +32,9 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {message.role === 'assistant' && (
-                <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0 border-2 border-red-500">
-                  <AvatarFallback className="bg-green-600 text-white">
-                    <Bot className="h-5 w-5" />
+                <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0 border-2" style={{ borderColor: '#166534' }}>
+                  <AvatarFallback className="bg-white">
+                    <Bot className="h-5 w-5" style={{ color: '#166534' }} />
                   </AvatarFallback>
                 </Avatar>
               )}
@@ -61,9 +61,9 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
         
         {isSpeaking && (
           <div className="flex justify-start">
-            <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0 border-2 border-red-500">
-              <AvatarFallback className="bg-green-600 text-white">
-                <Bot className="h-5 w-5" />
+            <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0 border-2" style={{ borderColor: '#166534' }}>
+              <AvatarFallback className="bg-white">
+                <Bot className="h-5 w-5" style={{ color: '#166534' }} />
               </AvatarFallback>
             </Avatar>
             <div className="bg-green-500 text-white p-4 rounded-2xl animate-pulse">
