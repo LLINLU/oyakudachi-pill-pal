@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, Pill, Calendar, Camera, Volume2 } from 'lucide-react';
+import { Clock, Pill, Calendar, Camera, Volume2, FileText } from 'lucide-react';
 
 interface NextMedication {
   id: number;
@@ -37,6 +37,11 @@ export const HomePage: React.FC<HomePageProps> = ({
     day: 'numeric',
     weekday: 'long'
   });
+
+  const handleCheckMedicineRecord = () => {
+    // Placeholder function for checking medicine record
+    console.log('Check medicine record clicked');
+  };
 
   return (
     <Card className="w-full max-w-md rounded-3xl overflow-hidden bg-white">
@@ -109,16 +114,27 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </Button>
               )}
 
-              {onScanHandbook && (
+              <div className="grid grid-cols-2 gap-2">
                 <Button
-                  onClick={onScanHandbook}
+                  onClick={handleCheckMedicineRecord}
                   variant="outline"
-                  className="w-full h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                  className="h-10 hover:bg-purple-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-purple-700"
                 >
-                  <Camera className="h-4 w-4 mr-2" />
-                  薬手帳をスキャン
+                  <FileText className="h-4 w-4 mr-1" />
+                  服薬記録を確認
                 </Button>
-              )}
+
+                {onScanHandbook && (
+                  <Button
+                    onClick={onScanHandbook}
+                    variant="outline"
+                    className="h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                  >
+                    <Camera className="h-4 w-4 mr-1" />
+                    薬手帳を確認
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         ) : (
@@ -131,16 +147,27 @@ export const HomePage: React.FC<HomePageProps> = ({
               本日のお薬はすべて完了です
             </p>
             
-            {onScanHandbook && (
+            <div className="grid grid-cols-2 gap-2">
               <Button
-                onClick={onScanHandbook}
+                onClick={handleCheckMedicineRecord}
                 variant="outline"
-                className="w-full h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                className="h-10 hover:bg-purple-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-purple-700"
               >
-                <Camera className="h-4 w-4 mr-2" />
-                薬手帳をスキャン
+                <FileText className="h-4 w-4 mr-1" />
+                服薬記録を確認
               </Button>
-            )}
+
+              {onScanHandbook && (
+                <Button
+                  onClick={onScanHandbook}
+                  variant="outline"
+                  className="h-10 hover:bg-green-50 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-green-700"
+                >
+                  <Camera className="h-4 w-4 mr-1" />
+                  薬手帳を確認
+                </Button>
+              )}
+            </div>
           </div>
         )}
       </CardContent>
