@@ -32,14 +32,11 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {message.role === 'assistant' && (
-                <div>
-                  <p>Debug: Should show avatar here</p>
-                  <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0 border-2 border-red-500">
-                    <AvatarFallback className="bg-green-600 text-white">
-                      <Bot className="h-5 w-5" />
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
+                <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0 border-2 border-red-500">
+                  <AvatarFallback className="bg-green-600 text-white">
+                    <Bot className="h-5 w-5" />
+                  </AvatarFallback>
+                </Avatar>
               )}
               <div
                 className={`max-w-[80%] p-4 rounded-2xl ${
@@ -64,14 +61,11 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
         
         {isSpeaking && (
           <div className="flex justify-start">
-            <div>
-              <p>Debug: Should show speaking avatar here</p>
-              <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0 border-2 border-red-500">
-                <AvatarFallback className="bg-green-600 text-white">
-                  <Bot className="h-5 w-5" />
-                </AvatarFallback>
-              </Avatar>
-            </div>
+            <Avatar className="h-10 w-10 mr-3 mt-1 flex-shrink-0 border-2 border-red-500">
+              <AvatarFallback className="bg-green-600 text-white">
+                <Bot className="h-5 w-5" />
+              </AvatarFallback>
+            </Avatar>
             <div className="bg-green-500 text-white p-4 rounded-2xl animate-pulse">
               <p className="text-lg">お答えしています...</p>
             </div>
