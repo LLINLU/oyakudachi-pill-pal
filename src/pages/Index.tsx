@@ -87,7 +87,7 @@ const Index = () => {
           onClose={() => setShowNotificationStatus(false)}
         />
 
-        {/* Completion Screen as Dialog */}
+        {/* Completion Screen as Dialog - moved outside to be available in all views */}
         <Dialog open={showCompletionScreen} onOpenChange={(open) => !open && handleReturnToHome()}>
           <DialogContent className="w-full max-w-lg p-0 border-0">
             <MedicationCompletionScreen
@@ -128,7 +128,7 @@ const Index = () => {
         />
       )}
 
-      {/* Completion Screen as Dialog */}
+      {/* Completion Screen as Dialog - now available in home view too */}
       <Dialog open={showCompletionScreen} onOpenChange={(open) => !open && handleReturnToHome()}>
         <DialogContent className="w-full max-w-lg p-0 border-0">
           <MedicationCompletionScreen
