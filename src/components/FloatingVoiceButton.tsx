@@ -11,7 +11,7 @@ export const FloatingVoiceButton: React.FC<FloatingVoiceButtonProps> = ({ onVoic
   return (
     <Button
       onClick={onVoiceChat}
-      className="fixed bottom-6 right-6 h-16 w-16 rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg z-50 transition-all duration-300 hover:scale-110"
+      className="absolute bottom-4 right-4 h-16 w-16 rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg z-50 transition-all duration-300 hover:scale-110"
       aria-label="音声相談"
     >
       <MessageCircle className="h-8 w-8" />

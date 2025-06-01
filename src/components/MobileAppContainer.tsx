@@ -29,8 +29,8 @@ export const MobileAppContainer: React.FC<MobileAppContainerProps> = ({
               </div>
             )}
             
-            {/* Content area */}
-            <div className="flex-1 overflow-hidden">
+            {/* Content area with relative positioning for floating elements */}
+            <div className="flex-1 overflow-hidden relative">
               {children}
             </div>
           </div>
