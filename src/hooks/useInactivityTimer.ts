@@ -44,11 +44,21 @@ export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => 
   const getElapsedTime = useCallback(() => {
     const now = new Date();
     const [hours, minutes] = scheduledTime.split(':').map(Number);
+    
+    // Create scheduled time for today
     const scheduledDate = new Date();
     scheduledDate.setHours(hours, minutes, 0, 0);
     
+    // Calculate the difference in milliseconds
     const diffMs = now.getTime() - scheduledDate.getTime();
-    const diffMinutes = Math.max(0, Math.floor(diffMs / (1000 * 60)));
+    
+    // If current time is before scheduled time, show 0 minutes
+    if (diffMs < 0) {
+      return '0分';
+    }
+    
+    // Convert to minutes
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
     
     if (diffMinutes < 60) {
       return `${diffMinutes}分`;
