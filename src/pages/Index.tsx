@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useMedicationReminder } from '@/hooks/useMedicationReminder';
 import { MedicationCard } from '@/components/MedicationCard';
@@ -9,6 +10,7 @@ import MedicationHandbookScanner from '@/components/MedicationHandbookScanner';
 import { MobileAppContainer } from '@/components/MobileAppContainer';
 import { MedicationCompletionScreen } from '@/components/MedicationCompletionScreen';
 import { MedicationPostponedScreen } from '@/components/MedicationPostponedScreen';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const Index = () => {
   const [showVoiceChat, setShowVoiceChat] = useState(false);
@@ -62,26 +64,6 @@ const Index = () => {
     );
   }
 
-  // Show completion screen after taking medication
-  if (showCompletionScreen) {
-    return (
-      <MobileAppContainer>
-        <MedicationCompletionScreen
-          notificationResults={notificationResults}
-          countdown={countdown}
-          onShowNotificationStatus={() => setShowNotificationStatus(true)}
-          onReturnToHome={handleReturnToHome}
-        />
-        
-        <NotificationStatus
-          results={notificationResults}
-          isVisible={showNotificationStatus}
-          onClose={() => setShowNotificationStatus(false)}
-        />
-      </MobileAppContainer>
-    );
-  }
-
   // Show medication reminder when active
   if (showReminder && currentMedication) {
     return (
@@ -101,6 +83,18 @@ const Index = () => {
           isVisible={showNotificationStatus}
           onClose={() => setShowNotificationStatus(false)}
         />
+
+        {/* Completion Screen as Dialog */}
+        <Dialog open={showCompletionScreen} onOpenChange={(open) => !open && handleReturnToHome()}>
+          <DialogContent className="w-full max-w-lg p-0 border-0">
+            <MedicationCompletionScreen
+              notificationResults={notificationResults}
+              countdown={countdown}
+              onShowNotificationStatus={() => setShowNotificationStatus(true)}
+              onReturnToHome={handleReturnToHome}
+            />
+          </DialogContent>
+        </Dialog>
       </MobileAppContainer>
     );
   }
@@ -127,6 +121,18 @@ const Index = () => {
           onReturnToReminder={handleReturnToHome}
         />
       )}
+
+      {/* Completion Screen as Dialog */}
+      <Dialog open={showCompletionScreen} onOpenChange={(open) => !open && handleReturnToHome()}>
+        <DialogContent className="w-full max-w-lg p-0 border-0">
+          <MedicationCompletionScreen
+            notificationResults={notificationResults}
+            countdown={countdown}
+            onShowNotificationStatus={() => setShowNotificationStatus(true)}
+            onReturnToHome={handleReturnToHome}
+          />
+        </DialogContent>
+      </Dialog>
       
       <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
     </MobileAppContainer>
