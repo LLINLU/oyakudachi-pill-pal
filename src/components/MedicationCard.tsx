@@ -71,7 +71,7 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
 
   const handleClosePostponedPopup = () => {
     setShowLocalPostponedPopup(false);
-    // This will trigger the return to home in the parent component
+    // User stays on the medication reminder screen - no automatic redirect
   };
 
   const handleClosePopup = () => {
