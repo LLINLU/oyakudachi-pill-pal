@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -85,13 +84,13 @@ export const VoiceConversationPage: React.FC<VoiceConversationPageProps> = ({ on
   }, [transcript, isListening]);
 
   useEffect(() => {
-    // Welcome message
+    // Welcome message - only play once when component mounts
     setTimeout(() => {
       const welcomeMessage = 'こんにちは。どのようなことでお手伝いできますか？';
       setConversation([{ role: 'assistant', content: welcomeMessage }]);
       speak(welcomeMessage);
     }, 500);
-  }, [speak]);
+  }, []); // Empty dependency array - runs only once
 
   const handleVoiceButtonClick = () => {
     if (isListening) {
