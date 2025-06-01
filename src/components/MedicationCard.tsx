@@ -121,7 +121,8 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
               handleUserInteraction();
               onVoiceChat();
             }}
-            className="h-12 w-12 rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg transition-all duration-300 hover:scale-105"
+            className="h-12 w-12 rounded-full text-white shadow-lg transition-all duration-300 hover:scale-105 hover:opacity-90"
+            style={{ backgroundColor: '#078272' }}
             aria-label="音声相談"
           >
             <MessageCircle className="h-5 w-5" />
@@ -176,7 +177,8 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
               handleMedicationTaken();
             }}
             disabled={isSendingNotifications}
-            className="w-full h-14 bg-green-600 hover:bg-green-700 text-xl font-bold rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-70 text-white"
+            className="w-full h-14 text-xl font-bold rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-70 text-white hover:opacity-90"
+            style={{ backgroundColor: '#078272' }}
           >
             {isSendingNotifications ? '送信中...' : '飲みました'}
           </Button>

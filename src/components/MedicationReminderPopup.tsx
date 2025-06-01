@@ -100,7 +100,8 @@ export const MedicationReminderPopup: React.FC<MedicationReminderPopupProps> = (
               <Button
                 onClick={onTakeMedicine}
                 disabled={isSendingNotifications}
-                className="w-full h-12 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg"
+                className="w-full h-12 text-white font-semibold rounded-lg hover:opacity-90"
+                style={{ backgroundColor: '#078272' }}
               >
                 {isSendingNotifications ? '送信中...' : '飲みました'}
               </Button>
