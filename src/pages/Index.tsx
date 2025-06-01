@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useMedicationReminder } from '@/hooks/useMedicationReminder';
 import { MedicationCard } from '@/components/MedicationCard';
@@ -146,7 +145,7 @@ const Index = () => {
         <Button
           onClick={() => setShowHandbookScanner(true)}
           variant="outline"
-          className="h-16 w-16 rounded-full bg-orange-600 hover:bg-orange-700 text-white border-orange-600 transition-all duration-300 hover:scale-105"
+          className="h-16 w-16 rounded-full bg-blue-400 hover:bg-blue-500 text-white border-blue-400 transition-all duration-300 hover:scale-105"
           aria-label="薬手帳をスキャン"
         >
           <Camera className="h-6 w-6" />
