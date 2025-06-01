@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -51,7 +52,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         {nextMedication ? (
           <div className="bg-blue-50 rounded-3xl p-4 space-y-3">
             <div className="flex items-center justify-center space-x-2 mb-3">
-              <Clock className="h-6 w-6 text-blue-600" />
+              <Pill className="h-6 w-6 text-blue-600" />
               <span className="text-2xl font-bold text-blue-800">
                 {isTomorrowSchedule ? '明日のお薬' : '次のお薬'}
               </span>
