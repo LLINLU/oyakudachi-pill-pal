@@ -70,7 +70,7 @@ export const useMedicationReminder = () => {
     if (areAllMedicationsTaken()) {
       setShowCompletionScreen(true);
     } else {
-      // If there are more medications, just return to home
+      // Always return to home page instead of automatically starting next medication
       setCurrentMedication(null);
     }
   };
