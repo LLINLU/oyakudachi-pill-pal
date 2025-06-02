@@ -65,11 +65,14 @@ export const useSpeechQueue = () => {
       
       if (event.error !== 'interrupted') {
         item.onError?.(event);
+        // Only continue processing queue if it wasn't interrupted
+        isProcessingQueueRef.current = false;
+        setTimeout(() => processQueue(), 100);
+      } else {
+        // If interrupted, stop processing queue entirely
+        isProcessingQueueRef.current = false;
+        queueRef.current = [];
       }
-      
-      isProcessingQueueRef.current = false;
-      // Process next item in queue even after error
-      setTimeout(() => processQueue(), 100);
     };
 
     currentUtteranceRef.current = utterance;
@@ -84,6 +87,9 @@ export const useSpeechQueue = () => {
   }, []);
 
   const addToQueue = useCallback((item: VoiceQueueItem, priority: boolean = false) => {
+    // Remove any existing items with the same ID to prevent duplicates
+    queueRef.current = queueRef.current.filter(queueItem => queueItem.id !== item.id);
+    
     if (priority) {
       // Add to front of queue for priority items
       queueRef.current.unshift(item);

@@ -1,11 +1,12 @@
 
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { toast } from 'sonner';
 import { VoiceQueueItem, SpeakOptions } from '@/types/voice';
 import { useSpeechQueue } from './useSpeechQueue';
 
 export const useVoiceManager = () => {
   const { isSpeaking, currentSpeechId, stopSpeaking, addToQueue } = useSpeechQueue();
+  const lastSpeechIdRef = useRef<string | null>(null);
 
   const isSupported = 'speechSynthesis' in window;
 
@@ -18,29 +19,38 @@ export const useVoiceManager = () => {
       return Promise.resolve();
     }
 
+    const id = options?.id || `speech-${Date.now()}-${Math.random()}`;
+    
+    // Prevent duplicate speech with the same ID
+    if (lastSpeechIdRef.current === id && isSpeaking) {
+      console.log('Preventing duplicate speech:', id);
+      return Promise.resolve();
+    }
+
     return new Promise<void>((resolve, reject) => {
-      const id = options?.id || `speech-${Date.now()}-${Math.random()}`;
-      
       const queueItem: VoiceQueueItem = {
         id,
         text,
         options,
         onStart: () => {
           console.log(`Started speaking: ${text.substring(0, 50)}...`);
+          lastSpeechIdRef.current = id;
         },
         onEnd: () => {
           console.log(`Finished speaking: ${text.substring(0, 50)}...`);
+          lastSpeechIdRef.current = null;
           resolve();
         },
         onError: (error) => {
           console.error('Speech error:', error);
+          lastSpeechIdRef.current = null;
           reject(error);
         }
       };
 
       addToQueue(queueItem, options?.priority || false);
     });
-  }, [isSupported, addToQueue]);
+  }, [isSupported, addToQueue, isSpeaking]);
 
   const speakMedicationReminder = useCallback((medicationName: string, time?: string, includePillCount?: boolean) => {
     let message = '';

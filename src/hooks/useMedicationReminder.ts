@@ -1,3 +1,4 @@
+
 import { useState, useRef } from 'react';
 import { toast } from 'sonner';
 import { Medication } from '@/types/medication';
@@ -11,6 +12,7 @@ export const useMedicationReminder = () => {
   const [showCompletionScreen, setShowCompletionScreen] = useState(false);
   const [showPostponedScreen, setShowPostponedScreen] = useState(false);
   const autoRedirectTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const voicePlayedForMedicationRef = useRef<number | null>(null);
 
   const {
     medications,
@@ -62,6 +64,7 @@ export const useMedicationReminder = () => {
     await handleSendFamilyNotifications(currentMedication.name);
 
     setShowReminder(false);
+    voicePlayedForMedicationRef.current = null;
     
     // Only show completion screen if ALL medications are now taken
     if (areAllMedicationsTaken()) {
@@ -88,6 +91,7 @@ export const useMedicationReminder = () => {
     setTimeout(() => {
       const postponedMed = medications.find(med => med.id === currentMedication.id);
       if (postponedMed && !postponedMed.taken) {
+        voicePlayedForMedicationRef.current = null; // Reset so voice can play again
         playVoiceReminder(postponedMed);
       }
     }, 5 * 60 * 1000); // 5 minutes
@@ -100,9 +104,14 @@ export const useMedicationReminder = () => {
     if (nextMed && !showTomorrowSchedule) {
       setCurrentMedication(nextMed);
       setShowReminder(true);
-      setTimeout(() => {
-        playVoiceReminder(nextMed);
-      }, 500);
+      
+      // Only play voice if we haven't already played it for this medication
+      if (voicePlayedForMedicationRef.current !== nextMed.id) {
+        voicePlayedForMedicationRef.current = nextMed.id;
+        setTimeout(() => {
+          playVoiceReminder(nextMed);
+        }, 500);
+      }
     }
   };
 
@@ -121,6 +130,7 @@ export const useMedicationReminder = () => {
     setShowPostponedScreen(false);
     setCurrentMedication(null);
     setShowNotificationStatus(false);
+    voicePlayedForMedicationRef.current = null;
   };
 
   const handleReturnToReminder = () => {

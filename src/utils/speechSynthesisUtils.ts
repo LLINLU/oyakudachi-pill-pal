@@ -18,7 +18,7 @@ export const createUtterance = (text: string, options?: {
 export const handleSpeechError = (error: SpeechSynthesisErrorEvent) => {
   console.error('Speech synthesis error:', error.error);
   
-  // Handle specific error types
+  // Handle specific error types - but don't show toast for interruptions
   if (error.error !== 'interrupted') {
     // Show user-friendly error message
     switch (error.error) {
@@ -38,8 +38,11 @@ export const handleSpeechError = (error: SpeechSynthesisErrorEvent) => {
         });
         break;
       default:
-        console.log('Speech interrupted or other non-critical error:', error.error);
+        console.log('Speech error (non-critical):', error.error);
     }
+  } else {
+    // Just log interruptions, don't show error to user
+    console.log('Speech interrupted - this is normal when stopping speech');
   }
 };
 
