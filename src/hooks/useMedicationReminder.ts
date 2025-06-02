@@ -1,4 +1,3 @@
-
 import { useState, useRef } from 'react';
 import { toast } from 'sonner';
 import { Medication } from '@/types/medication';
@@ -91,7 +90,7 @@ export const useMedicationReminder = () => {
       if (postponedMed && !postponedMed.taken) {
         playVoiceReminder(postponedMed);
       }
-    }, 5 * 60 * 1000); // Changed from 30 minutes to 5 minutes
+    }, 5 * 60 * 1000); // 5 minutes
 
     // Don't automatically redirect - let the user control when to leave
   };

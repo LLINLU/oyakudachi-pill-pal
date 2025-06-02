@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMedicationReminder } from '@/hooks/useMedicationReminder';
 import { MedicationCard } from '@/components/MedicationCard';
 import { HomePage } from '@/components/HomePage';
@@ -12,6 +12,8 @@ import { MedicationPostponedScreen } from '@/components/MedicationPostponedScree
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Volume2, Camera } from 'lucide-react';
+import { useNotificationManager } from '@/hooks/useNotificationManager';
+import { useDeepLinkHandler } from '@/hooks/useDeepLinkHandler';
 
 const Index = () => {
   const [showVoiceChat, setShowVoiceChat] = useState(false);
@@ -39,6 +41,43 @@ const Index = () => {
     setShowNotificationStatus,
     addScannedMedications
   } = useMedicationReminder();
+
+  const {
+    isNotificationEnabled,
+    scheduleMedicationForTime,
+    cancelMedicationReminder,
+    initializeNotifications
+  } = useNotificationManager();
+
+  // Handle deep links from notifications
+  const handleNotificationNavigation = (medicationId: number) => {
+    console.log('Navigation triggered by notification for medication:', medicationId);
+    // Start the medication reminder for the specific medication
+    startMedicationReminder();
+  };
+
+  useDeepLinkHandler(handleNotificationNavigation);
+
+  // Schedule notifications when medications are added or updated
+  React.useEffect(() => {
+    const nextMed = getNextMedication();
+    if (nextMed && isNotificationEnabled) {
+      scheduleMedicationForTime(nextMed);
+    }
+  }, [getNextMedication, isNotificationEnabled, scheduleMedicationForTime]);
+
+  // Initialize notifications on app start
+  React.useEffect(() => {
+    initializeNotifications();
+  }, [initializeNotifications]);
+
+  // Cancel notifications when medication is taken
+  const handleMedicationTakenWithNotification = async () => {
+    if (currentMedication) {
+      await cancelMedicationReminder(currentMedication.id);
+    }
+    handleMedicationTaken();
+  };
 
   // Show medication handbook scanner
   if (showHandbookScanner) {
@@ -75,7 +114,7 @@ const Index = () => {
           isVoicePlaying={isVoicePlaying}
           isSendingNotifications={isSendingNotifications}
           onPlayVoice={playVoiceReminder}
-          onMedicationTaken={handleMedicationTaken}
+          onMedicationTaken={handleMedicationTakenWithNotification}
           onMedicationPostponed={handleMedicationPostponed}
           onVoiceChat={() => setShowVoiceChat(true)}
         />
