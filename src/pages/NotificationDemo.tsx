@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, ArrowRight, RotateCcw, Play, Pause } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { IOSLockScreen } from '@/components/demo/IOSLockScreen';
 import { NotificationBanner } from '@/components/demo/NotificationBanner';
 import { AppOpenAnimation } from '@/components/demo/AppOpenAnimation';
@@ -11,6 +11,7 @@ import { MobileAppContainer } from '@/components/MobileAppContainer';
 type DemoStep = 'lockscreen' | 'notification' | 'actions' | 'opening' | 'medication';
 
 const NotificationDemo = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<DemoStep>('lockscreen');
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
@@ -90,9 +91,14 @@ const NotificationDemo = () => {
 
   const handleNotificationAction = (action: string) => {
     setSelectedAction(action);
-    setTimeout(() => {
-      setCurrentStep('opening');
-    }, 1000);
+    if (action === 'take') {
+      // Navigate to the real medication reminder page
+      navigate('/?demo=notification');
+    } else {
+      setTimeout(() => {
+        setCurrentStep('opening');
+      }, 1000);
+    }
   };
 
   const renderCurrentStep = () => {

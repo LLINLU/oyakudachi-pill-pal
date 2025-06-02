@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useMedicationReminder } from '@/hooks/useMedicationReminder';
 import { MedicationCard } from '@/components/MedicationCard';
 import { HomePage } from '@/components/HomePage';
@@ -16,6 +17,7 @@ import { useNotificationManager } from '@/hooks/useNotificationManager';
 import { useDeepLinkHandler } from '@/hooks/useDeepLinkHandler';
 
 const Index = () => {
+  const [searchParams] = useSearchParams();
   const [showVoiceChat, setShowVoiceChat] = useState(false);
   const [showHandbookScanner, setShowHandbookScanner] = useState(false);
   const [countdown, setCountdown] = useState(10);
@@ -48,6 +50,15 @@ const Index = () => {
     cancelMedicationReminder,
     initializeNotifications
   } = useNotificationManager();
+
+  // Handle demo navigation
+  useEffect(() => {
+    const demoParam = searchParams.get('demo');
+    if (demoParam === 'notification') {
+      // Start medication reminder when coming from demo notification
+      startMedicationReminder();
+    }
+  }, [searchParams, startMedicationReminder]);
 
   // Handle deep links from notifications
   const handleNotificationNavigation = (medicationId: number) => {
