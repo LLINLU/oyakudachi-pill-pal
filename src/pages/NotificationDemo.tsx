@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,8 +8,10 @@ import { IOSLockScreen } from '@/components/demo/IOSLockScreen';
 import { NotificationBanner } from '@/components/demo/NotificationBanner';
 import { AppOpenAnimation } from '@/components/demo/AppOpenAnimation';
 import { MobileAppContainer } from '@/components/MobileAppContainer';
+import { DemoCompletionScreen } from '@/components/demo/DemoCompletionScreen';
+import { DemoHomePage } from '@/components/demo/DemoHomePage';
 
-type DemoStep = 'lockscreen' | 'notification' | 'actions' | 'opening' | 'medication';
+type DemoStep = 'lockscreen' | 'notification' | 'actions' | 'opening' | 'medication' | 'completion' | 'home';
 
 const NotificationDemo = () => {
   const navigate = useNavigate();
@@ -42,6 +45,16 @@ const NotificationDemo = () => {
       id: 'medication',
       title: '薬の確認',
       description: '薬の詳細画面でユーザーが服用を完了します'
+    },
+    {
+      id: 'completion',
+      title: '完了メッセージ',
+      description: '服用完了の確認画面が表示されます'
+    },
+    {
+      id: 'home',
+      title: 'ホーム画面',
+      description: '次のお薬の情報が表示されるホーム画面です'
     }
   ];
 
@@ -101,6 +114,10 @@ const NotificationDemo = () => {
     }
   };
 
+  const handleMedicationTaken = () => {
+    setCurrentStep('completion');
+  };
+
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 'lockscreen':
@@ -139,7 +156,10 @@ const NotificationDemo = () => {
                   <div className="w-20 h-20 bg-blue-500 rounded-full mx-auto mb-4"></div>
                   <h2 className="text-xl font-bold mb-2">血圧の薬</h2>
                   <p className="text-gray-600 mb-4">08:00に服用</p>
-                  <Button className="w-full bg-green-500 hover:bg-green-600">
+                  <Button 
+                    onClick={handleMedicationTaken}
+                    className="w-full bg-green-500 hover:bg-green-600"
+                  >
                     飲みました
                   </Button>
                 </CardContent>
@@ -147,6 +167,12 @@ const NotificationDemo = () => {
             </div>
           </MobileAppContainer>
         );
+      
+      case 'completion':
+        return <DemoCompletionScreen onContinue={() => setCurrentStep('home')} />;
+      
+      case 'home':
+        return <DemoHomePage />;
       
       default:
         return <IOSLockScreen />;
