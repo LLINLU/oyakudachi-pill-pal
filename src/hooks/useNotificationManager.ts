@@ -1,11 +1,30 @@
 
 import { useState, useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
-import { PushNotifications, Token, PushNotificationSchema, ActionPerformed } from '@capacitor/push-notifications';
 import { LocalNotifications, LocalNotificationSchema } from '@capacitor/local-notifications';
 import { MedicationNotificationPayload, ScheduledNotification } from '@/types/notification';
 import { Medication } from '@/types/medication';
 import { toast } from 'sonner';
+
+// Dynamically import push notifications to handle cases where it's not available
+let PushNotifications: any = null;
+let Token: any = null;
+let PushNotificationSchema: any = null;
+let ActionPerformed: any = null;
+
+const initializePushNotifications = async () => {
+  try {
+    if (Capacitor.isNativePlatform()) {
+      const pushModule = await import('@capacitor/push-notifications');
+      PushNotifications = pushModule.PushNotifications;
+      Token = pushModule.Token;
+      PushNotificationSchema = pushModule.PushNotificationSchema;
+      ActionPerformed = pushModule.ActionPerformed;
+    }
+  } catch (error) {
+    console.log('Push notifications not available:', error);
+  }
+};
 
 export const useNotificationManager = () => {
   const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
@@ -20,6 +39,14 @@ export const useNotificationManager = () => {
 
   const initializeNotifications = async () => {
     try {
+      await initializePushNotifications();
+      
+      if (!PushNotifications) {
+        console.log('Push notifications not available, using local notifications only');
+        setIsNotificationEnabled(true);
+        return;
+      }
+
       // Request permission
       const permissionResult = await PushNotifications.requestPermissions();
       
@@ -44,6 +71,8 @@ export const useNotificationManager = () => {
       }
     } catch (error) {
       console.error('Error initializing notifications:', error);
+      // Fallback to local notifications only
+      setIsNotificationEnabled(true);
     }
   };
 
@@ -64,8 +93,10 @@ export const useNotificationManager = () => {
   };
 
   const setupNotificationListeners = () => {
+    if (!PushNotifications) return;
+
     // Listen for registration success
-    PushNotifications.addListener('registration', (token: Token) => {
+    PushNotifications.addListener('registration', (token: any) => {
       console.log('Push registration success, token:', token.value);
       setPushToken(token.value);
     });
@@ -76,13 +107,13 @@ export const useNotificationManager = () => {
     });
 
     // Listen for push notifications
-    PushNotifications.addListener('pushNotificationReceived', (notification: PushNotificationSchema) => {
+    PushNotifications.addListener('pushNotificationReceived', (notification: any) => {
       console.log('Push notification received:', notification);
       handleNotificationReceived(notification);
     });
 
     // Listen for notification actions
-    PushNotifications.addListener('pushNotificationActionPerformed', (notification: ActionPerformed) => {
+    PushNotifications.addListener('pushNotificationActionPerformed', (notification: any) => {
       console.log('Push notification action performed:', notification);
       handleNotificationAction(notification);
     });
@@ -94,31 +125,27 @@ export const useNotificationManager = () => {
     });
   };
 
-  const handleNotificationReceived = (notification: PushNotificationSchema) => {
+  const handleNotificationReceived = (notification: any) => {
     toast.info('お薬の時間です', {
       description: notification.body || 'お薬をお飲みください'
     });
   };
 
-  const handleNotificationAction = (notification: ActionPerformed) => {
+  const handleNotificationAction = (notification: any) => {
     const { actionId, notification: notificationData } = notification;
     const payload = notificationData.data as MedicationNotificationPayload;
 
     switch (actionId) {
       case 'TAKE_ACTION':
-        // Handle medication taken
         console.log('User marked medication as taken from notification');
-        // This would trigger the medication taken flow
         break;
       case 'POSTPONE_ACTION':
-        // Handle medication postponed
         console.log('User postponed medication from notification');
-        scheduleMedicationReminder(payload.medicationId, new Date(Date.now() + 5 * 60 * 1000)); // 5 minutes
+        scheduleMedicationReminder(payload.medicationId, new Date(Date.now() + 5 * 60 * 1000));
         break;
       case 'SNOOZE_ACTION':
-        // Handle snooze
         console.log('User snoozed medication reminder');
-        scheduleMedicationReminder(payload.medicationId, new Date(Date.now() + 5 * 60 * 1000)); // 5 minutes
+        scheduleMedicationReminder(payload.medicationId, new Date(Date.now() + 5 * 60 * 1000));
         break;
     }
   };
