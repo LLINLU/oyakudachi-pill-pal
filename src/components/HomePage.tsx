@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Pill, Calendar, Volume2, FileText } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface NextMedication {
   id: number;
@@ -28,9 +28,10 @@ export const HomePage: React.FC<HomePageProps> = ({
   onScanHandbook,
   isTomorrowSchedule = false
 }) => {
+  const navigate = useNavigate();
+
   const handleCheckMedicineRecord = () => {
-    // Placeholder function for checking medicine record
-    console.log('Check medicine record clicked');
+    navigate('/medication-records');
   };
 
   return (
