@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useMedicationReminder } from '@/hooks/useMedicationReminder';
 import { MedicationCard } from '@/components/MedicationCard';
@@ -17,10 +18,11 @@ import { useNotificationManager } from '@/hooks/useNotificationManager';
 import { useDeepLinkHandler } from '@/hooks/useDeepLinkHandler';
 
 const Index = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showVoiceChat, setShowVoiceChat] = useState(false);
   const [showHandbookScanner, setShowHandbookScanner] = useState(false);
   const [countdown, setCountdown] = useState(10);
+  const demoHandledRef = useRef(false);
   
   const {
     currentMedication,
@@ -51,14 +53,22 @@ const Index = () => {
     initializeNotifications
   } = useNotificationManager();
 
-  // Handle demo navigation
+  // Handle demo navigation - only run once
   useEffect(() => {
     const demoParam = searchParams.get('demo');
-    if (demoParam === 'notification') {
+    if (demoParam === 'notification' && !demoHandledRef.current) {
+      console.log('Demo navigation detected, starting medication reminder');
+      demoHandledRef.current = true;
+      
+      // Clear the demo parameter from URL to prevent re-triggering
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('demo');
+      setSearchParams(newSearchParams, { replace: true });
+      
       // Start medication reminder when coming from demo notification
       startMedicationReminder();
     }
-  }, [searchParams, startMedicationReminder]);
+  }, [searchParams, setSearchParams, startMedicationReminder]);
 
   // Handle deep links from notifications
   const handleNotificationNavigation = (medicationId: number) => {
@@ -77,7 +87,6 @@ const Index = () => {
     }
   }, [getNextMedication, isNotificationEnabled, scheduleMedicationForTime]);
 
-  // Initialize notifications on app start
   React.useEffect(() => {
     initializeNotifications();
   }, [initializeNotifications]);
@@ -136,7 +145,6 @@ const Index = () => {
           onClose={() => setShowNotificationStatus(false)}
         />
 
-        {/* Completion Screen as Dialog - moved outside to be available in all views */}
         <Dialog open={showCompletionScreen} onOpenChange={(open) => !open && handleReturnToHome()}>
           <DialogContent className="w-full max-w-lg p-0 border-0">
             <MedicationCompletionScreen
@@ -177,7 +185,6 @@ const Index = () => {
         />
       )}
 
-      {/* Completion Screen as Dialog - now available in home view too */}
       <Dialog open={showCompletionScreen} onOpenChange={(open) => !open && handleReturnToHome()}>
         <DialogContent className="w-full max-w-lg p-0 border-0">
           <MedicationCompletionScreen
@@ -189,9 +196,7 @@ const Index = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Bottom button container with three buttons */}
       <div className="absolute bottom-4 left-4 right-4 flex items-center space-x-4">
-        {/* Camera button for prescription scanning */}
         <Button
           onClick={() => setShowHandbookScanner(true)}
           variant="outline"
@@ -202,7 +207,6 @@ const Index = () => {
           <Camera className="h-6 w-6" />
         </Button>
         
-        {/* Voice confirmation button - only show when there's a next medication and it's not tomorrow's schedule */}
         {nextMedication && !showTomorrowSchedule && (
           <Button
             onClick={playHomePageVoiceReminder}
@@ -215,7 +219,6 @@ const Index = () => {
           </Button>
         )}
         
-        {/* Floating voice chat button */}
         <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
       </div>
     </MobileAppContainer>
