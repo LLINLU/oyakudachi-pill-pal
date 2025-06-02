@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Medication, ScannedMedication } from '@/types/medication';
@@ -17,7 +16,7 @@ export const useMedicationData = () => {
       id: 2,
       name: '糖尿病の薬',
       time: '12:00',
-      image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
+      image: '/lovable-uploads/86c5ab6d-1414-401b-a510-5914fa3c1383.png',
       taken: false,
       postponed: false
     },
@@ -47,7 +46,7 @@ export const useMedicationData = () => {
         id: 102,
         name: '糖尿病の薬',
         time: '12:00',
-        image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
+        image: '/lovable-uploads/86c5ab6d-1414-401b-a510-5914fa3c1383.png',
         taken: false,
         postponed: false
       },
