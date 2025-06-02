@@ -65,7 +65,7 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
                   isPressed === 'take' ? 'scale-95' : ''
                 }`}
               >
-                飲みました
+                お薬の確認
               </Button>
               <Button
                 onClick={() => handleAction('postpone')}
