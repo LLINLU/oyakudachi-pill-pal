@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications, LocalNotificationSchema } from '@capacitor/local-notifications';
@@ -76,8 +75,7 @@ export const useNotificationManager = () => {
         id: 'MEDICATION_REMINDER',
         actions: [
           { id: 'TAKE_ACTION', title: '飲みました', destructive: false },
-          { id: 'POSTPONE_ACTION', title: '後で飲む', destructive: false },
-          { id: 'SNOOZE_ACTION', title: '5分後', destructive: false }
+          { id: 'POSTPONE_ACTION', title: '後で飲む', destructive: false }
         ]
       }
     ];
@@ -135,10 +133,6 @@ export const useNotificationManager = () => {
         break;
       case 'POSTPONE_ACTION':
         console.log('User postponed medication from notification');
-        scheduleMedicationReminder(payload.medicationId, new Date(Date.now() + 5 * 60 * 1000));
-        break;
-      case 'SNOOZE_ACTION':
-        console.log('User snoozed medication reminder');
         scheduleMedicationReminder(payload.medicationId, new Date(Date.now() + 5 * 60 * 1000));
         break;
     }
