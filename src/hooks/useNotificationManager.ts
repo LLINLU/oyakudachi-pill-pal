@@ -8,18 +8,12 @@ import { toast } from 'sonner';
 
 // Dynamically import push notifications to handle cases where it's not available
 let PushNotifications: any = null;
-let Token: any = null;
-let PushNotificationSchema: any = null;
-let ActionPerformed: any = null;
 
 const initializePushNotifications = async () => {
   try {
     if (Capacitor.isNativePlatform()) {
       const pushModule = await import('@capacitor/push-notifications');
       PushNotifications = pushModule.PushNotifications;
-      Token = pushModule.Token;
-      PushNotificationSchema = pushModule.PushNotificationSchema;
-      ActionPerformed = pushModule.ActionPerformed;
     }
   } catch (error) {
     console.log('Push notifications not available:', error);
