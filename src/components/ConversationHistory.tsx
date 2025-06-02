@@ -42,8 +42,9 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
                 className={`max-w-[80%] p-4 rounded-2xl ${
                   message.role === 'user'
                     ? 'bg-gray-100 text-gray-800'
-                    : 'bg-green-600 text-white'
+                    : 'text-white'
                 }`}
+                style={message.role === 'assistant' ? { backgroundColor: '#078272' } : {}}
               >
                 <p className="text-lg font-medium">{message.content}</p>
               </div>
@@ -66,7 +67,7 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
                 <Bot className="h-5 w-5" style={{ color: '#166534' }} />
               </AvatarFallback>
             </Avatar>
-            <div className="bg-green-500 text-white p-4 rounded-2xl animate-pulse">
+            <div className="text-white p-4 rounded-2xl animate-pulse" style={{ backgroundColor: '#078272' }}>
               <p className="text-lg">お答えしています...</p>
             </div>
           </div>
