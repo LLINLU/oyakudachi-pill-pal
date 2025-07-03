@@ -9,12 +9,14 @@ interface DemoStepRendererProps {
   currentStep: DemoStep;
   showNotification: boolean;
   onNotificationAction: (action: string) => void;
+  onNotificationTap?: () => void;
 }
 
 export const DemoStepRenderer: React.FC<DemoStepRendererProps> = ({
   currentStep,
   showNotification,
   onNotificationAction,
+  onNotificationTap,
 }) => {
   switch (currentStep) {
     case 'lockscreen':
@@ -26,6 +28,7 @@ export const DemoStepRenderer: React.FC<DemoStepRendererProps> = ({
           <NotificationBanner 
             show={showNotification}
             onAction={onNotificationAction}
+            onTap={onNotificationTap}
           />
         </IOSLockScreen>
       );

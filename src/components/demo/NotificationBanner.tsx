@@ -7,12 +7,14 @@ interface NotificationBannerProps {
   show: boolean;
   expanded?: boolean;
   onAction?: (action: string) => void;
+  onTap?: () => void;
 }
 
 export const NotificationBanner: React.FC<NotificationBannerProps> = ({ 
   show, 
   expanded = false, 
-  onAction 
+  onAction,
+  onTap
 }) => {
   const [isPressed, setIsPressed] = useState<string | null>(null);
 
@@ -22,6 +24,12 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
       onAction?.(action);
       setIsPressed(null);
     }, 200);
+  };
+
+  const handleTap = () => {
+    if (!expanded && onTap) {
+      onTap();
+    }
   };
 
   if (!show) return null;
@@ -82,7 +90,10 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
 
         {!expanded && (
           <div className="px-4 pb-4">
-            <div className="text-xs text-gray-500 text-center">
+            <div 
+              className="text-xs text-gray-500 text-center cursor-pointer hover:text-blue-500 transition-colors active:scale-95 transform duration-100"
+              onClick={handleTap}
+            >
               タップして詳細を表示
             </div>
           </div>

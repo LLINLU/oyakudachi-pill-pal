@@ -28,6 +28,13 @@ const NotificationDemo = () => {
     // For other actions, we don't need to do anything as the demo ends here
   };
 
+  const handleNotificationTap = () => {
+    // When the notification is tapped in the 'notification' step, advance to 'actions'
+    if (currentStep === 'notification') {
+      handleNext();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Demo Controls */}
@@ -50,6 +57,7 @@ const NotificationDemo = () => {
             currentStep={currentStep}
             showNotification={showNotification}
             onNotificationAction={handleNotificationAction}
+            onNotificationTap={handleNotificationTap}
           />
         </div>
       </div>
