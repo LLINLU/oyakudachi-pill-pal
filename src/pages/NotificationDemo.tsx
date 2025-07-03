@@ -22,8 +22,8 @@ const NotificationDemo = () => {
 
   const handleNotificationAction = (action: string) => {
     if (action === 'take') {
-      // Navigate to the real medication reminder page
-      navigate('/?demo=notification');
+      // Navigate to the medication app
+      navigate('/app?demo=notification');
     }
     // For other actions, we don't need to do anything as the demo ends here
   };
