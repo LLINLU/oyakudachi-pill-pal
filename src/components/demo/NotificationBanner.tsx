@@ -69,7 +69,7 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
             <div className="space-y-2">
               <Button
                 onClick={() => handleAction('take')}
-                className={`w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl transition-all ${
+                className={`w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl transition-all ${
                   isPressed === 'take' ? 'scale-95' : ''
                 }`}
               >
