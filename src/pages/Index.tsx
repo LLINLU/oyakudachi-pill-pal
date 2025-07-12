@@ -16,7 +16,6 @@ import { Button } from '@/components/ui/button';
 import { Volume2, Camera } from 'lucide-react';
 import { useNotificationManager } from '@/hooks/useNotificationManager';
 import { useDeepLinkHandler } from '@/hooks/useDeepLinkHandler';
-import { logger } from '@/utils/logger';
 
 const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -58,7 +57,7 @@ const Index = () => {
   useEffect(() => {
     const demoParam = searchParams.get('demo');
     if (demoParam === 'notification' && !demoHandledRef.current) {
-      logger.log('Demo navigation detected, starting medication reminder');
+      console.log('Demo navigation detected, starting medication reminder');
       demoHandledRef.current = true;
       
       // Clear the demo parameter from URL to prevent re-triggering
@@ -73,7 +72,7 @@ const Index = () => {
 
   // Handle deep links from notifications
   const handleNotificationNavigation = (medicationId: number) => {
-    logger.log('Navigation triggered by notification for medication:', medicationId);
+    console.log('Navigation triggered by notification for medication:', medicationId);
     // Start the medication reminder for the specific medication
     startMedicationReminder();
   };

@@ -3,7 +3,6 @@ import { useCallback, useRef } from 'react';
 import { toast } from 'sonner';
 import { VoiceQueueItem, SpeakOptions } from '@/types/voice';
 import { useSpeechQueue } from './useSpeechQueue';
-import { logger } from '@/utils/logger';
 
 export const useVoiceManager = () => {
   const { isSpeaking, currentSpeechId, stopSpeaking, addToQueue } = useSpeechQueue();
@@ -24,7 +23,7 @@ export const useVoiceManager = () => {
     
     // Prevent duplicate speech with the same ID
     if (lastSpeechIdRef.current === id && isSpeaking) {
-      logger.log('Preventing duplicate speech:', id);
+      console.log('Preventing duplicate speech:', id);
       return Promise.resolve();
     }
 
@@ -34,16 +33,16 @@ export const useVoiceManager = () => {
         text,
         options,
         onStart: () => {
-          logger.log(`Started speaking: ${text.substring(0, 50)}...`);
+          console.log(`Started speaking: ${text.substring(0, 50)}...`);
           lastSpeechIdRef.current = id;
         },
         onEnd: () => {
-          logger.log(`Finished speaking: ${text.substring(0, 50)}...`);
+          console.log(`Finished speaking: ${text.substring(0, 50)}...`);
           lastSpeechIdRef.current = null;
           resolve();
         },
         onError: (error) => {
-          logger.error('Speech error:', error);
+          console.error('Speech error:', error);
           lastSpeechIdRef.current = null;
           reject(error);
         }

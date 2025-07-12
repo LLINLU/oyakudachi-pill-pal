@@ -4,7 +4,6 @@ import { LocalNotifications, LocalNotificationSchema } from '@capacitor/local-no
 import { MedicationNotificationPayload, ScheduledNotification } from '@/types/notification';
 import { Medication } from '@/types/medication';
 import { toast } from 'sonner';
-import { logger } from '@/utils/logger';
 
 // Dynamically import push notifications to handle cases where it's not available
 let PushNotifications: any = null;
@@ -16,7 +15,7 @@ const initializePushNotifications = async () => {
       PushNotifications = pushModule.PushNotifications;
     }
   } catch (error) {
-    logger.log('Push notifications not available:', error);
+    console.log('Push notifications not available:', error);
   }
 };
 
@@ -36,7 +35,7 @@ export const useNotificationManager = () => {
       await initializePushNotifications();
       
       if (!PushNotifications) {
-        logger.log('Push notifications not available, using local notifications only');
+        console.log('Push notifications not available, using local notifications only');
         setIsNotificationEnabled(true);
         return;
       }
@@ -56,9 +55,9 @@ export const useNotificationManager = () => {
         // Set up listeners
         setupNotificationListeners();
         
-        logger.log('Push notifications initialized successfully');
+        console.log('Push notifications initialized successfully');
       } else {
-        logger.log('Push notification permission denied');
+        console.log('Push notification permission denied');
         toast.error('通知の許可が必要です', {
           description: '設定から通知を有効にしてください'
         });
@@ -82,7 +81,7 @@ export const useNotificationManager = () => {
     ];
 
     // Note: Category setup would be done in native iOS code
-    logger.log('Notification categories configured:', categories);
+    console.log('Notification categories configured:', categories);
   };
 
   const setupNotificationListeners = () => {
@@ -90,7 +89,7 @@ export const useNotificationManager = () => {
 
     // Listen for registration success
     PushNotifications.addListener('registration', (token: any) => {
-      logger.log('Push registration success, token:', token.value);
+      console.log('Push registration success, token:', token.value);
       setPushToken(token.value);
     });
 
@@ -101,19 +100,19 @@ export const useNotificationManager = () => {
 
     // Listen for push notifications
     PushNotifications.addListener('pushNotificationReceived', (notification: any) => {
-      logger.log('Push notification received:', notification);
+      console.log('Push notification received:', notification);
       handleNotificationReceived(notification);
     });
 
     // Listen for notification actions
     PushNotifications.addListener('pushNotificationActionPerformed', (notification: any) => {
-      logger.log('Push notification action performed:', notification);
+      console.log('Push notification action performed:', notification);
       handleNotificationAction(notification);
     });
 
     // Listen for local notification actions
     LocalNotifications.addListener('localNotificationActionPerformed', (notification) => {
-      logger.log('Local notification action performed:', notification);
+      console.log('Local notification action performed:', notification);
       handleLocalNotificationAction(notification);
     });
   };
@@ -130,10 +129,10 @@ export const useNotificationManager = () => {
 
     switch (actionId) {
       case 'TAKE_ACTION':
-        logger.log('User marked medication as taken from notification');
+        console.log('User marked medication as taken from notification');
         break;
       case 'POSTPONE_ACTION':
-        logger.log('User postponed medication from notification');
+        console.log('User postponed medication from notification');
         scheduleMedicationReminder(payload.medicationId, new Date(Date.now() + 5 * 60 * 1000));
         break;
     }
@@ -141,12 +140,12 @@ export const useNotificationManager = () => {
 
   const handleLocalNotificationAction = (notification: any) => {
     const { actionId, notification: notificationData } = notification;
-    logger.log('Local notification action:', actionId, notificationData);
+    console.log('Local notification action:', actionId, notificationData);
   };
 
   const scheduleMedicationReminder = async (medicationId: number, scheduledTime: Date) => {
     if (!Capacitor.isNativePlatform()) {
-      logger.log('Notifications only work on native platforms');
+      console.log('Notifications only work on native platforms');
       return;
     }
 
@@ -187,7 +186,7 @@ export const useNotificationManager = () => {
 
       setScheduledNotifications(prev => [...prev, scheduledNotification]);
       
-      logger.log('Medication reminder scheduled:', notification);
+      console.log('Medication reminder scheduled:', notification);
       
       toast.success('リマインダーをセットしました', {
         description: `${scheduledTime.toLocaleTimeString()}にお知らせします`
@@ -226,7 +225,7 @@ export const useNotificationManager = () => {
           prev.filter(notification => notification.medicationId !== medicationId)
         );
         
-        logger.log('Cancelled medication reminders for:', medicationId);
+        console.log('Cancelled medication reminders for:', medicationId);
       }
     } catch (error) {
       console.error('Error cancelling notification:', error);
@@ -237,7 +236,7 @@ export const useNotificationManager = () => {
     try {
       await LocalNotifications.cancel({ notifications: scheduledNotifications.map(n => ({ id: n.id })) });
       setScheduledNotifications([]);
-      logger.log('All notifications cancelled');
+      console.log('All notifications cancelled');
     } catch (error) {
       console.error('Error cancelling all notifications:', error);
     }

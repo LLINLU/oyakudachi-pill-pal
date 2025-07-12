@@ -2,7 +2,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 import { createSpeechRecognition, handleSpeechRecognitionError, checkSpeechRecognitionSupport } from '@/utils/speechRecognitionUtils';
-import { logger } from '@/utils/logger';
 
 export const useSpeechRecognition = () => {
   const [isListening, setIsListening] = useState(false);
@@ -24,7 +23,7 @@ export const useSpeechRecognition = () => {
     recognition.onstart = () => {
       setIsListening(true);
       setTranscript('');
-      logger.log('Speech recognition started');
+      console.log('Speech recognition started');
     };
 
     recognition.onresult = (event) => {
@@ -38,13 +37,13 @@ export const useSpeechRecognition = () => {
       
       if (finalTranscript) {
         setTranscript(finalTranscript);
-        logger.log('Speech recognition result:', finalTranscript);
+        console.log('Speech recognition result:', finalTranscript);
       }
     };
 
     recognition.onend = () => {
       setIsListening(false);
-      logger.log('Speech recognition ended');
+      console.log('Speech recognition ended');
     };
 
     recognition.onerror = (event) => {
@@ -65,7 +64,7 @@ export const useSpeechRecognition = () => {
       recognitionRef.current = initializeRecognition();
       recognitionRef.current?.start();
     } catch (error) {
-      logger.error('Failed to start speech recognition:', error);
+      console.error('Failed to start speech recognition:', error);
       toast.error('音声認識を開始できませんでした');
     }
   }, [initializeRecognition, isSupported]);
