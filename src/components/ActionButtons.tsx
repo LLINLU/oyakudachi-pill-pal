@@ -24,7 +24,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
         }}
         disabled={isSendingNotifications}
         className="w-full h-14 text-xl font-bold rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-70 text-white hover:opacity-90"
-        style={{ backgroundColor: '#0f172a' }}
+        style={{ backgroundColor: '#22c55e' }}
       >
         {isSendingNotifications ? '送信中...' : '飲みました'}
       </Button>
