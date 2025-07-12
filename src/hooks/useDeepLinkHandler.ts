@@ -1,6 +1,7 @@
 
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { logger } from '@/utils/logger';
 
 export const useDeepLinkHandler = (onMedicationReminderNavigate: (medicationId: number) => void) => {
   const [searchParams] = useSearchParams();
@@ -11,7 +12,7 @@ export const useDeepLinkHandler = (onMedicationReminderNavigate: (medicationId: 
     const action = searchParams.get('action');
     
     if (medicationId && action === 'reminder') {
-      console.log('Deep link detected for medication reminder:', medicationId);
+      logger.log('Deep link detected for medication reminder:', medicationId);
       onMedicationReminderNavigate(parseInt(medicationId));
     }
   }, [searchParams, onMedicationReminderNavigate]);

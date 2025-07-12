@@ -1,4 +1,6 @@
 
+import { logger } from '@/utils/logger';
+
 export interface FamilyContact {
   id: string;
   name: string;
@@ -37,8 +39,8 @@ export const sendFamilyNotifications = async (
     if (contact.preferredMethod === 'sms' || contact.preferredMethod === 'both') {
       try {
         // In a real implementation, this would call an SMS API like Twilio
-        console.log(`SMS送信: ${contact.phone} (${contact.name})`);
-        console.log(`メッセージ: ${message}`);
+        logger.log(`SMS送信: ${contact.phone} (${contact.name})`);
+        logger.log(`メッセージ: ${message}`);
         
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -65,9 +67,9 @@ export const sendFamilyNotifications = async (
     if (contact.email && (contact.preferredMethod === 'email' || contact.preferredMethod === 'both')) {
       try {
         // In a real implementation, this would call an email API
-        console.log(`メール送信: ${contact.email} (${contact.name})`);
-        console.log(`件名: お薬服用のお知らせ`);
-        console.log(`本文: ${message}`);
+        logger.log(`メール送信: ${contact.email} (${contact.name})`);
+        logger.log(`件名: お薬服用のお知らせ`);
+        logger.log(`本文: ${message}`);
         
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 300));
@@ -115,8 +117,8 @@ export const sendPostponedNotifications = async (
     if (contact.preferredMethod === 'sms' || contact.preferredMethod === 'both') {
       try {
         // In a real implementation, this would call an SMS API like Twilio
-        console.log(`延期SMS送信: ${contact.phone} (${contact.name})`);
-        console.log(`メッセージ: ${message}`);
+        logger.log(`延期SMS送信: ${contact.phone} (${contact.name})`);
+        logger.log(`メッセージ: ${message}`);
         
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -143,9 +145,9 @@ export const sendPostponedNotifications = async (
     if (contact.email && (contact.preferredMethod === 'email' || contact.preferredMethod === 'both')) {
       try {
         // In a real implementation, this would call an email API
-        console.log(`延期メール送信: ${contact.email} (${contact.name})`);
-        console.log(`件名: お薬延期のお知らせ`);
-        console.log(`本文: ${message}`);
+        logger.log(`延期メール送信: ${contact.email} (${contact.name})`);
+        logger.log(`件名: お薬延期のお知らせ`);
+        logger.log(`本文: ${message}`);
         
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 300));
