@@ -1,5 +1,6 @@
 
 import { toast } from 'sonner';
+import { logger } from '@/utils/logger';
 
 export const createUtterance = (text: string, options?: {
   lang?: string;
@@ -16,7 +17,7 @@ export const createUtterance = (text: string, options?: {
 };
 
 export const handleSpeechError = (error: SpeechSynthesisErrorEvent) => {
-  console.error('Speech synthesis error:', error.error);
+  logger.error('Speech synthesis error:', error.error);
   
   // Handle specific error types - but don't show toast for interruptions
   if (error.error !== 'interrupted') {
@@ -38,11 +39,11 @@ export const handleSpeechError = (error: SpeechSynthesisErrorEvent) => {
         });
         break;
       default:
-        console.log('Speech error (non-critical):', error.error);
+        logger.log('Speech error (non-critical):', error.error);
     }
   } else {
     // Just log interruptions, don't show error to user
-    console.log('Speech interrupted - this is normal when stopping speech');
+    logger.log('Speech interrupted - this is normal when stopping speech');
   }
 };
 

@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { logger } from '@/utils/logger';
 
 export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => void) => {
   const [isActive, setIsActive] = useState(false);
@@ -50,15 +51,15 @@ export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => 
     scheduledDate.setHours(hours, minutes, 0, 0);
     
     // Debug logging
-    console.log('Current time:', now.toLocaleTimeString());
-    console.log('Scheduled time:', scheduledDate.toLocaleTimeString());
-    console.log('Raw scheduled time input:', scheduledTime);
+    logger.log('Current time:', now.toLocaleTimeString());
+    logger.log('Scheduled time:', scheduledDate.toLocaleTimeString());
+    logger.log('Raw scheduled time input:', scheduledTime);
     
     // Calculate the difference in milliseconds
     let diffMs = now.getTime() - scheduledDate.getTime();
     
     // Debug the time difference
-    console.log('Time difference (ms):', diffMs);
+    logger.log('Time difference (ms):', diffMs);
     
     // If the difference is negative (current time is before scheduled time today),
     // check if the scheduled time was actually yesterday
@@ -67,18 +68,18 @@ export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => 
       const yesterdayScheduled = new Date(scheduledDate);
       yesterdayScheduled.setDate(yesterdayScheduled.getDate() - 1);
       
-      console.log('Trying yesterday scheduled time:', yesterdayScheduled.toLocaleTimeString());
+      logger.log('Trying yesterday scheduled time:', yesterdayScheduled.toLocaleTimeString());
       
       const yesterdayDiff = now.getTime() - yesterdayScheduled.getTime();
-      console.log('Yesterday difference (ms):', yesterdayDiff);
+      logger.log('Yesterday difference (ms):', yesterdayDiff);
       
       // If yesterday's time makes more sense (positive and reasonable), use it
       if (yesterdayDiff > 0) {
         diffMs = yesterdayDiff;
-        console.log('Using yesterday as reference point');
+        logger.log('Using yesterday as reference point');
       } else {
         // Current time is genuinely before today's scheduled time
-        console.log('Current time is before scheduled time, showing 0');
+        logger.log('Current time is before scheduled time, showing 0');
         return '0分:00秒';
       }
     }
@@ -89,9 +90,9 @@ export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => 
     const remainingSeconds = totalSeconds % 60;
     
     // Debug the calculated values
-    console.log('Total seconds:', totalSeconds);
-    console.log('Total minutes:', totalMinutes);
-    console.log('Remaining seconds:', remainingSeconds);
+    logger.log('Total seconds:', totalSeconds);
+    logger.log('Total minutes:', totalMinutes);
+    logger.log('Remaining seconds:', remainingSeconds);
     
     // Format seconds with leading zero
     const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
@@ -105,7 +106,7 @@ export const useInactivityTimer = (scheduledTime: string, onTimerTrigger: () => 
       result = `${hours}時間${remainingMinutes}分:${formattedSeconds}秒`;
     }
     
-    console.log('Final elapsed time result:', result);
+    logger.log('Final elapsed time result:', result);
     return result;
   }, [scheduledTime]);
 

@@ -2,6 +2,7 @@
 import React from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Bot } from 'lucide-react';
+import { logger } from '@/utils/logger';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -19,13 +20,13 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
   isListening,
   isSpeaking
 }) => {
-  console.log('ConversationHistory rendered with:', { conversation, isListening, isSpeaking });
+  logger.log('ConversationHistory rendered with:', { conversation, isListening, isSpeaking });
   
   return (
     <div className="w-full min-h-[400px]">
       <div className="space-y-6 max-h-[500px] overflow-y-auto p-8">
         {conversation.map((message, index) => {
-          console.log(`Rendering message ${index}:`, message);
+          logger.log(`Rendering message ${index}:`, message);
           return (
             <div
               key={index}
