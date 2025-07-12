@@ -8,24 +8,27 @@ export const useMedicationNotifications = () => {
   const [showNotificationStatus, setShowNotificationStatus] = useState(false);
   const [isSendingNotifications, setIsSendingNotifications] = useState(false);
 
-  const familyContacts: FamilyContact[] = [
-    { 
-      id: '1',
-      name: '田中 花子', 
-      relationship: '娘', 
-      phone: '090-1234-5678',
-      email: 'hanako@example.com',
-      preferredMethod: 'both'
-    },
-    { 
-      id: '2',
-      name: '田中 太郎', 
-      relationship: '息子', 
-      phone: '090-8765-4321',
-      email: 'taro@example.com',
-      preferredMethod: 'sms'
+  // Get family contacts from localStorage (set during onboarding)
+  const getFamilyContacts = (): FamilyContact[] => {
+    const stored = localStorage.getItem('family_contacts');
+    if (stored) {
+      return JSON.parse(stored);
     }
-  ];
+    
+    // Fallback demo contacts if none configured
+    return [
+      {
+        id: "demo-1",
+        name: "田中 花子",
+        relationship: "娘",
+        phone: "090-1234-5678",
+        email: "hanako@example.com",
+        preferredMethod: "both"
+      }
+    ];
+  };
+
+  const familyContacts = getFamilyContacts();
 
   const handleSendFamilyNotifications = async (medicationName: string) => {
     setIsSendingNotifications(true);
