@@ -97,17 +97,7 @@ export const parseMedicationFromText = (ocrText: string): ScannedMedication[] =>
     medications.push(createMedicationFromPartial(currentMedication));
   }
   
-  // If no medications found, create a default one for manual editing
-  if (medications.length === 0) {
-    medications.push({
-      name: 'OCRで認識できませんでした',
-      dosage: '',
-      frequency: '1日1回',
-      time: '08:00',
-      instructions: '手動で編集してください'
-    });
-  }
-  
+  // Return empty array if no medications found - let the UI handle the failure state
   return medications;
 };
 

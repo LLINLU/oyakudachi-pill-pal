@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Camera, CheckCircle, RefreshCw, Plus, Clock } from 'lucide-react';
+import { ArrowLeft, Camera, CheckCircle, RefreshCw, Plus, Clock, AlertCircle, Edit3 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ScannedMedication } from '@/types/medication';
 import { processImageWithOCR, captureImageFromVideo, OCRProgress } from '@/utils/ocrService';
@@ -22,6 +22,7 @@ const MedicationHandbookScanner: React.FC<MedicationHandbookScannerProps> = ({
   const [isScanning, setIsScanning] = useState(false);
   const [scannedMedications, setScannedMedications] = useState<ScannedMedication[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [ocrFailed, setOcrFailed] = useState(false);
   const [ocrProgress, setOcrProgress] = useState<OCRProgress>({ status: '', progress: 0 });
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -74,13 +75,17 @@ const MedicationHandbookScanner: React.FC<MedicationHandbookScannerProps> = ({
       // Parse medication data from OCR text
       const medications = parseMedicationFromText(ocrText);
       
-      setScannedMedications(medications);
-      setShowResults(true);
-      
-      if (medications.length > 0 && medications[0].name !== 'OCRで認識できませんでした') {
-        toast.success(`${medications.length}件の薬を認識しました`);
+      if (medications.length === 0) {
+        setOcrFailed(true);
+        setShowResults(true);
+        toast.error("薬の認識ができませんでした", {
+          description: "もう一度スキャンするか、手動で入力してください。"
+        });
       } else {
-        toast.warning("薬の認識ができませんでした。手動で編集してください。");
+        setScannedMedications(medications);
+        setOcrFailed(false);
+        setShowResults(true);
+        toast.success(`${medications.length}件の薬を認識しました`);
       }
     } catch (error) {
       console.error('OCR scan failed:', error);
@@ -102,10 +107,64 @@ const MedicationHandbookScanner: React.FC<MedicationHandbookScannerProps> = ({
   const resetScan = () => {
     setScannedMedications([]);
     setShowResults(false);
+    setOcrFailed(false);
     setIsScanning(false);
   };
 
   if (showResults) {
+    if (ocrFailed) {
+      // OCR Failed view
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 p-4">
+          <div className="max-w-md mx-auto space-y-6">
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={onBack}
+                variant="ghost"
+                className="text-gray-600 p-2"
+              >
+                <ArrowLeft className="h-6 w-6" />
+              </Button>
+              <h1 className="text-2xl font-bold text-gray-800">スキャン結果</h1>
+            </div>
+
+            <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
+              <CardContent className="p-8 text-center">
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-100 flex items-center justify-center">
+                  <AlertCircle className="h-10 w-10 text-red-500" />
+                </div>
+                <h2 className="text-xl font-bold mb-2 text-gray-800">薬の認識ができませんでした</h2>
+                <p className="text-gray-600 mb-6 text-sm leading-relaxed">
+                  お薬手帳の文字を正しく読み取ることができませんでした。<br />
+                  もう一度スキャンするか、手動で入力してください。
+                </p>
+              </CardContent>
+            </Card>
+
+            <div className="space-y-3">
+              <Button
+                onClick={resetScan}
+                className="w-full h-16 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-xl font-semibold rounded-2xl"
+              >
+                <Camera className="h-6 w-6 mr-3" />
+                もう一度スキャン
+              </Button>
+              
+              <Button
+                onClick={onBack}
+                variant="outline"
+                className="w-full h-12 text-lg border-2 border-gray-200 hover:bg-gray-50 rounded-xl"
+              >
+                <Edit3 className="h-5 w-5 mr-2" />
+                手動で入力
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Success results view
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 p-4">
         <div className="max-w-md mx-auto space-y-6">
