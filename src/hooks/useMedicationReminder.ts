@@ -21,6 +21,8 @@ export const useMedicationReminder = () => {
     markMedicationTaken,
     markMedicationPostponed,
     addScannedMedications,
+    addManualMedications,
+    hasNoMedications,
     showTomorrowSchedule,
     switchToTomorrowSchedule
   } = useMedicationData();
@@ -158,6 +160,8 @@ export const useMedicationReminder = () => {
     handleReturnToHome,
     handleReturnToReminder,
     setShowNotificationStatus,
-    addScannedMedications
+    addScannedMedications,
+    addManualMedications,
+    hasNoMedications
   };
 };

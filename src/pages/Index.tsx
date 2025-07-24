@@ -4,6 +4,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useMedicationReminder } from '@/hooks/useMedicationReminder';
 import { MedicationCard } from '@/components/MedicationCard';
 import { HomePage } from '@/components/HomePage';
+import { EmptyStateHomeScreen } from '@/components/EmptyStateHomeScreen';
+import { ManualMedicationInput } from '@/components/ManualMedicationInput';
 import { NotificationStatus } from '@/components/NotificationStatus';
 import { VoiceConversationPage } from '@/components/VoiceConversationPage';
 import { FloatingVoiceButton } from '@/components/FloatingVoiceButton';
@@ -21,6 +23,7 @@ const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showVoiceChat, setShowVoiceChat] = useState(false);
   const [showHandbookScanner, setShowHandbookScanner] = useState(false);
+  const [showManualInput, setShowManualInput] = useState(false);
   const [countdown, setCountdown] = useState(10);
   const demoHandledRef = useRef(false);
   
@@ -43,7 +46,9 @@ const Index = () => {
     handleReturnToHome,
     handleReturnToReminder,
     setShowNotificationStatus,
-    addScannedMedications
+    addScannedMedications,
+    addManualMedications,
+    hasNoMedications
   } = useMedicationReminder();
 
   const {
@@ -114,6 +119,21 @@ const Index = () => {
     );
   }
 
+  // Show manual medication input
+  if (showManualInput) {
+    return (
+      <MobileAppContainer>
+        <ManualMedicationInput
+          onBack={() => setShowManualInput(false)}
+          onMedicationsAdded={(medications) => {
+            addManualMedications(medications);
+            setShowManualInput(false);
+          }}
+        />
+      </MobileAppContainer>
+    );
+  }
+
   // Show voice chat page
   if (showVoiceChat) {
     return (
@@ -160,6 +180,18 @@ const Index = () => {
   }
 
   const nextMedication = getNextMedication();
+
+  // Show empty state if no medications are added
+  if (hasNoMedications()) {
+    return (
+      <MobileAppContainer>
+        <EmptyStateHomeScreen
+          onScanHandbook={() => setShowHandbookScanner(true)}
+          onManualInput={() => setShowManualInput(true)}
+        />
+      </MobileAppContainer>
+    );
+  }
 
   // Show home page by default
   return (
