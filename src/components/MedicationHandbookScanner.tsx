@@ -5,14 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Camera, CheckCircle, RefreshCw, Plus, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import { ScannedMedication } from '@/types/medication';
+import { processImageWithOCR, captureImageFromVideo, OCRProgress } from '@/utils/ocrService';
+import { parseMedicationFromText } from '@/utils/medicationParser';
 
-interface ScannedMedication {
-  name: string;
-  dosage: string;
-  frequency: string;
-  time: string;
-  instructions: string;
-}
 
 interface MedicationHandbookScannerProps {
   onBack: () => void;
@@ -26,6 +22,7 @@ const MedicationHandbookScanner: React.FC<MedicationHandbookScannerProps> = ({
   const [isScanning, setIsScanning] = useState(false);
   const [scannedMedications, setScannedMedications] = useState<ScannedMedication[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState<OCRProgress>({ status: '', progress: 0 });
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const startCamera = () => {
@@ -56,43 +53,42 @@ const MedicationHandbookScanner: React.FC<MedicationHandbookScannerProps> = ({
     };
   }, []);
 
-  const simulateHandbookScan = () => {
-    setIsScanning(true);
+  const handleHandbookScan = async () => {
+    if (!videoRef.current) {
+      toast.error("カメラが利用できません");
+      return;
+    }
     
-    // Simulate AI processing time for OCR and medication extraction
-    setTimeout(() => {
-      const mockMedications: ScannedMedication[] = [
-        {
-          name: 'アムロジピン錠',
-          dosage: '5mg',
-          frequency: '1日1回',
-          time: '08:00',
-          instructions: '朝食後に服用'
-        },
-        {
-          name: 'メトホルミン錠',
-          dosage: '250mg',
-          frequency: '1日2回',
-          time: '08:00,18:00',
-          instructions: '朝夕食後に服用'
-        },
-        {
-          name: 'ビタミンD錠',
-          dosage: '1000IU',
-          frequency: '1日1回',
-          time: '18:00',
-          instructions: '夕食後に服用'
-        }
-      ];
+    setIsScanning(true);
+    setOcrProgress({ status: '画像を処理中...', progress: 0 });
+    
+    try {
+      // Capture image from video
+      const imageBlob = await captureImageFromVideo(videoRef.current);
       
-      setScannedMedications(mockMedications);
-      setShowResults(true);
-      setIsScanning(false);
-      
-      toast.success('薬手帳をスキャンしました', {
-        description: `${mockMedications.length}種類のお薬を認識しました`
+      // Process with OCR
+      const ocrText = await processImageWithOCR(imageBlob, (progress) => {
+        setOcrProgress(progress);
       });
-    }, 4000);
+      
+      // Parse medication data from OCR text
+      const medications = parseMedicationFromText(ocrText);
+      
+      setScannedMedications(medications);
+      setShowResults(true);
+      
+      if (medications.length > 0 && medications[0].name !== 'OCRで認識できませんでした') {
+        toast.success(`${medications.length}件の薬を認識しました`);
+      } else {
+        toast.warning("薬の認識ができませんでした。手動で編集してください。");
+      }
+    } catch (error) {
+      console.error('OCR scan failed:', error);
+      toast.error("スキャンに失敗しました");
+    } finally {
+      setIsScanning(false);
+      setOcrProgress({ status: '', progress: 0 });
+    }
   };
 
   const handleConfirmMedications = () => {
@@ -208,8 +204,14 @@ const MedicationHandbookScanner: React.FC<MedicationHandbookScannerProps> = ({
                 <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                   <div className="text-center text-white space-y-4">
                     <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto"></div>
-                    <div className="text-lg font-semibold">AI が薬手帳を読み取り中...</div>
-                    <div className="text-sm opacity-75">お薬の情報を抽出しています</div>
+                    <div className="text-lg font-semibold">{ocrProgress.status || 'OCRで処理中...'}</div>
+                    <div className="w-32 bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                        style={{ width: `${ocrProgress.progress * 100}%` }}
+                      ></div>
+                    </div>
+                    <div className="text-sm opacity-75">{Math.round(ocrProgress.progress * 100)}%</div>
                   </div>
                 </div>
               )}
@@ -233,7 +235,7 @@ const MedicationHandbookScanner: React.FC<MedicationHandbookScannerProps> = ({
         {/* Action Button */}
         {!isScanning && (
           <Button
-            onClick={simulateHandbookScan}
+            onClick={handleHandbookScan}
             className="w-full h-16 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-xl font-semibold rounded-2xl"
           >
             <Camera className="h-8 w-8 mr-3" />
