@@ -5,6 +5,7 @@ export type OnboardingStep =
   | 'family-setup' 
   | 'notification-method'
   | 'family-contact'
+  | 'line-contacts'
   | 'complete';
 
 export interface OnboardingState {
@@ -19,6 +20,7 @@ export interface OnboardingState {
     method: 'line' | 'email' | null;
   };
   familyContacts: FamilyContact[];
+  lineContacts: FamilyContact[];
 }
 
 export interface FamilyContact {
@@ -36,5 +38,6 @@ export interface OnboardingActions {
   setPermission: (type: 'camera' | 'notifications', granted: boolean) => void;
   setFamilySetup: (enabled: boolean, method?: 'line' | 'email') => void;
   addFamilyContact: (contact: Omit<FamilyContact, 'id'>) => void;
+  addLineContact: (contact: Omit<FamilyContact, 'id'>) => void;
   completeOnboarding: () => void;
 }

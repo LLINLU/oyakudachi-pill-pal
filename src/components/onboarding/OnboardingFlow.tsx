@@ -5,6 +5,7 @@ import { IntroductionScreen } from './IntroductionScreen';
 import { FamilySetupScreen } from './FamilySetupScreen';
 import { NotificationMethodScreen } from './NotificationMethodScreen';
 import { FamilyContactScreen } from './FamilyContactScreen';
+import { LineContactScreen } from './LineContactScreen';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
@@ -15,11 +16,13 @@ export const OnboardingFlow = () => {
     isCompleted,
     familySetup,
     familyContacts,
+    lineContacts,
     nextStep,
     previousStep,
     setPermission,
     setFamilySetup,
     addFamilyContact,
+    addLineContact,
     completeOnboarding
   } = useOnboardingState();
 
@@ -35,11 +38,8 @@ export const OnboardingFlow = () => {
     if (!enabled) {
       // Skip to completion if family setup is disabled
       completeOnboarding();
-    } else if (method === 'line') {
-      // Skip contact input for LINE and complete
-      completeOnboarding();
     } else {
-      // Continue to contact input for email
+      // Continue to the appropriate contact input screen
       nextStep();
     }
   };
@@ -90,6 +90,15 @@ export const OnboardingFlow = () => {
         <FamilyContactScreen
           contacts={familyContacts}
           onAddContact={addFamilyContact}
+          onNext={completeOnboarding}
+        />
+      );
+
+    case 'line-contacts':
+      return (
+        <LineContactScreen
+          contacts={lineContacts}
+          onAddContact={addLineContact}
           onNext={completeOnboarding}
         />
       );

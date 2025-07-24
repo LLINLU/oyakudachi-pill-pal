@@ -11,6 +11,7 @@ const steps: OnboardingStep[] = [
   'family-setup',
   'notification-method',
   'family-contact',
+  'line-contacts',
   'complete'
 ];
 
@@ -28,6 +29,7 @@ export const useOnboardingState = (): OnboardingState & OnboardingActions => {
     method: null as 'line' | 'email' | null
   });
   const [familyContacts, setFamilyContacts] = useState<FamilyContact[]>([]);
+  const [lineContacts, setLineContacts] = useState<FamilyContact[]>([]);
 
   const nextStep = useCallback(() => {
     const currentIndex = steps.indexOf(currentStep);
@@ -37,6 +39,12 @@ export const useOnboardingState = (): OnboardingState & OnboardingActions => {
       // Skip family-contact step if family setup is disabled or LINE is selected
       if (steps[nextIndex] === 'family-contact' && 
           (!familySetup.enabled || familySetup.method === 'line')) {
+        nextIndex++;
+      }
+      
+      // Skip line-contacts step if family setup is disabled or email is selected
+      if (steps[nextIndex] === 'line-contacts' && 
+          (!familySetup.enabled || familySetup.method === 'email')) {
         nextIndex++;
       }
       
@@ -52,6 +60,12 @@ export const useOnboardingState = (): OnboardingState & OnboardingActions => {
       // Skip family-contact step when going back
       if (steps[prevIndex] === 'family-contact' && 
           (!familySetup.enabled || familySetup.method === 'line')) {
+        prevIndex--;
+      }
+      
+      // Skip line-contacts step when going back
+      if (steps[prevIndex] === 'line-contacts' && 
+          (!familySetup.enabled || familySetup.method === 'email')) {
         prevIndex--;
       }
       
@@ -78,6 +92,14 @@ export const useOnboardingState = (): OnboardingState & OnboardingActions => {
     setFamilyContacts(prev => [...prev, newContact]);
   }, []);
 
+  const addLineContact = useCallback((contact: Omit<FamilyContact, 'id'>) => {
+    const newContact: FamilyContact = {
+      ...contact,
+      id: Date.now().toString()
+    };
+    setLineContacts(prev => [...prev, newContact]);
+  }, []);
+
   const completeOnboarding = useCallback(() => {
     // Save family contacts to localStorage
     if (familyContacts.length > 0) {
@@ -96,11 +118,13 @@ export const useOnboardingState = (): OnboardingState & OnboardingActions => {
     permissions,
     familySetup,
     familyContacts,
+    lineContacts,
     nextStep,
     previousStep,
     setPermission,
     setFamilySetup,
     addFamilyContact,
+    addLineContact,
     completeOnboarding
   };
 };
