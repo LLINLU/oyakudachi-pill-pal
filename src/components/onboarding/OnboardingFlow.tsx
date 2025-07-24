@@ -45,8 +45,8 @@ export const OnboardingFlow = () => {
   };
 
   const handleSkipIntroduction = () => {
-    // Skip all remaining steps and complete onboarding
-    completeOnboarding();
+    // Skip introduction but continue to family setup
+    nextStep();
   };
 
   switch (currentStep) {
