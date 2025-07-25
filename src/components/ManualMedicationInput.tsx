@@ -189,9 +189,11 @@ export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
                 <div className="space-y-3">
                   {FREQUENCY_OPTIONS.find(f => f.label === medication.frequency)?.times.map((timeLabel, timeIndex) => (
                     <div key={timeIndex} className="flex items-center gap-3">
-                      <Label className="min-w-[80px] text-sm text-muted-foreground">
-                        {timeLabel}
-                      </Label>
+                      {medication.frequency !== '1日1回' && (
+                        <Label className="min-w-[80px] text-sm text-muted-foreground">
+                          {timeLabel}
+                        </Label>
+                      )}
                       <Input
                         type="time"
                         value={medication.times[timeIndex] || ''}
