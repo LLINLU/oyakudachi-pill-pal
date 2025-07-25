@@ -28,11 +28,6 @@ const FREQUENCY_OPTIONS: MedicationFrequency[] = [
     label: '1日3回',
     times: ['朝', '昼', '夜'],
     defaultTimes: ['08:00', '12:00', '20:00']
-  },
-  {
-    label: '毎食後',
-    times: ['朝食後', '昼食後', '夕食後'],
-    defaultTimes: ['08:30', '12:30', '19:30']
   }
 ];
 
