@@ -128,20 +128,28 @@ export const useMedicationData = () => {
     setShowTomorrowSchedule(true);
   };
 
-  const addManualMedications = (manualMeds: { name: string; time: string; dosage: string }[]) => {
-    const newMedications: Medication[] = manualMeds.map((manual, index) => ({
-      id: Date.now() + index,
-      name: manual.dosage ? `${manual.name} (${manual.dosage})` : manual.name,
-      time: manual.time,
-      image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
-      taken: false,
-      postponed: false
-    }));
+  const addManualMedications = (manualMeds: { name: string; dosage: string; frequency: string; times: string[] }[]) => {
+    const newMedications: Medication[] = [];
+    
+    manualMeds.forEach((med, index) => {
+      // Create separate medication entries for each time
+      med.times.forEach((time, timeIndex) => {
+        newMedications.push({
+          id: Date.now() + index * 1000 + timeIndex,
+          name: med.dosage ? `${med.name} (${med.dosage})` : med.name,
+          time: time,
+          image: '/lovable-uploads/c00a51fc-e53a-4810-932b-44be26439c5f.png',
+          taken: false,
+          postponed: false
+        });
+      });
+    });
 
     setMedications(prev => [...prev, ...newMedications]);
     
+    const totalEntries = newMedications.length;
     toast.success('お薬を追加しました', {
-      description: `${newMedications.length}種類のお薬が追加されました`,
+      description: `${manualMeds.length}種類のお薬、${totalEntries}回の服用時間が追加されました`,
       duration: 4000
     });
   };

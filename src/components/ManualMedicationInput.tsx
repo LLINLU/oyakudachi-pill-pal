@@ -3,30 +3,49 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { ArrowLeft, Plus, Trash2, Clock } from 'lucide-react';
 import { toast } from 'sonner';
-
-interface MedicationInput {
-  name: string;
-  time: string;
-  dosage: string;
-}
+import { MedicationInput, MedicationFrequency } from '@/types/medication';
 
 interface ManualMedicationInputProps {
   onBack: () => void;
   onMedicationsAdded: (medications: MedicationInput[]) => void;
 }
 
+const FREQUENCY_OPTIONS: MedicationFrequency[] = [
+  {
+    label: '1日1回',
+    times: ['朝'],
+    defaultTimes: ['08:00']
+  },
+  {
+    label: '1日2回',
+    times: ['朝', '夜'],
+    defaultTimes: ['08:00', '20:00']
+  },
+  {
+    label: '1日3回',
+    times: ['朝', '昼', '夜'],
+    defaultTimes: ['08:00', '12:00', '20:00']
+  },
+  {
+    label: '毎食後',
+    times: ['朝食後', '昼食後', '夕食後'],
+    defaultTimes: ['08:30', '12:30', '19:30']
+  }
+];
+
 export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
   onBack,
   onMedicationsAdded
 }) => {
   const [medications, setMedications] = useState<MedicationInput[]>([
-    { name: '', time: '', dosage: '' }
+    { name: '', dosage: '', frequency: '1日1回', times: ['08:00'] }
   ]);
 
   const addMedication = () => {
-    setMedications(prev => [...prev, { name: '', time: '', dosage: '' }]);
+    setMedications(prev => [...prev, { name: '', dosage: '', frequency: '1日1回', times: ['08:00'] }]);
   };
 
   const removeMedication = (index: number) => {
@@ -35,7 +54,7 @@ export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
     }
   };
 
-  const updateMedication = (index: number, field: keyof MedicationInput, value: string) => {
+  const updateMedication = (index: number, field: keyof MedicationInput, value: string | string[]) => {
     setMedications(prev => 
       prev.map((med, i) => 
         i === index ? { ...med, [field]: value } : med
@@ -43,21 +62,60 @@ export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
     );
   };
 
+  const updateMedicationFrequency = (index: number, frequency: string) => {
+    const selectedFrequency = FREQUENCY_OPTIONS.find(f => f.label === frequency);
+    if (selectedFrequency) {
+      setMedications(prev => 
+        prev.map((med, i) => 
+          i === index ? { 
+            ...med, 
+            frequency,
+            times: [...selectedFrequency.defaultTimes]
+          } : med
+        )
+      );
+    }
+  };
+
+  const updateMedicationTime = (index: number, timeIndex: number, time: string) => {
+    setMedications(prev => 
+      prev.map((med, i) => 
+        i === index ? { 
+          ...med, 
+          times: med.times.map((t, ti) => ti === timeIndex ? time : t)
+        } : med
+      )
+    );
+  };
+
   const handleSubmit = () => {
     const validMedications = medications.filter(med => 
-      med.name.trim() && med.time.trim()
+      med.name.trim() && med.times.some(time => time.trim())
     );
 
     if (validMedications.length === 0) {
       toast.error('少なくとも1つのお薬を入力してください', {
-        description: 'お薬名と時間は必須項目です'
+        description: 'お薬名と服用時間は必須項目です'
+      });
+      return;
+    }
+
+    // Validate that all times are filled for each medication
+    const invalidMedications = validMedications.filter(med => 
+      med.times.some(time => !time.trim())
+    );
+
+    if (invalidMedications.length > 0) {
+      toast.error('すべての服用時間を入力してください', {
+        description: '選択した頻度に応じてすべての時間を設定してください'
       });
       return;
     }
 
     onMedicationsAdded(validMedications);
+    const totalTimes = validMedications.reduce((sum, med) => sum + med.times.length, 0);
     toast.success('お薬を追加しました', {
-      description: `${validMedications.length}種類のお薬が追加されました`
+      description: `${validMedications.length}種類のお薬、${totalTimes}回の服用時間が追加されました`
     });
   };
 
@@ -95,7 +153,7 @@ export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
                 )}
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor={`name-${index}`}>お薬名 *</Label>
                 <Input
@@ -107,15 +165,47 @@ export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor={`time-${index}`}>服用時間 *</Label>
-                <Input
-                  id={`time-${index}`}
-                  type="time"
-                  value={medication.time}
-                  onChange={(e) => updateMedication(index, 'time', e.target.value)}
-                  className="w-full"
-                />
+              <div className="space-y-3">
+                <Label>服用頻度 *</Label>
+                <RadioGroup
+                  value={medication.frequency}
+                  onValueChange={(value) => updateMedicationFrequency(index, value)}
+                  className="grid grid-cols-2 gap-3"
+                >
+                  {FREQUENCY_OPTIONS.map((option) => (
+                    <div key={option.label} className="flex items-center space-x-2">
+                      <RadioGroupItem value={option.label} id={`frequency-${index}-${option.label}`} />
+                      <Label 
+                        htmlFor={`frequency-${index}-${option.label}`}
+                        className="text-sm font-normal cursor-pointer"
+                      >
+                        {option.label}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  服用時間 *
+                </Label>
+                <div className="space-y-3">
+                  {FREQUENCY_OPTIONS.find(f => f.label === medication.frequency)?.times.map((timeLabel, timeIndex) => (
+                    <div key={timeIndex} className="flex items-center gap-3">
+                      <Label className="min-w-[80px] text-sm text-muted-foreground">
+                        {timeLabel}
+                      </Label>
+                      <Input
+                        type="time"
+                        value={medication.times[timeIndex] || ''}
+                        onChange={(e) => updateMedicationTime(index, timeIndex, e.target.value)}
+                        className="flex-1"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-2">

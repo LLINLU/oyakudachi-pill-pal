@@ -15,3 +15,16 @@ export interface ScannedMedication {
   time: string;
   instructions: string;
 }
+
+export interface MedicationFrequency {
+  label: string;
+  times: string[];
+  defaultTimes: string[];
+}
+
+export interface MedicationInput {
+  name: string;
+  dosage: string;
+  frequency: string;
+  times: string[];
+}
