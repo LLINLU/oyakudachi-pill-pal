@@ -9,8 +9,8 @@ interface WelcomeScreenProps {
 export const WelcomeScreen = ({ onNext }: WelcomeScreenProps) => {
   return (
     <MobileAppContainer>
-      <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-50 to-green-50 p-4">
-        <Card className="w-full max-w-sm p-6 text-center space-y-6 animate-fade-in">
+      <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-50 to-green-50 p-6">
+        <div className="w-full text-center space-y-6 animate-fade-in">
           {/* Logo */}
           <div className="space-y-3">
             <div className="w-20 h-20 mx-auto bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center">
@@ -53,7 +53,7 @@ export const WelcomeScreen = ({ onNext }: WelcomeScreenProps) => {
           >
             始める
           </Button>
-        </Card>
+        </div>
       </div>
     </MobileAppContainer>
   );
