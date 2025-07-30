@@ -128,7 +128,7 @@ export const useMedicationData = () => {
     setShowTomorrowSchedule(true);
   };
 
-  const addManualMedications = (manualMeds: { name: string; dosage: string; frequency: string; times: string[] }[]) => {
+  const addManualMedications = (manualMeds: { name: string; dosage: string; frequency: string; mealTiming: string; times: string[] }[]) => {
     const newMedications: Medication[] = [];
     
     manualMeds.forEach((med, index) => {

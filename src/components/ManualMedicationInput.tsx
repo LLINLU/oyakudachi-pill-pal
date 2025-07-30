@@ -28,29 +28,48 @@ const FREQUENCY_OPTIONS: MedicationFrequency[] = [
     label: '1日3回',
     times: ['朝', '昼', '夜'],
     defaultTimes: ['08:00', '12:00', '20:00']
+  }
+];
+
+const MEAL_TIMING_OPTIONS = [
+  {
+    label: '時間指定',
+    value: 'specific',
+    timeSuffix: ''
   },
   {
     label: '食前',
-    times: ['朝食前', '昼食前', '夕食前'],
-    defaultTimes: ['07:30', '11:30', '18:00']
+    value: 'before_meals',
+    timeSuffix: '食前'
   },
   {
     label: '食後',
-    times: ['朝食後', '昼食後', '夕食後'],
-    defaultTimes: ['08:30', '12:30', '19:30']
+    value: 'after_meals', 
+    timeSuffix: '食後'
   }
 ];
+
+const getMealTimingDefaults = (mealTiming: string) => {
+  switch (mealTiming) {
+    case 'before_meals':
+      return ['07:30', '11:30', '18:00'];
+    case 'after_meals':
+      return ['08:30', '12:30', '19:30'];
+    default:
+      return ['08:00', '12:00', '20:00'];
+  }
+};
 
 export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
   onBack,
   onMedicationsAdded
 }) => {
   const [medications, setMedications] = useState<MedicationInput[]>([
-    { name: '', dosage: '', frequency: '1日1回', times: ['08:00'] }
+    { name: '', dosage: '', frequency: '1日1回', mealTiming: 'specific', times: ['08:00'] }
   ]);
 
   const addMedication = () => {
-    setMedications(prev => [...prev, { name: '', dosage: '', frequency: '1日1回', times: ['08:00'] }]);
+    setMedications(prev => [...prev, { name: '', dosage: '', frequency: '1日1回', mealTiming: 'specific', times: ['08:00'] }]);
   };
 
   const removeMedication = (index: number) => {
@@ -69,13 +88,40 @@ export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
 
   const updateMedicationFrequency = (index: number, frequency: string) => {
     const selectedFrequency = FREQUENCY_OPTIONS.find(f => f.label === frequency);
-    if (selectedFrequency) {
+    const currentMed = medications[index];
+    if (selectedFrequency && currentMed) {
+      const defaultTimes = getMealTimingDefaults(currentMed.mealTiming);
+      const timesToUse = selectedFrequency.defaultTimes.length <= defaultTimes.length 
+        ? selectedFrequency.defaultTimes 
+        : defaultTimes.slice(0, selectedFrequency.defaultTimes.length);
+      
       setMedications(prev => 
         prev.map((med, i) => 
           i === index ? { 
             ...med, 
             frequency,
-            times: [...selectedFrequency.defaultTimes]
+            times: [...timesToUse]
+          } : med
+        )
+      );
+    }
+  };
+
+  const updateMedicationMealTiming = (index: number, mealTiming: string) => {
+    const currentMed = medications[index];
+    const selectedFrequency = FREQUENCY_OPTIONS.find(f => f.label === currentMed.frequency);
+    if (selectedFrequency) {
+      const defaultTimes = getMealTimingDefaults(mealTiming);
+      const timesToUse = selectedFrequency.defaultTimes.length <= defaultTimes.length 
+        ? defaultTimes.slice(0, selectedFrequency.defaultTimes.length)
+        : selectedFrequency.defaultTimes;
+      
+      setMedications(prev => 
+        prev.map((med, i) => 
+          i === index ? { 
+            ...med, 
+            mealTiming,
+            times: [...timesToUse]
           } : med
         )
       );
@@ -175,7 +221,7 @@ export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
                 <RadioGroup
                   value={medication.frequency}
                   onValueChange={(value) => updateMedicationFrequency(index, value)}
-                  className="grid grid-cols-2 gap-3"
+                  className="grid grid-cols-1 gap-3"
                 >
                   {FREQUENCY_OPTIONS.map((option) => (
                     <div key={option.label} className="flex items-center space-x-2">
@@ -192,26 +238,54 @@ export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
               </div>
 
               <div className="space-y-3">
+                <Label>服用タイミング *</Label>
+                <RadioGroup
+                  value={medication.mealTiming}
+                  onValueChange={(value) => updateMedicationMealTiming(index, value)}
+                  className="grid grid-cols-1 gap-3"
+                >
+                  {MEAL_TIMING_OPTIONS.map((option) => (
+                    <div key={option.value} className="flex items-center space-x-2">
+                      <RadioGroupItem value={option.value} id={`meal-timing-${index}-${option.value}`} />
+                      <Label 
+                        htmlFor={`meal-timing-${index}-${option.value}`}
+                        className="text-sm font-normal cursor-pointer"
+                      >
+                        {option.label}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+
+              <div className="space-y-3">
                 <Label className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
                   服用時間 *
                 </Label>
                 <div className="space-y-3">
-                  {FREQUENCY_OPTIONS.find(f => f.label === medication.frequency)?.times.map((timeLabel, timeIndex) => (
-                    <div key={timeIndex} className="flex items-center gap-3">
-                      {medication.frequency !== '1日1回' && (
-                        <Label className="min-w-[80px] text-sm text-muted-foreground">
-                          {timeLabel}
-                        </Label>
-                      )}
-                      <Input
-                        type="time"
-                        value={medication.times[timeIndex] || ''}
-                        onChange={(e) => updateMedicationTime(index, timeIndex, e.target.value)}
-                        className="flex-1"
-                      />
-                    </div>
-                  ))}
+                  {FREQUENCY_OPTIONS.find(f => f.label === medication.frequency)?.times.map((timeLabel, timeIndex) => {
+                    const mealTimingOption = MEAL_TIMING_OPTIONS.find(opt => opt.value === medication.mealTiming);
+                    const displayLabel = mealTimingOption?.timeSuffix 
+                      ? `${timeLabel}${mealTimingOption.timeSuffix}`
+                      : timeLabel;
+                    
+                    return (
+                      <div key={timeIndex} className="flex items-center gap-3">
+                        {medication.frequency !== '1日1回' && (
+                          <Label className="min-w-[100px] text-sm text-muted-foreground">
+                            {displayLabel}
+                          </Label>
+                        )}
+                        <Input
+                          type="time"
+                          value={medication.times[timeIndex] || ''}
+                          onChange={(e) => updateMedicationTime(index, timeIndex, e.target.value)}
+                          className="flex-1"
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 

@@ -26,5 +26,6 @@ export interface MedicationInput {
   name: string;
   dosage: string;
   frequency: string;
+  mealTiming: string;
   times: string[];
 }
