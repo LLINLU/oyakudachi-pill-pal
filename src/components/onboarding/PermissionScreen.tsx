@@ -48,8 +48,8 @@ export const PermissionScreen = ({ onNext, onPermissionChange }: PermissionScree
 
   return (
     <MobileAppContainer>
-      <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-50 to-green-50 p-4">
-        <Card className="w-full max-w-sm p-5 space-y-5 animate-fade-in">
+      <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-50 to-green-50 p-6">
+        <div className="w-full p-6 space-y-5 animate-fade-in">
           <div className="text-center space-y-2">
             <h2 className="text-lg font-bold text-foreground japanese-text">
               アクセス許可
@@ -128,7 +128,7 @@ export const PermissionScreen = ({ onNext, onPermissionChange }: PermissionScree
           >
             次へ
           </Button>
-        </Card>
+        </div>
       </div>
     </MobileAppContainer>
   );
