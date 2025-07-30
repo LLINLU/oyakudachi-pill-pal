@@ -11,8 +11,8 @@ interface FamilySetupScreenProps {
 export const FamilySetupScreen = ({ onSetupFamily, onSkipFamily }: FamilySetupScreenProps) => {
   return (
     <MobileAppContainer>
-      <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-50 to-green-50 p-4">
-        <Card className="w-full max-w-sm p-5 space-y-5 animate-fade-in">
+      <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-50 to-green-50 p-6">
+        <div className="w-full p-6 space-y-5 animate-fade-in">
           {/* Header */}
           <div className="text-center space-y-3">
             <div className="w-16 h-16 mx-auto bg-gradient-to-br from-pink-100 to-purple-100 rounded-full flex items-center justify-center">
@@ -66,7 +66,7 @@ export const FamilySetupScreen = ({ onSetupFamily, onSkipFamily }: FamilySetupSc
           <p className="text-xs text-muted-foreground text-center japanese-text">
             後からアプリの設定で変更できます
           </p>
-        </Card>
+        </div>
       </div>
     </MobileAppContainer>
   );
