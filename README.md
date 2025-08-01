@@ -101,14 +101,17 @@ chmod +x dev.sh
 
 #### 🚀 GitHub Codespaces（推荐，一键启动）
 
+**最简单的代码审查方法：**
+
 1. **在Pull Request页面点击"Code"按钮**
 2. **选择"Codespaces"标签**
-3. **点击"Create codespace on [分支名]"**
-4. **等待环境自动设置完成**
+3. **点击"Create codespace on feature/gmail-api-integration-v2"**
+4. **等待环境自动设置完成（约1-2分钟）**
 5. **在终端运行：`./start-codespaces.sh`**
 6. **访问：http://localhost:3000**
 
-> 📖 详细指南：[CODESPACES_GUIDE.md](./CODESPACES_GUIDE.md)
+> 📖 **详细指南**：[CODESPACES_GUIDE.md](./CODESPACES_GUIDE.md)
+> 🚀 **快速指南**：[QUICK_START.md](./QUICK_START.md)
 
 #### 方法1：使用GitHub Secrets（推荐，安全）
 ```bash
@@ -135,11 +138,7 @@ cp env.template .env
 docker-compose up --build
 ```
 
-#### 方法3：GitHub Codespaces
-1. 在Pull Request页面点击"Code"按钮
-2. 选择"Codespaces"标签
-3. 点击"Create codespace on main"
-4. 在Codespaces中运行 `docker-compose up --build`
+
 
 #### 方法4：本地测试
 ```bash
