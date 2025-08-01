@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      target: production
+    ports:
+      - "8000:8000"  # 后端API
+      - "3000:3000"  # 前端静态文件服务
+    environment:
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+      - GMAIL_CREDENTIALS_FILE=${GMAIL_CREDENTIALS_FILE}
+      - GMAIL_TOKEN_FILE=${GMAIL_TOKEN_FILE}
+      - NODE_ENV=production
+    volumes:
+      - ./credentials.json:/app/credentials.json  # Gmail凭证
+      - ./token.json:/app/token.json  # Gmail令牌
+    env_file:
+      - .env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3 

@@ -19,6 +19,7 @@ import { Volume2, Camera } from 'lucide-react';
 import { useNotificationManager } from '@/hooks/useNotificationManager';
 import { useDeepLinkHandler } from '@/hooks/useDeepLinkHandler';
 
+
 const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showVoiceChat, setShowVoiceChat] = useState(false);
@@ -228,30 +229,34 @@ const Index = () => {
         </DialogContent>
       </Dialog>
       
-      <div className="absolute bottom-4 left-4 right-4 flex items-center space-x-4">
-        <Button
-          onClick={() => setShowHandbookScanner(true)}
-          variant="outline"
-          className="h-16 w-16 rounded-full text-blue-600 border-blue-200 transition-all duration-300 hover:scale-105"
-          style={{ backgroundColor: 'aliceblue' }}
-          aria-label="薬手帳をスキャン"
-        >
-          <Camera className="h-6 w-6" />
-        </Button>
-        
-        {nextMedication && !showTomorrowSchedule && (
+      <div className="absolute bottom-4 left-4 right-4 flex flex-col space-y-4">
+        <div className="flex items-center space-x-4">
           <Button
-            onClick={playHomePageVoiceReminder}
+            onClick={() => setShowHandbookScanner(true)}
             variant="outline"
-            className="flex-1 h-16 px-6 hover:bg-blue-50 text-base font-semibold rounded-full transition-all duration-300 hover:scale-105 text-blue-700 border-blue-200"
-            disabled={isVoicePlaying}
+            className="h-16 w-16 rounded-full text-blue-600 border-blue-200 transition-all duration-300 hover:scale-105"
+            style={{ backgroundColor: 'aliceblue' }}
+            aria-label="薬手帳をスキャン"
           >
-            <Volume2 className={`h-5 w-5 mr-2 ${isVoicePlaying ? 'animate-pulse' : ''}`} />
-            {isVoicePlaying ? '音声再生中...' : '音声で確認'}
+            <Camera className="h-6 w-6" />
           </Button>
-        )}
+          
+          {nextMedication && !showTomorrowSchedule && (
+            <Button
+              onClick={playHomePageVoiceReminder}
+              variant="outline"
+              className="flex-1 h-16 px-6 hover:bg-blue-50 text-base font-semibold rounded-full transition-all duration-300 hover:scale-105 text-blue-700 border-blue-200"
+              disabled={isVoicePlaying}
+            >
+              <Volume2 className={`h-5 w-5 mr-2 ${isVoicePlaying ? 'animate-pulse' : ''}`} />
+              {isVoicePlaying ? '音声再生中...' : '音声で確認'}
+            </Button>
+          )}
+          
+          <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
+        </div>
         
-        <FloatingVoiceButton onVoiceChat={() => setShowVoiceChat(true)} />
+
       </div>
     </MobileAppContainer>
   );

@@ -1,0 +1,196 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-japanese;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  /* Mobile-optimized typography */
+  h1 { @apply text-3xl md:text-4xl font-bold; }
+  h2 { @apply text-2xl md:text-3xl font-bold; }
+  h3 { @apply text-xl md:text-2xl font-bold; }
+
+  /* High contrast for maximum readability */
+  .medication-text {
+    @apply text-gray-900;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  /* Mobile-optimized touch targets */
+  .mobile-button {
+    @apply min-h-[48px] min-w-[48px] text-lg;
+  }
+
+  /* Simplified animations for mobile */
+  .gentle-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .gentle-hover:hover {
+    @apply scale-[1.02] shadow-lg;
+  }
+
+  /* Voice interface visual feedback */
+  .voice-listening {
+    @apply animate-pulse ring-4 ring-gray-300;
+  }
+
+  .voice-speaking {
+    @apply animate-bounce;
+  }
+
+  /* iOS-style design elements */
+  .ios-card {
+    @apply bg-white border border-gray-200 shadow-lg rounded-2xl;
+  }
+
+  .ios-button {
+    @apply bg-blue-500 text-white font-semibold rounded-xl transition-all duration-200;
+  }
+
+  .ios-button:hover {
+    @apply bg-blue-600 scale-[1.02];
+  }
+
+  /* Accessibility improvements with larger focus indicators */
+  .focus-visible {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+  }
+
+  /* Japanese text optimizations for mobile */
+  .japanese-text {
+    font-feature-settings: "palt" 1, "pkna" 1;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.02em;
+  }
+
+  /* iOS status bar styles */
+  .ios-status-bar {
+    @apply bg-white text-black font-medium text-sm;
+  }
+
+  /* Mobile container styles */
+  .mobile-container {
+    @apply w-[393px] h-[852px] bg-white rounded-[2.5rem] overflow-hidden;
+  }
+}
+
+/* Hide scrollbars for cleaner mobile look */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile-optimized touch targets */
+button, a, input {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Mobile-optimized button text */
+button {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  padding: 0.75rem 1rem !important;
+}
+
+/* iOS-style animations */
+@keyframes ios-scale {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
+.ios-tap {
+  animation: ios-scale 0.15s ease-out;
+}
