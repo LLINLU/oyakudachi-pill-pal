@@ -111,8 +111,8 @@ const Index = () => {
       <MobileAppContainer>
         <MedicationHandbookScanner
           onBack={() => setShowHandbookScanner(false)}
-          onMedicationsScanned={(medications) => {
-            addScannedMedications(medications);
+          onMedicationsScanned={async (medications) => {
+            await addScannedMedications(medications);
             setShowHandbookScanner(false);
           }}
         />
@@ -126,8 +126,8 @@ const Index = () => {
       <MobileAppContainer>
         <ManualMedicationInput
           onBack={() => setShowManualInput(false)}
-          onMedicationsAdded={(medications) => {
-            addManualMedications(medications);
+          onMedicationsAdded={async (medications) => {
+            await addManualMedications(medications);
             setShowManualInput(false);
           }}
         />

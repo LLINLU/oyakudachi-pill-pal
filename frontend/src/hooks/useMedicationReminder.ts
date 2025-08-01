@@ -56,7 +56,7 @@ export const useMedicationReminder = () => {
   const handleMedicationTaken = async () => {
     if (!currentMedication) return;
 
-    markMedicationTaken(currentMedication.id);
+    await markMedicationTaken(currentMedication.id);
     
     toast.success('お薬を飲みました', {
       description: 'ご家族に通知を送信しています...',
@@ -80,7 +80,7 @@ export const useMedicationReminder = () => {
   const handleMedicationPostponed = async () => {
     if (!currentMedication) return;
 
-    markMedicationPostponed(currentMedication.id);
+    await markMedicationPostponed(currentMedication.id);
     
     toast.info('お薬を後で飲むことにしました', {
       description: 'ご家族に通知を送信しています...',

@@ -139,7 +139,7 @@ export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validMedications = medications.filter(med => 
       med.name.trim() && med.times.some(time => time.trim())
     );
@@ -163,7 +163,8 @@ export const ManualMedicationInput: React.FC<ManualMedicationInputProps> = ({
       return;
     }
 
-    onMedicationsAdded(validMedications);
+    // 调用异步的药物添加函数
+    await onMedicationsAdded(validMedications);
     const totalTimes = validMedications.reduce((sum, med) => sum + med.times.length, 0);
     toast.success('お薬を追加しました', {
       description: `${validMedications.length}種類のお薬、${totalTimes}回の服用時間が追加されました`
