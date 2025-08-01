@@ -74,6 +74,8 @@ pydantic-settings==2.1.0
 httpx==0.25.2
 EOF
     echo "✅ 创建requirements.txt文件"
+else
+    echo "✅ requirements.txt文件已存在"
 fi
 
 # 复制文件到app目录
