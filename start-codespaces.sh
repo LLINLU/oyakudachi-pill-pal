@@ -80,6 +80,7 @@ fi
 
 # 启动Docker服务
 echo "🐳 启动Docker服务..."
+echo "🔧 使用开发模式启动（支持热重载）"
 docker-compose up --build
 
 echo ""

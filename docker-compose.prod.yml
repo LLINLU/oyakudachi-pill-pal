@@ -4,17 +4,16 @@ services:
   app:
     build:
       context: .
-      target: ${BUILD_TARGET:-development}
+      target: production
     ports:
       - "8000:8000"  # 后端API
-      - "3000:3000"  # 前端开发服务器
+      - "3000:3000"  # 前端静态文件服务
     environment:
       - SUPABASE_DB_URL=${SUPABASE_DB_URL}
       - GMAIL_CREDENTIALS_FILE=${GMAIL_CREDENTIALS_FILE}
       - GMAIL_TOKEN_FILE=${GMAIL_TOKEN_FILE}
+      - NODE_ENV=production
     volumes:
-      - ./app:/app/app  # 后端代码热重载
-      - ./frontend:/app/frontend  # 前端代码热重载
       - ./credentials.json:/app/credentials.json  # Gmail凭证
       - ./token.json:/app/token.json  # Gmail令牌
     env_file:
@@ -24,19 +23,4 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
-      retries: 3
-
-  # 可选：添加数据库服务
-  # postgres:
-  #   image: postgres:15
-  #   environment:
-  #     POSTGRES_DB: reminder_bot
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: password
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-
-# volumes:
-#   postgres_data: 
+      retries: 3 
