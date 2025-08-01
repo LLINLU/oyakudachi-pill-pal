@@ -105,6 +105,10 @@ chmod +x setup.sh
 # 3. 启动开发环境
 chmod +x dev.sh
 ./dev.sh
+
+# 或者使用简化启动脚本（推荐，解决ARM64兼容性问题）
+chmod +x start-simple.sh
+./start-simple.sh
 ```
 
 ## 🔍 Pull Request 预览
@@ -126,6 +130,9 @@ chmod +x dev.sh
 
 > 📖 **详细指南**：[CODESPACES_GUIDE.md](./CODESPACES_GUIDE.md)
 > 🚀 **快速指南**：[QUICK_START.md](./QUICK_START.md)
+> 🧪 **测试指南**：[CODESPACES_TEST_GUIDE.md](./CODESPACES_TEST_GUIDE.md)
+
+**💡 重要提示：如果你使用M1/M2 Mac，建议在GitHub Codespaces中测试Docker环境，避免本地ARM64兼容性问题**
 
 #### 方法1：使用GitHub Secrets（推荐，安全）
 ```bash
