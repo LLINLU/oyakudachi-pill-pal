@@ -58,6 +58,26 @@ if [ ! -f token.json ]; then
     echo "✅ 创建token.json文件"
 fi
 
+if [ ! -f requirements.txt ]; then
+    echo "❌ 缺少requirements.txt文件，正在创建..."
+    cat > requirements.txt << EOF
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+python-dotenv==1.0.0
+google-auth==2.23.4
+google-auth-oauthlib==1.1.0
+google-auth-httplib2==0.1.1
+google-api-python-client==2.108.0
+psycopg2-binary==2.9.9
+sqlmodel==0.0.14
+pydantic==2.5.0
+pydantic-settings==2.1.0
+httpx==0.25.2
+EOF
+    echo "✅ 创建requirements.txt文件"
+fi
+
 # 启动Docker服务
 echo "🐳 启动Docker服务..."
 docker-compose up --build
