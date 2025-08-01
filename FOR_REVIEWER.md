@@ -1,98 +1,92 @@
-# 📋 给原作者的代码审查指南
+# 给原作者的测试指南
 
-## 🎯 快速预览功能变更
+## 🎯 快速测试功能
 
-你好！我已经为你的代码审查准备了完整的GitHub Codespaces环境配置。现在你可以轻松地查看我添加的所有功能变更。
+### 方法1：GitHub Codespaces（推荐）
 
-## 🚀 一键启动步骤
+1. **在Pull Request页面点击"Code"按钮**
+2. **选择"Codespaces"标签**
+3. **点击"Create codespace on feature/gmail-api-integration-v2"**
+4. **等待环境自动设置完成（约1-2分钟）**
+5. **在终端运行：`./start-codespaces.sh`**
+6. **访问：http://localhost:3000**
 
-### 最简单的方法（推荐）
+### 方法2：本地Docker
 
-1. **在Pull Request页面**
-   - 点击绿色的"Code"按钮
-   - 选择"Codespaces"标签
-   - 点击"Create codespace on [分支名]"
+```bash
+# 克隆项目
+git clone https://github.com/yansuu/oyakudachi-pill-pal.git
+cd oyakudachi-pill-pal
+git checkout feature/gmail-api-integration-v2
 
-2. **等待环境设置**
-   - Codespaces会自动安装所有依赖
-   - 创建必要的配置文件
-   - 设置开发环境
+# 配置环境
+cp env.example .env
 
-3. **启动应用**
-   ```bash
-   # 在Codespaces终端中运行
-   ./start-codespaces.sh
-   ```
+# 启动服务
+docker-compose up --build
+```
 
-4. **查看功能**
-   - 前端：http://localhost:3000
-   - 后端API：http://localhost:8000
-   - API文档：http://localhost:8000/docs
+## 🧪 功能测试清单
 
-## 🔧 我为你配置了什么
+### 基础功能测试
+- [ ] 前端页面正常加载 (http://localhost:3000)
+- [ ] 后端API正常响应 (http://localhost:8000/health)
+- [ ] API文档可访问 (http://localhost:8000/docs)
 
-### 1. GitHub Codespaces配置
-- `.devcontainer/devcontainer.json` - Codespaces环境配置
-- `.devcontainer/setup.sh` - 自动环境设置脚本
-- `start-codespaces.sh` - 一键启动脚本
+### 邮件功能测试
+- [ ] 邮件发送API测试
+- [ ] 美观的HTML邮件模板
+- [ ] Gmail API认证流程
 
-### 2. 环境文件
-- 自动创建`.env`配置文件
-- 生成示例`credentials.json`文件
-- 创建空的`token.json`文件
+### 测试邮件发送
 
-### 3. 文档
-- `CODESPACES_GUIDE.md` - 详细使用指南
-- 更新了`README.md` - 添加Codespaces说明
+```bash
+# 测试基础邮件发送
+curl -X POST http://localhost:8000/api/send-email \
+  -H "Content-Type: application/json" \
+  -d '{"to": "your-email@example.com", "subject": "Test Email", "body": "Hello World"}'
 
-## 📝 主要功能变更
+# 测试美观的服药通知邮件
+curl -X POST http://localhost:8000/api/send-email \
+  -H "Content-Type: application/json" \
+  -d '{"to": "your-email@example.com", "subject": "お薬服用のお知らせ", "medication_name": "アスピリン 100mg", "scheduled_time": "09:00", "status": "服用済み"}'
+```
 
-### 新增功能
-1. **Gmail API集成** - 自动发送药物提醒邮件
-2. **改进的用户界面** - 响应式设计和移动端优化
-3. **增强的数据管理** - 实时同步和离线支持
+## 🔧 主要功能变更
 
-### 技术改进
-- 升级依赖版本
-- 优化构建性能
-- 改进错误处理
-- 增强安全性
+### 1. 邮件发送功能
+- ✅ 集成Gmail API
+- ✅ 美观的HTML邮件模板
+- ✅ 自动检测HTML内容格式
+- ✅ 支持动态药品信息
 
-## 🐛 如果遇到问题
+### 2. 启动脚本优化
+- ✅ 简化启动脚本解决ARM64兼容性
+- ✅ Codespaces一键启动
+- ✅ 自动配置文件创建
 
-### 常见解决方案
+### 3. 开发体验改进
+- ✅ 热重载支持
+- ✅ 详细的错误日志
+- ✅ 测试脚本和工具
 
-1. **端口被占用**
-   ```bash
-   docker-compose down
-   docker-compose up --build
-   ```
+## 📧 邮件模板特点
 
-2. **构建失败**
-   ```bash
-   docker system prune -a
-   ./start-codespaces.sh
-   ```
+新的邮件模板包含：
+- 🎨 美观的渐变设计
+- 📱 响应式布局
+- 💊 完整的药品信息展示
+- ⏰ 时间信息高亮显示
+- 🏷️ 状态标签
+- 💡 健康管理提示
 
-3. **查看日志**
-   ```bash
-   docker-compose logs -f
-   ```
+## 🚨 注意事项
 
-### 获取帮助
-- 查看详细指南：[CODESPACES_GUIDE.md](./CODESPACES_GUIDE.md)
-- 检查项目文档：[README.md](./README.md)
-- 创建GitHub Issue
+1. **Gmail API认证**：首次使用需要OAuth认证
+2. **敏感信息**：credentials.json和token.json已加入.gitignore
+3. **环境变量**：使用env.example作为配置模板
+4. **兼容性**：ARM64 Mac用户建议使用Codespaces测试
 
-## 💡 提示
+## 📞 联系方式
 
-- 这是一个演示环境，某些功能需要真实API密钥
-- 所有配置文件都是自动生成的，无需手动配置
-- 首次运行时会自动生成token.json文件
-- 前端和后端都会自动启动
-
----
-
-**感谢你的代码审查！** 🎉
-
-如果这个配置有任何问题，请告诉我，我会立即修复。 
+如有问题，请通过GitHub Issues或Pull Request评论联系。 

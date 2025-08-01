@@ -1,17 +1,12 @@
 #!/bin/bash
 
-echo "🚀 GitHub Codespaces 快速启动脚本"
+echo "�� GitHub Codespaces 一键启动脚本"
 echo "=================================="
 
-# 检查是否在Codespaces环境中
-if [ -n "$CODESPACES" ]; then
-    echo "✅ 检测到GitHub Codespaces环境"
-else
-    echo "⚠️  不在Codespaces环境中，但可以继续运行"
-fi
-
-# 检查必要文件
+# 检查并创建必要的文件
 echo "📋 检查配置文件..."
+
+# 创建.env文件
 if [ ! -f .env ]; then
     echo "❌ 缺少.env文件，正在创建..."
     cat > .env << EOF
@@ -33,6 +28,7 @@ EOF
     echo "✅ 创建.env文件"
 fi
 
+# 创建示例credentials.json
 if [ ! -f credentials.json ]; then
     echo "❌ 缺少credentials.json文件，正在创建示例文件..."
     cat > credentials.json << EOF
@@ -52,12 +48,14 @@ EOF
     echo "✅ 创建示例credentials.json文件"
 fi
 
+# 创建空的token.json
 if [ ! -f token.json ]; then
     echo "❌ 缺少token.json文件，正在创建..."
     echo '{}' > token.json
     echo "✅ 创建token.json文件"
 fi
 
+# 创建requirements.txt（如果不存在）
 if [ ! -f requirements.txt ]; then
     echo "❌ 缺少requirements.txt文件，正在创建..."
     cat > requirements.txt << EOF
@@ -78,18 +76,27 @@ EOF
     echo "✅ 创建requirements.txt文件"
 fi
 
-# 启动Docker服务
+# 复制文件到app目录
+echo "📁 复制配置文件到app目录..."
+cp credentials.json app/ 2>/dev/null || echo "⚠️ credentials.json复制失败"
+cp token.json app/ 2>/dev/null || echo "⚠️ token.json复制失败"
+
+echo ""
+echo "🎯 使用开发模式启动（支持热重载）"
+echo "=================================="
+
+# 启动Docker Compose
 echo "🐳 启动Docker服务..."
-echo "🔧 使用开发模式启动（支持热重载）"
 docker-compose up --build
 
 echo ""
-echo "🎉 启动完成！"
+echo "✅ 启动完成！"
 echo "📱 前端访问地址：http://localhost:3000"
 echo "🔧 后端API地址：http://localhost:8000"
 echo "📚 API文档地址：http://localhost:8000/docs"
 echo ""
 echo "💡 提示："
-echo "- 首次运行时会自动生成token.json"
-echo "- 需要真实Gmail API凭证才能发送邮件"
-echo "- 按 Ctrl+C 停止服务" 
+echo "- 按 Ctrl+C 停止所有服务"
+echo "- 后端支持热重载"
+echo "- 前端支持热重载"
+echo "- 邮件发送功能需要Gmail API认证" 
