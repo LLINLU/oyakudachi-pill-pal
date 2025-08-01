@@ -99,24 +99,49 @@ chmod +x dev.sh
 
 当有新的Pull Request时，你可以通过以下方式预览更改：
 
-#### 方法1：Docker一键启动（推荐）
+#### 🚀 GitHub Codespaces（推荐，一键启动）
+
+1. **在Pull Request页面点击"Code"按钮**
+2. **选择"Codespaces"标签**
+3. **点击"Create codespace on [分支名]"**
+4. **等待环境自动设置完成**
+5. **在终端运行：`./start-codespaces.sh`**
+6. **访问：http://localhost:3000**
+
+> 📖 详细指南：[CODESPACES_GUIDE.md](./CODESPACES_GUIDE.md)
+
+#### 方法1：使用GitHub Secrets（推荐，安全）
+```bash
+# 在Codespaces中运行
+chmod +x setup-secrets.sh
+./setup-secrets.sh
+
+# 使用Secrets配置启动
+docker-compose -f docker-compose.secrets.yml up --build
+```
+
+#### 方法2：Docker一键启动
 ```bash
 # 克隆PR分支
 git clone https://github.com/yansuu/oyakudachi-pill-pal.git
 cd oyakudachi-pill-pal
 git checkout feature/gmail-api-integration-v2
 
+# 配置环境变量
+cp env.template .env
+# 编辑 .env 文件，填入正确的配置
+
 # 一键启动
 docker-compose up --build
 ```
 
-#### 方法2：GitHub Codespaces
+#### 方法3：GitHub Codespaces
 1. 在Pull Request页面点击"Code"按钮
 2. 选择"Codespaces"标签
 3. 点击"Create codespace on main"
 4. 在Codespaces中运行 `docker-compose up --build`
 
-#### 方法3：本地测试
+#### 方法4：本地测试
 ```bash
 # 克隆PR分支
 git clone https://github.com/yansuu/oyakudachi-pill-pal.git
