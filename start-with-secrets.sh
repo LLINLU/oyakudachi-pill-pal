@@ -7,6 +7,18 @@ echo "=========================="
 if [ -n "$CODESPACES" ]; then
     echo "✅ 检测到Codespaces环境"
     
+    # 尝试从Repository Secrets读取（如果可用）
+    if [ -n "$GITHUB_REPOSITORY" ]; then
+        echo "📋 尝试从Repository Secrets读取配置..."
+        
+        # 检查是否有Repository Secrets环境变量
+        if [ -n "$GMAIL_CREDENTIALS_JSON" ] || [ -n "$GMAIL_TOKEN_JSON" ]; then
+            echo "✅ 检测到Repository Secrets环境变量"
+        else
+            echo "⚠️  Repository Secrets环境变量未设置，尝试其他方法"
+        fi
+    fi
+    
     # 运行secrets设置脚本
     echo "📋 设置GitHub Secrets..."
     ./setup-secrets.sh
