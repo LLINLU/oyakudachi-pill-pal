@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🚀 GitHub Codespaces 一键启动脚本"
+echo "🚀 GitHub Codespaces 简化启动脚本"
 echo "=================================="
 
 # 检查并创建必要的文件
@@ -55,34 +55,11 @@ if [ ! -f token.json ]; then
     echo "✅ 创建token.json文件"
 fi
 
-# 创建requirements.txt（如果不存在）
-if [ ! -f requirements.txt ]; then
-    echo "❌ 缺少requirements.txt文件，正在创建..."
-    cat > requirements.txt << EOF
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-python-multipart==0.0.6
-python-dotenv==1.0.0
-google-auth==2.23.4
-google-auth-oauthlib==1.1.0
-google-auth-httplib2==0.1.1
-google-api-python-client==2.108.0
-psycopg2-binary==2.9.9
-sqlmodel==0.0.14
-pydantic==2.5.0
-pydantic-settings==2.1.0
-httpx==0.25.2
-EOF
-    echo "✅ 创建requirements.txt文件"
-else
-    echo "✅ requirements.txt文件已存在"
-fi
-
 # 确保app目录存在
 echo "📁 确保app目录存在..."
 mkdir -p app
 
-# 复制文件到app目录（修复路径问题）
+# 复制文件到app目录
 echo "📁 复制配置文件到app目录..."
 if [ -f credentials.json ]; then
     cp credentials.json app/ 2>/dev/null && echo "✅ credentials.json复制成功" || echo "⚠️ credentials.json复制失败"
@@ -98,25 +75,95 @@ chmod 644 credentials.json 2>/dev/null || echo "⚠️ 设置credentials.json权
 chmod 644 token.json 2>/dev/null || echo "⚠️ 设置token.json权限失败"
 chmod 644 .env 2>/dev/null || echo "⚠️ 设置.env权限失败"
 
-# 确保start.sh有执行权限
-chmod +x start.sh 2>/dev/null || echo "⚠️ 设置start.sh权限失败"
-
 echo ""
-echo "🎯 使用开发模式启动（支持热重载）"
+echo "🎯 使用本地环境启动（无需Docker）"
 echo "=================================="
 
-# 启动Docker Compose
-echo "🐳 启动Docker服务..."
-docker-compose up --build
+# 检查Python环境
+echo "🐍 检查Python环境..."
+if ! command -v python3 &> /dev/null; then
+    echo "❌ Python3 未安装"
+    exit 1
+fi
+
+# 安装Python依赖
+echo "📦 安装Python依赖..."
+if [ -f requirements.txt ]; then
+    pip3 install -r requirements.txt
+else
+    echo "⚠️ requirements.txt不存在，安装基本依赖..."
+    pip3 install fastapi uvicorn python-dotenv google-auth google-auth-oauthlib google-api-python-client
+fi
+
+# 检查Node.js环境
+echo "📦 检查Node.js环境..."
+if ! command -v node &> /dev/null; then
+    echo "❌ Node.js 未安装"
+    exit 1
+fi
+
+# 安装前端依赖
+echo "📦 安装前端依赖..."
+cd frontend
+if [ -f package.json ]; then
+    npm install
+else
+    echo "❌ frontend/package.json不存在"
+    exit 1
+fi
+cd ..
+
+echo ""
+echo "🚀 启动服务..."
+echo "=================================="
+
+# 启动后端
+echo "🔧 启动后端服务器..."
+cd app && python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload &
+BACKEND_PID=$!
+
+# 等待后端启动
+echo "⏳ 等待后端启动..."
+sleep 10
+
+# 检查后端是否启动成功
+for i in {1..10}; do
+    if curl -f http://localhost:8000/health > /dev/null 2>&1; then
+        echo "✅ 后端启动成功"
+        break
+    else
+        echo "⏳ 等待后端启动... (尝试 $i/10)"
+        sleep 5
+    fi
+    
+    if [ $i -eq 10 ]; then
+        echo "❌ 后端启动失败，请检查日志"
+        exit 1
+    fi
+done
+
+# 启动前端
+echo "🎨 启动前端开发服务器..."
+cd frontend && npm run dev -- --host 0.0.0.0 --port 3000 &
+FRONTEND_PID=$!
+
+# 等待前端启动
+echo "⏳ 等待前端启动..."
+sleep 5
 
 echo ""
 echo "✅ 启动完成！"
 echo "📱 前端访问地址：http://localhost:3000"
 echo "🔧 后端API地址：http://localhost:8000"
 echo "📚 API文档地址：http://localhost:8000/docs"
+echo "🏥 健康检查：http://localhost:8000/health"
 echo ""
 echo "💡 提示："
 echo "- 按 Ctrl+C 停止所有服务"
 echo "- 后端支持热重载"
 echo "- 前端支持热重载"
-echo "- 邮件发送功能需要Gmail API认证" 
+echo "- 邮件发送功能需要Gmail API认证"
+
+# 等待用户中断
+trap "echo '🛑 正在停止服务...'; kill $BACKEND_PID $FRONTEND_PID 2>/dev/null; exit" INT TERM
+wait 

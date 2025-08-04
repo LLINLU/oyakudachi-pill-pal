@@ -9,14 +9,20 @@ services:
       - "8000:8000"  # 后端API
       - "3000:3000"  # 前端开发服务器
     environment:
-      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
-      - GMAIL_CREDENTIALS_FILE=${GMAIL_CREDENTIALS_FILE}
-      - GMAIL_TOKEN_FILE=${GMAIL_TOKEN_FILE}
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL:-postgresql://test:test@localhost:5432/test}
+      - GMAIL_CREDENTIALS_FILE=${GMAIL_CREDENTIALS_FILE:-credentials.json}
+      - GMAIL_TOKEN_FILE=${GMAIL_TOKEN_FILE:-token.json}
+      - DEBUG=${DEBUG:-true}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      # 从GitHub Secrets获取的变量
+      - GMAIL_CREDENTIALS_JSON=${GMAIL_CREDENTIALS_JSON}
+      - GMAIL_TOKEN_JSON=${GMAIL_TOKEN_JSON}
     volumes:
       - ./app:/app/app  # 后端代码热重载
       - ./frontend:/app/frontend  # 前端代码热重载
       - ./credentials.json:/app/credentials.json  # Gmail凭证
       - ./token.json:/app/token.json  # Gmail令牌
+      - ./.env:/app/.env  # 环境变量
     env_file:
       - .env
     restart: unless-stopped
@@ -25,6 +31,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 40s
+    depends_on: []
 
   # 可选：添加数据库服务
   # postgres:

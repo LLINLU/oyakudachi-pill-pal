@@ -137,11 +137,13 @@ chmod +x start-simple.sh
 #### 方法1：使用GitHub Secrets（推荐，安全）
 ```bash
 # 在Codespaces中运行
+chmod +x start-with-secrets.sh
+./start-with-secrets.sh
+
+# 或者手动设置
 chmod +x setup-secrets.sh
 ./setup-secrets.sh
-
-# 使用Secrets配置启动
-docker-compose -f docker-compose.secrets.yml up --build
+docker-compose up --build
 ```
 
 #### 方法2：Docker一键启动

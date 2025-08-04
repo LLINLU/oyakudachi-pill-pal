@@ -6,7 +6,7 @@
 
 ## 🎯 一键启动步骤
 
-### 方法1：GitHub Codespaces（推荐）
+### 方法1：简化启动（推荐，无需Docker）
 
 1. **打开Codespaces**
    - 在Pull Request页面点击"Code"按钮
@@ -20,14 +20,18 @@
 
 3. **启动应用**
    ```bash
-   # 在Codespaces终端中运行
-   docker-compose up --build
+   # 在Codespaces终端中运行（推荐）
+   ./start-codespaces-simple.sh
+   
+   # 或者使用Docker方式
+   ./start-codespaces.sh
    ```
 
 4. **访问应用**
    - 前端：http://localhost:3000
    - 后端API：http://localhost:8000
    - API文档：http://localhost:8000/docs
+   - 健康检查：http://localhost:8000/health
 
 ### 方法2：使用GitHub Secrets（更安全）
 
@@ -94,6 +98,9 @@ Codespaces会自动创建以下文件：
    # 检查端口使用情况
    lsof -i :3000
    lsof -i :8000
+   
+   # 停止占用端口的进程
+   pkill -f "uvicorn\|npm\|node"
    ```
 
 2. **Docker构建失败**
@@ -101,22 +108,74 @@ Codespaces会自动创建以下文件：
    # 清理Docker缓存
    docker system prune -a
    docker-compose up --build --force-recreate
+   
+   # 或者使用简化启动（推荐）
+   ./start-codespaces-simple.sh
    ```
 
 3. **依赖安装失败**
    ```bash
-   # 重新安装依赖
-   pip install -r requirements.txt
+   # 重新安装Python依赖
+   pip3 install -r requirements.txt
+   
+   # 重新安装前端依赖
    cd frontend && npm install
    ```
+
+4. **文件权限问题**
+   ```bash
+   # 设置文件权限
+   chmod +x start-codespaces-simple.sh
+   chmod +x start-codespaces.sh
+   chmod 644 credentials.json token.json .env
+   ```
+
+5. **Gmail API认证问题**
+   ```bash
+   # 检查认证状态
+   curl http://localhost:8000/api/gmail/status
+   
+   # 如果需要重新认证
+   curl http://localhost:8000/api/gmail/auth
+   ```
+
+### 启动方式对比
+
+| 启动方式 | 优点 | 缺点 | 适用场景 |
+|---------|------|------|----------|
+| `./start-codespaces-simple.sh` | 快速、简单、无需Docker | 需要本地Python/Node.js | 快速预览、开发测试 |
+| `./start-codespaces.sh` | 完整Docker环境 | 构建时间长、资源占用大 | 完整功能测试 |
+| `docker-compose up` | 标准Docker方式 | 需要Docker环境 | 生产环境模拟 |
 
 ### 获取帮助
 
 如果遇到问题：
 
-1. 检查Codespaces日志
-2. 查看Docker容器状态：`docker-compose ps`
-3. 查看应用日志：`docker-compose logs -f`
+1. **检查服务状态**
+   ```bash
+   # 检查后端健康状态
+   curl http://localhost:8000/health
+   
+   # 检查Gmail API状态
+   curl http://localhost:8000/api/gmail/status
+   ```
+
+2. **查看日志**
+   ```bash
+   # 查看Docker容器状态
+   docker-compose ps
+   
+   # 查看应用日志
+   docker-compose logs -f
+   ```
+
+3. **重置环境**
+   ```bash
+   # 清理并重新开始
+   docker-compose down
+   rm -f token.json
+   ./start-codespaces-simple.sh
+   ```
 
 ## 📞 联系信息
 
