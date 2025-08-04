@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => ({
     ],
     proxy: {
       '/api': {
-        target: 'http://localhost:8000', // 在Docker容器内使用localhost
+        target: 'http://127.0.0.1:8000', // 强制使用IPv4地址
         changeOrigin: true,
         secure: false,
         configure: (proxy, options) => {
