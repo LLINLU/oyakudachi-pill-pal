@@ -60,6 +60,14 @@ for i in {1..10}; do
     fi
 done
 
+# 修复前端代理配置
+echo "🔧 修复前端代理配置..."
+if [ -f "/app/frontend/vite.config.ts" ]; then
+    # 确保使用正确的代理配置
+    sed -i 's/target: .*localhost:8000.*/target: "http:\/\/localhost:8000",/' /app/frontend/vite.config.ts
+    echo "✅ 前端代理配置已修复"
+fi
+
 # 启动前端
 echo "🎨 启动前端开发服务器..."
 cd /app/frontend && npm run dev -- --host 0.0.0.0 --port 3000 &

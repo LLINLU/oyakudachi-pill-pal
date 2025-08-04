@@ -2,21 +2,18 @@
 
 一个集成了Gmail API的智能服药提醒系统，支持LINE通知和邮件通知。
 
-## 🚀 快速开始（推荐使用Docker）
+## 🚀 快速开始
 
-### 🎯 代码审查者快速启动（GitHub Codespaces）
-
-**原作者查看功能变更的最简单方法：**
+### 原作者查看功能变更的最简单方法：
 
 1. **在Pull Request页面点击"Code"按钮**
 2. **选择"Codespaces"标签**
 3. **点击"Create codespace on feature/gmail-api-integration-v2"**
 4. **等待环境自动设置完成（约1-2分钟）**
-5. **在终端运行：`./start-codespaces.sh`**
+5. **在终端运行：`./start-with-secrets.sh`**
 6. **访问：http://localhost:3000**
 
 > 📖 **详细指南**：[CODESPACES_GUIDE.md](./CODESPACES_GUIDE.md)
-> 🚀 **快速指南**：[QUICK_START.md](./QUICK_START.md)
 
 ### 本地开发启动
 
@@ -87,9 +84,6 @@ docker-compose logs -f
 
 # 停止服务
 docker-compose down
-
-# 重新构建
-docker-compose up --build --force-recreate
 ```
 
 ### 本地开发环境
@@ -105,85 +99,7 @@ chmod +x setup.sh
 # 3. 启动开发环境
 chmod +x dev.sh
 ./dev.sh
-
-# 或者使用简化启动脚本（推荐，解决ARM64兼容性问题）
-chmod +x start-simple.sh
-./start-simple.sh
 ```
-
-## 🔍 Pull Request 预览
-
-### 对于代码审查者
-
-当有新的Pull Request时，你可以通过以下方式预览更改：
-
-#### 🚀 GitHub Codespaces（推荐，一键启动）
-
-**最简单的代码审查方法：**
-
-1. **在Pull Request页面点击"Code"按钮**
-2. **选择"Codespaces"标签**
-3. **点击"Create codespace on feature/gmail-api-integration-v2"**
-4. **等待环境自动设置完成（约1-2分钟）**
-5. **在终端运行：`./start-codespaces.sh`**
-6. **访问：http://localhost:3000**
-
-> 📖 **详细指南**：[CODESPACES_GUIDE.md](./CODESPACES_GUIDE.md)
-> 🚀 **快速指南**：[QUICK_START.md](./QUICK_START.md)
-> 🧪 **测试指南**：[CODESPACES_TEST_GUIDE.md](./CODESPACES_TEST_GUIDE.md)
-
-**💡 重要提示：如果你使用M1/M2 Mac，建议在GitHub Codespaces中测试Docker环境，避免本地ARM64兼容性问题**
-
-#### 方法1：使用GitHub Secrets（推荐，安全）
-```bash
-# 在Codespaces中运行
-chmod +x start-with-secrets.sh
-./start-with-secrets.sh
-
-# 或者手动设置
-chmod +x setup-secrets.sh
-./setup-secrets.sh
-docker-compose up --build
-```
-
-#### 方法2：Docker一键启动
-```bash
-# 克隆PR分支
-git clone https://github.com/yansuu/oyakudachi-pill-pal.git
-cd oyakudachi-pill-pal
-git checkout feature/gmail-api-integration-v2
-
-# 配置环境变量
-cp env.template .env
-# 编辑 .env 文件，填入正确的配置
-
-# 一键启动
-docker-compose up --build
-```
-
-
-
-#### 方法4：本地测试
-```bash
-# 克隆PR分支
-git clone https://github.com/yansuu/oyakudachi-pill-pal.git
-cd oyakudachi-pill-pal
-git checkout feature/gmail-api-integration-v2
-
-# 快速启动（Docker）
-docker-compose up --build
-
-# 或本地启动
-./setup.sh
-./dev.sh
-```
-
-### 测试清单
-- [ ] 前端页面正常加载
-- [ ] 手动输入药物功能正常
-- [ ] 药物状态更新正常
-- [ ] 邮件通知功能正常
-- [ ] 数据库连接正常
 
 ## 📁 项目结构
 
@@ -212,8 +128,6 @@ line-reminder-bot/
    ```bash
    # 停止占用端口的容器
    docker stop $(docker ps -q)
-   
-   # 或者修改docker-compose.yml中的端口映射
    ```
 
 2. **Gmail API认证失败**
@@ -223,31 +137,6 @@ line-reminder-bot/
 3. **数据库连接失败**
    - 检查 `SUPABASE_DB_URL` 格式是否正确
    - 确认数据库服务是否正常运行
-
-4. **Docker构建失败**
-   ```bash
-   # 清理Docker缓存
-   docker system prune -a
-   
-   # 重新构建
-   docker-compose up --build --force-recreate
-   ```
-
-## 📝 部署说明
-
-### 生产环境部署
-
-```bash
-# 构建生产镜像
-docker build -t line-reminder-bot .
-
-# 运行生产容器
-docker run -d \
-  -p 8000:8000 \
-  -p 3000:3000 \
-  --env-file .env \
-  line-reminder-bot
-```
 
 ## 🤝 贡献指南
 
