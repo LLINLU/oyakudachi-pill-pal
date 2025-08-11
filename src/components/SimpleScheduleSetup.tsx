@@ -295,7 +295,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
 
       {/* Time input dialog */}
       <Dialog open={timeDialogOpen} onOpenChange={setTimeDialogOpen}>
-        <DialogContent className="absolute inset-0 w-full h-full rounded-none p-6 max-w-none">
+        <DialogContent className="absolute inset-0 w-full h-full rounded-[2.7rem] p-6 max-w-none overflow-hidden">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-center">
               {editingSlot === "morning" && "朝の時間を設定"}
