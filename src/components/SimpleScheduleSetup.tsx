@@ -43,7 +43,17 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
   };
 
   const toggleTime = (slot: "morning" | "noon" | "evening") => {
-    setActiveSlots((prev) => ({ ...prev, [slot]: !prev[slot] }));
+    if (frequency === 1) {
+      // For once daily, only allow one slot to be active
+      setActiveSlots({
+        morning: slot === "morning",
+        noon: slot === "noon", 
+        evening: slot === "evening"
+      });
+    } else {
+      // For multiple times daily, allow toggle behavior
+      setActiveSlots((prev) => ({ ...prev, [slot]: !prev[slot] }));
+    }
   };
 
   const openTimeDialog = (slot: "morning" | "noon" | "evening") => {
