@@ -27,6 +27,7 @@
     --accent-foreground: 222.2 47.4% 11.2%;
     --morning-selected: 202 100% 94%;
     --morning-border: 202 100% 94%;
+    --noon-selected: 45 100% 83%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -70,6 +71,7 @@
     --accent-foreground: 210 40% 98%;
     --morning-selected: 210 70% 22%;
     --morning-border: 210 70% 22%;
+    --noon-selected: 35 80% 30%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;

@@ -153,7 +153,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
                     type="button"
                     onClick={() => toggleTime("noon")}
                     className={`mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full border-2 text-2xl transition-all ${
-                      activeSlots.noon ? "bg-primary text-primary-foreground border-primary" : "bg-background border-muted-foreground/30"
+                      activeSlots.noon ? "bg-[hsl(var(--noon-selected))] text-accent-foreground border-[hsl(var(--noon-selected))]" : "bg-background border-muted-foreground/30"
                     }`}
                     aria-pressed={activeSlots.noon}
                   >
