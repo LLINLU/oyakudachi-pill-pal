@@ -69,9 +69,9 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
         // Otherwise, allow activation
         return { ...prev, [slot]: true };
       });
-    } else {
-      // For three times daily, allow toggle behavior
-      setActiveSlots((prev) => ({ ...prev, [slot]: !prev[slot] }));
+    } else if (frequency === 3) {
+      // For three times daily, all slots must remain active - no toggling allowed
+      return;
     }
   };
 
