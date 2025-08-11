@@ -295,7 +295,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
 
       {/* Time input dialog */}
       <Dialog open={timeDialogOpen} onOpenChange={setTimeDialogOpen}>
-        <DialogContent className="max-w-[85vw] sm:max-w-md">
+        <DialogContent className="max-w-[80vw] sm:max-w-sm mx-4">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-center">
               {editingSlot === "morning" && "朝の時間を設定"}
@@ -303,7 +303,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
               {editingSlot === "evening" && "晩の時間を設定"}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Large time display */}
             <div className="text-center">
               <div className="text-4xl font-bold text-primary mb-2">
@@ -313,7 +313,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
             </div>
             
             {/* Time picker with large buttons */}
-            <div className="flex justify-center gap-8">
+            <div className="flex justify-center gap-4 sm:gap-6">
               {/* Hour picker */}
               <div className="flex flex-col items-center space-y-2">
                 <Label className="text-sm font-medium">時</Label>
