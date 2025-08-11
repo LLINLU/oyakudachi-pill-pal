@@ -335,9 +335,19 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
                   >
                     <ChevronUp className="h-6 w-6" />
                   </Button>
-                  <div className="h-16 w-16 flex items-center justify-center bg-muted rounded-lg text-2xl font-bold">
-                    {tempHour.toString().padStart(2, '0')}
-                  </div>
+                  <input
+                    type="text"
+                    value={tempHour.toString().padStart(2, '0')}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      const hour = Math.min(Math.max(0, parseInt(value) || 0), 23);
+                      setTempHour(hour);
+                    }}
+                    onFocus={(e) => e.target.select()}
+                    maxLength={2}
+                    inputMode="numeric"
+                    className="h-16 w-16 flex items-center justify-center bg-muted rounded-lg text-2xl font-bold text-center border-none outline-none focus:ring-2 focus:ring-ring"
+                  />
                   <Button 
                     variant="outline" 
                     size="icon"
@@ -361,9 +371,19 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
                   >
                     <ChevronUp className="h-6 w-6" />
                   </Button>
-                  <div className="h-16 w-16 flex items-center justify-center bg-muted rounded-lg text-2xl font-bold">
-                    {tempMinute.toString().padStart(2, '0')}
-                  </div>
+                  <input
+                    type="text"
+                    value={tempMinute.toString().padStart(2, '0')}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      const minute = Math.min(Math.max(0, parseInt(value) || 0), 59);
+                      setTempMinute(minute);
+                    }}
+                    onFocus={(e) => e.target.select()}
+                    maxLength={2}
+                    inputMode="numeric"
+                    className="h-16 w-16 flex items-center justify-center bg-muted rounded-lg text-2xl font-bold text-center border-none outline-none focus:ring-2 focus:ring-ring"
+                  />
                   <Button 
                     variant="outline" 
                     size="icon"
