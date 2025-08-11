@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronUp, ChevronDown, X } from "lucide-react";
 import { toast } from "sonner";
 import type { MedicationInput } from "@/types/medication";
 
@@ -293,16 +292,26 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
         </div>
       </main>
 
-      {/* Time input dialog */}
-      <Dialog open={timeDialogOpen} onOpenChange={setTimeDialogOpen}>
-        <DialogContent className="absolute inset-0 w-full h-full rounded-[2.7rem] p-6 max-w-none overflow-hidden">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-center">
+      {/* Time input modal */}
+      {timeDialogOpen && (
+        <div className="absolute inset-0 z-50 bg-white rounded-[2.7rem] p-6 overflow-hidden">
+          {/* Modal Header */}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-center flex-1">
               {editingSlot === "morning" && "朝の時間を設定"}
               {editingSlot === "noon" && "昼の時間を設定"}
               {editingSlot === "evening" && "晩の時間を設定"}
-            </DialogTitle>
-          </DialogHeader>
+            </h2>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTimeDialogOpen(false)}
+              className="rounded-full opacity-70 hover:opacity-100"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+
           <div className="space-y-4">
             {/* Large time display */}
             <div className="text-center">
@@ -411,8 +420,8 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
               </Button>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
     </div>
   );
 };
