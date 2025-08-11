@@ -128,7 +128,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
                   type="button"
                   onClick={() => toggleTime("morning")}
                   className={`mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full border-2 text-2xl transition-all ${
-                    activeSlots.morning ? "bg-accent text-accent-foreground border-accent" : "bg-background border-muted-foreground/30"
+                    activeSlots.morning ? "bg-[hsl(var(--morning-selected))] text-accent-foreground border-accent" : "bg-background border-muted-foreground/30"
                   }`}
                   aria-pressed={activeSlots.morning}
                 >
