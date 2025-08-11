@@ -134,7 +134,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
                 >
                   <span role="img" aria-label="朝" className="text-4xl md:text-5xl">☀️</span>
                 </button>
-                <div className="text-sm font-semibold">朝</div>
+                <div className={`text-sm font-semibold ${!activeSlots.morning ? "opacity-50" : ""}`}>朝</div>
                 <button
                   type="button"
                   onClick={() => openTimeDialog("morning")}
@@ -184,7 +184,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
                 >
                   <span role="img" aria-label="晩" className="text-4xl md:text-5xl">🌙</span>
                 </button>
-                <div className="text-sm font-semibold">晩</div>
+                <div className={`text-sm font-semibold ${!activeSlots.evening ? "opacity-50" : ""}`}>晩</div>
                 <button
                   type="button"
                   onClick={() => openTimeDialog("evening")}
