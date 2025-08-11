@@ -113,7 +113,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
   };
 
   return (
-    <div className="w-full h-full bg-muted flex flex-col">
+    <div className="w-full h-full bg-white flex flex-col">
       <header className="bg-background p-4 shadow-sm flex items-center">
         <Button onClick={onBack} variant="ghost" size="icon" className="mr-3" aria-label="戻る">
           <ArrowLeft className="h-5 w-5" />
@@ -121,154 +121,152 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
         <h1 className="text-xl font-bold">お薬の服用設定</h1>
       </header>
 
-      <main className="flex-1 p-4">
-        <section className="mx-auto max-w-md bg-background rounded-2xl p-6 shadow-sm">
-          {/* 服用回数 */}
-          <div className="mb-7">
-            <h2 className="text-base font-semibold mb-3">服用回数</h2>
-            <div className="grid grid-cols-3 gap-3">
-              {[1, 2, 3].map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  onClick={() => handleSelectFrequency(n as 1 | 2 | 3)}
-                  className={`rounded-xl p-4 text-center border-2 transition-colors ${
-                    frequency === n ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
-                  }`}
-                  aria-pressed={frequency === n}
-                >
-                  <div className="text-2xl font-bold text-primary mb-0.5">{n}</div>
-                  <div className="text-xs text-muted-foreground">回/日</div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* 服用時間 */}
-          <div className="mb-7">
-            <h2 className="text-base font-semibold mb-3">服用時間</h2>
-            <div className="flex items-stretch justify-between gap-4">
-              {/* 朝 */}
-              <div className="flex-1 text-center">
-                <button
-                  type="button"
-                  onClick={() => toggleTime("morning")}
-                  className={`mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full border-2 text-2xl transition-all ${
-                    activeSlots.morning ? "bg-[hsl(var(--morning-selected))] text-accent-foreground border-[hsl(var(--morning-border))]" : "bg-background border-muted-foreground/30"
-                  }`}
-                  aria-pressed={activeSlots.morning}
-                >
-                  <span role="img" aria-label="朝" className="text-4xl md:text-5xl">☀️</span>
-                </button>
-                <div className={`text-sm font-semibold ${!activeSlots.morning ? "opacity-50" : ""}`}>朝</div>
-                <button
-                  type="button"
-                  onClick={() => openTimeDialog("morning")}
-                  className={`mt-1 inline-block rounded px-2 py-1 text-xs transition-colors ${
-                    times.morning !== "08:00" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {times.morning}
-                </button>
-              </div>
-
-              {/* 昼 */}
-              <div className="flex-1 text-center">
-                <button
-                  type="button"
-                  onClick={() => toggleTime("noon")}
-                  className={`mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full border-2 text-2xl transition-all ${
-                    activeSlots.noon ? "bg-[hsl(var(--noon-selected))] text-accent-foreground border-[hsl(var(--noon-selected))]" : "bg-background border-muted-foreground/30"
-                  }`}
-                  aria-pressed={activeSlots.noon}
-                >
-                  <span role="img" aria-label="昼" className="text-4xl md:text-5xl">🌤️</span>
-                </button>
-                <div className={`text-sm font-semibold ${!activeSlots.noon ? "opacity-50" : ""}`}>昼</div>
-                <button
-                  type="button"
-                  onClick={() => openTimeDialog("noon")}
-                  className={`mt-1 inline-block rounded px-2 py-1 text-xs transition-colors ${
-                    times.noon !== "12:00" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {times.noon}
-                </button>
-              </div>
-
-              {/* 晩 */}
-              <div className="flex-1 text-center">
-                <button
-                  type="button"
-                  onClick={() => toggleTime("evening")}
-                  className={`mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full border-2 text-2xl transition-all ${
-                    activeSlots.evening ? "bg-primary text-primary-foreground border-primary" : "bg-background border-muted-foreground/30"
-                  }`}
-                  aria-pressed={activeSlots.evening}
-                >
-                  <span role="img" aria-label="晩" className="text-4xl md:text-5xl">🌙</span>
-                </button>
-                <div className={`text-sm font-semibold ${!activeSlots.evening ? "opacity-50" : ""}`}>晩</div>
-                <button
-                  type="button"
-                  onClick={() => openTimeDialog("evening")}
-                  className={`mt-1 inline-block rounded px-2 py-1 text-xs transition-colors ${
-                    times.evening !== "20:00" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {times.evening}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* 食事のタイミング */}
-          <div>
-            <h2 className="text-base font-semibold mb-3">食事のタイミング</h2>
-            <div className="flex gap-3">
+      <main className="flex-1 p-6">
+        {/* 服用回数 */}
+        <div className="mb-7">
+          <h2 className="text-base font-semibold mb-3">服用回数</h2>
+          <div className="grid grid-cols-3 gap-3">
+            {[1, 2, 3].map((n) => (
               <button
+                key={n}
                 type="button"
-                onClick={() => setMealTiming("after_meals")}
-                className={`flex-1 rounded-lg px-3 py-3 text-sm border-2 transition-colors ${
-                  mealTiming === "after_meals" ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
+                onClick={() => handleSelectFrequency(n as 1 | 2 | 3)}
+                className={`rounded-xl p-4 text-center border-2 transition-colors ${
+                  frequency === n ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
                 }`}
-                aria-pressed={mealTiming === "after_meals"}
+                aria-pressed={frequency === n}
               >
-                食後
+                <div className="text-2xl font-bold text-primary mb-0.5">{n}</div>
+                <div className="text-xs text-muted-foreground">回/日</div>
               </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 服用時間 */}
+        <div className="mb-7">
+          <h2 className="text-base font-semibold mb-3">服用時間</h2>
+          <div className="flex items-stretch justify-between gap-4">
+            {/* 朝 */}
+            <div className="flex-1 text-center">
               <button
                 type="button"
-                onClick={() => setMealTiming("before_meals")}
-                className={`flex-1 rounded-lg px-3 py-3 text-sm border-2 transition-colors ${
-                  mealTiming === "before_meals" ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
+                onClick={() => toggleTime("morning")}
+                className={`mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full border-2 text-2xl transition-all ${
+                  activeSlots.morning ? "bg-[hsl(var(--morning-selected))] text-accent-foreground border-[hsl(var(--morning-border))]" : "bg-background border-muted-foreground/30"
                 }`}
-                aria-pressed={mealTiming === "before_meals"}
+                aria-pressed={activeSlots.morning}
               >
-                食前
+                <span role="img" aria-label="朝" className="text-4xl md:text-5xl">☀️</span>
               </button>
+              <div className={`text-sm font-semibold ${!activeSlots.morning ? "opacity-50" : ""}`}>朝</div>
               <button
                 type="button"
-                onClick={() => setMealTiming("specific")}
-                className={`flex-1 rounded-lg px-3 py-3 text-sm border-2 transition-colors whitespace-nowrap ${
-                  mealTiming === "specific" ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
+                onClick={() => openTimeDialog("morning")}
+                className={`mt-1 inline-block rounded px-2 py-1 text-xs transition-colors ${
+                  times.morning !== "08:00" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
                 }`}
-                aria-pressed={mealTiming === "specific"}
               >
-                関係なし
+                {times.morning}
+              </button>
+            </div>
+
+            {/* 昼 */}
+            <div className="flex-1 text-center">
+              <button
+                type="button"
+                onClick={() => toggleTime("noon")}
+                className={`mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full border-2 text-2xl transition-all ${
+                  activeSlots.noon ? "bg-[hsl(var(--noon-selected))] text-accent-foreground border-[hsl(var(--noon-selected))]" : "bg-background border-muted-foreground/30"
+                }`}
+                aria-pressed={activeSlots.noon}
+              >
+                <span role="img" aria-label="昼" className="text-4xl md:text-5xl">🌤️</span>
+              </button>
+              <div className={`text-sm font-semibold ${!activeSlots.noon ? "opacity-50" : ""}`}>昼</div>
+              <button
+                type="button"
+                onClick={() => openTimeDialog("noon")}
+                className={`mt-1 inline-block rounded px-2 py-1 text-xs transition-colors ${
+                  times.noon !== "12:00" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+                }`}
+              >
+                {times.noon}
+              </button>
+            </div>
+
+            {/* 晩 */}
+            <div className="flex-1 text-center">
+              <button
+                type="button"
+                onClick={() => toggleTime("evening")}
+                className={`mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full border-2 text-2xl transition-all ${
+                  activeSlots.evening ? "bg-primary text-primary-foreground border-primary" : "bg-background border-muted-foreground/30"
+                }`}
+                aria-pressed={activeSlots.evening}
+              >
+                <span role="img" aria-label="晩" className="text-4xl md:text-5xl">🌙</span>
+              </button>
+              <div className={`text-sm font-semibold ${!activeSlots.evening ? "opacity-50" : ""}`}>晩</div>
+              <button
+                type="button"
+                onClick={() => openTimeDialog("evening")}
+                className={`mt-1 inline-block rounded px-2 py-1 text-xs transition-colors ${
+                  times.evening !== "20:00" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+                }`}
+              >
+                {times.evening}
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Actions */}
-          <div className="mt-8 flex gap-3">
-            <Button variant="secondary" className="flex-1" onClick={onBack}>
-              キャンセル
-            </Button>
-            <Button className="flex-1" onClick={handleSave}>
-              保存
-            </Button>
+        {/* 食事のタイミング */}
+        <div>
+          <h2 className="text-base font-semibold mb-3">食事のタイミング</h2>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => setMealTiming("after_meals")}
+              className={`flex-1 rounded-lg px-3 py-3 text-sm border-2 transition-colors ${
+                mealTiming === "after_meals" ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
+              }`}
+              aria-pressed={mealTiming === "after_meals"}
+            >
+              食後
+            </button>
+            <button
+              type="button"
+              onClick={() => setMealTiming("before_meals")}
+              className={`flex-1 rounded-lg px-3 py-3 text-sm border-2 transition-colors ${
+                mealTiming === "before_meals" ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
+              }`}
+              aria-pressed={mealTiming === "before_meals"}
+            >
+              食前
+            </button>
+            <button
+              type="button"
+              onClick={() => setMealTiming("specific")}
+              className={`flex-1 rounded-lg px-3 py-3 text-sm border-2 transition-colors whitespace-nowrap ${
+                mealTiming === "specific" ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
+              }`}
+              aria-pressed={mealTiming === "specific"}
+            >
+              関係なし
+            </button>
           </div>
-        </section>
+        </div>
+
+        {/* Actions */}
+        <div className="mt-8 flex gap-3">
+          <Button variant="secondary" className="flex-1" onClick={onBack}>
+            キャンセル
+          </Button>
+          <Button className="flex-1" onClick={handleSave}>
+            保存
+          </Button>
+        </div>
       </main>
 
       {/* Time input dialog */}
