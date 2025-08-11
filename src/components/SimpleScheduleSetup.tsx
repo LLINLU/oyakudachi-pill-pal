@@ -43,13 +43,10 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
   };
 
   const toggleTime = (slot: "morning" | "noon" | "evening") => {
-    // Noon only available for 3 times/day
-    if (slot === "noon" && frequency !== 3) return;
     setActiveSlots((prev) => ({ ...prev, [slot]: !prev[slot] }));
   };
 
   const openTimeDialog = (slot: "morning" | "noon" | "evening") => {
-    if (slot === "noon" && frequency !== 3) return;
     setEditingSlot(slot);
     setTempTime(times[slot]);
     setTimeDialogOpen(true);
@@ -64,10 +61,10 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
   const selectedTimes: string[] = useMemo(() => {
     const list: string[] = [];
     if (activeSlots.morning) list.push(times.morning);
-    if (frequency === 3 && activeSlots.noon) list.push(times.noon);
+    if (activeSlots.noon) list.push(times.noon);
     if (activeSlots.evening) list.push(times.evening);
     return list;
-  }, [activeSlots, frequency, times]);
+  }, [activeSlots, times]);
 
   const handleSave = () => {
     if (selectedTimes.length === 0) {
@@ -147,30 +144,28 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
               </div>
 
               {/* 昼 */}
-              {frequency === 3 && (
-                <div className="flex-1 text-center">
-                  <button
-                    type="button"
-                    onClick={() => toggleTime("noon")}
-                    className={`mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full border-2 text-2xl transition-all ${
-                      activeSlots.noon ? "bg-[hsl(var(--noon-selected))] text-accent-foreground border-[hsl(var(--noon-selected))]" : "bg-background border-muted-foreground/30"
-                    }`}
-                    aria-pressed={activeSlots.noon}
-                  >
-                    <span role="img" aria-label="昼" className="text-4xl md:text-5xl">🌤️</span>
-                  </button>
-                  <div className="text-sm font-semibold">昼</div>
-                  <button
-                    type="button"
-                    onClick={() => openTimeDialog("noon")}
-                    className={`mt-1 inline-block rounded px-2 py-1 text-xs transition-colors ${
-                      times.noon !== "12:00" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {times.noon}
-                  </button>
-                </div>
-              )}
+              <div className="flex-1 text-center">
+                <button
+                  type="button"
+                  onClick={() => toggleTime("noon")}
+                  className={`mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full border-2 text-2xl transition-all ${
+                    activeSlots.noon ? "bg-[hsl(var(--noon-selected))] text-accent-foreground border-[hsl(var(--noon-selected))]" : "bg-background border-muted-foreground/30"
+                  }`}
+                  aria-pressed={activeSlots.noon}
+                >
+                  <span role="img" aria-label="昼" className="text-4xl md:text-5xl">🌤️</span>
+                </button>
+                <div className={`text-sm font-semibold ${!activeSlots.noon ? "opacity-50" : ""}`}>昼</div>
+                <button
+                  type="button"
+                  onClick={() => openTimeDialog("noon")}
+                  className={`mt-1 inline-block rounded px-2 py-1 text-xs transition-colors ${
+                    times.noon !== "12:00" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {times.noon}
+                </button>
+              </div>
 
               {/* 晩 */}
               <div className="flex-1 text-center">
