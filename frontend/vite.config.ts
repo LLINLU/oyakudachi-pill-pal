@@ -6,20 +6,15 @@ import { componentTagger } from "lovable-tagger";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
-    host: "0.0.0.0", // 改为0.0.0.0避免IPv6问题
+    host: "::",
     port: 3000,
     allowedHosts: [
-      "646ba3989f32.ngrok-free.app", // Current ngrok URL
-      "2cedf77407ae.ngrok-free.app", // Previous ngrok URL
-      "9087ca341829.ngrok-free.app", // Previous ngrok URL
-      "4b48b88db1f0.ngrok-free.app", // Previous ngrok URL
-      "694b6a1686f2.ngrok-free.app", // Previous ngrok URL
       "localhost",
       "127.0.0.1"
     ],
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000', // 强制使用IPv4地址
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
         configure: (proxy, options) => {
