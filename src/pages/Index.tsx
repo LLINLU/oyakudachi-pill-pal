@@ -5,7 +5,7 @@ import { useMedicationReminder } from '@/hooks/useMedicationReminder';
 import { MedicationCard } from '@/components/MedicationCard';
 import { HomePage } from '@/components/HomePage';
 import { EmptyStateHomeScreen } from '@/components/EmptyStateHomeScreen';
-import { ManualMedicationInput } from '@/components/ManualMedicationInput';
+import { SimpleScheduleSetup } from '@/components/SimpleScheduleSetup';
 import { NotificationStatus } from '@/components/NotificationStatus';
 import { VoiceConversationPage } from '@/components/VoiceConversationPage';
 import { FloatingVoiceButton } from '@/components/FloatingVoiceButton';
@@ -123,7 +123,7 @@ const Index = () => {
   if (showManualInput) {
     return (
       <MobileAppContainer>
-        <ManualMedicationInput
+        <SimpleScheduleSetup
           onBack={() => setShowManualInput(false)}
           onMedicationsAdded={(medications) => {
             addManualMedications(medications);
