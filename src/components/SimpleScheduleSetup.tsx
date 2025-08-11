@@ -132,7 +132,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
                   }`}
                   aria-pressed={activeSlots.morning}
                 >
-                  <span role="img" aria-label="朝">☀️</span>
+                  <span role="img" aria-label="朝" className="text-4xl md:text-5xl">☀️</span>
                 </button>
                 <div className="text-sm font-semibold">朝</div>
                 <button
@@ -157,7 +157,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
                     }`}
                     aria-pressed={activeSlots.noon}
                   >
-                    <span role="img" aria-label="昼">🌤️</span>
+                    <span role="img" aria-label="昼" className="text-4xl md:text-5xl">🌤️</span>
                   </button>
                   <div className="text-sm font-semibold">昼</div>
                   <button
@@ -182,7 +182,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
                   }`}
                   aria-pressed={activeSlots.evening}
                 >
-                  <span role="img" aria-label="晩">🌙</span>
+                  <span role="img" aria-label="晩" className="text-4xl md:text-5xl">🌙</span>
                 </button>
                 <div className="text-sm font-semibold">晩</div>
                 <button
