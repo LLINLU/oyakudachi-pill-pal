@@ -2,29 +2,19 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Camera, PlusCircle, Pill } from 'lucide-react';
-
 interface EmptyStateHomeScreenProps {
   onScanHandbook: () => void;
   onManualInput: () => void;
 }
-
 export const EmptyStateHomeScreen: React.FC<EmptyStateHomeScreenProps> = ({
   onScanHandbook,
   onManualInput
 }) => {
-  return (
-    <div className="w-full max-w-md">
+  return <div className="w-full max-w-md">
       <Card className="w-full rounded-3xl overflow-hidden bg-white border-0 shadow-none">
         <CardContent className="p-6 text-center space-y-6">
           {/* Welcome message */}
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold text-gray-800 leading-tight">
-              設定完了
-            </h1>
-            <p className="text-lg text-gray-600">
-              お薬を登録して服薬管理を始めましょう
-            </p>
-          </div>
+          
 
           {/* Empty state illustration */}
           <div className="bg-gray-50 rounded-3xl p-8 space-y-4">
@@ -45,25 +35,17 @@ export const EmptyStateHomeScreen: React.FC<EmptyStateHomeScreenProps> = ({
 
           {/* Action buttons */}
           <div className="space-y-3">
-            <Button
-              onClick={onScanHandbook}
-              className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-lg font-bold rounded-2xl transition-all duration-300 hover:scale-105 text-white"
-            >
+            <Button onClick={onScanHandbook} className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-lg font-bold rounded-2xl transition-all duration-300 hover:scale-105 text-white">
               <Camera className="h-5 w-5 mr-3" />
               薬手帳をスキャン
             </Button>
 
-            <Button
-              onClick={onManualInput}
-              variant="outline"
-              className="w-full h-12 hover:bg-blue-50 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-blue-700 border-blue-200"
-            >
+            <Button onClick={onManualInput} variant="outline" className="w-full h-12 hover:bg-blue-50 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105 text-blue-700 border-blue-200">
               <PlusCircle className="h-5 w-5 mr-3" />
               手動でお薬を追加
             </Button>
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
