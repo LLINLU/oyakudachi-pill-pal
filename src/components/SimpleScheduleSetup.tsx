@@ -373,8 +373,8 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { label: "8:00", hour: 8, minute: 0 },
-                  { label: "12:00", hour: 12, minute: 0 },
-                  { label: "20:00", hour: 20, minute: 0 }
+                  { label: "9:00", hour: 9, minute: 0 },
+                  { label: "10:00", hour: 10, minute: 0 }
                 ].map((preset) => (
                   <Button
                     key={preset.label}
