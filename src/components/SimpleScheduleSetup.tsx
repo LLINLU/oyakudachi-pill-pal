@@ -370,11 +370,10 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
             {/* Quick time presets */}
             <div className="space-y-2">
               <Label className="text-sm font-medium">よく使う時間</Label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {[
                   { label: "8:00", hour: 8, minute: 0 },
                   { label: "12:00", hour: 12, minute: 0 },
-                  { label: "18:00", hour: 18, minute: 0 },
                   { label: "20:00", hour: 20, minute: 0 }
                 ].map((preset) => (
                   <Button
