@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronUp, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import type { MedicationInput } from "@/types/medication";
 
@@ -29,6 +29,8 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
   const [timeDialogOpen, setTimeDialogOpen] = useState(false);
   const [editingSlot, setEditingSlot] = useState<"morning" | "noon" | "evening" | null>(null);
   const [tempTime, setTempTime] = useState("08:00");
+  const [tempHour, setTempHour] = useState(8);
+  const [tempMinute, setTempMinute] = useState(0);
 
   // Ensure UI matches selected frequency
   const handleSelectFrequency = (n: 1 | 2 | 3) => {
@@ -77,14 +79,36 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
 
   const openTimeDialog = (slot: "morning" | "noon" | "evening") => {
     setEditingSlot(slot);
-    setTempTime(times[slot]);
+    const currentTime = times[slot];
+    const [hour, minute] = currentTime.split(':').map(Number);
+    setTempHour(hour);
+    setTempMinute(minute);
+    setTempTime(currentTime);
     setTimeDialogOpen(true);
   };
 
   const saveTime = () => {
     if (!editingSlot) return;
-    setTimes((prev) => ({ ...prev, [editingSlot]: tempTime }));
+    const formattedTime = `${tempHour.toString().padStart(2, '0')}:${tempMinute.toString().padStart(2, '0')}`;
+    setTimes((prev) => ({ ...prev, [editingSlot]: formattedTime }));
+    setTempTime(formattedTime);
     setTimeDialogOpen(false);
+  };
+
+  const adjustHour = (direction: 'up' | 'down') => {
+    if (direction === 'up') {
+      setTempHour(prev => prev === 23 ? 0 : prev + 1);
+    } else {
+      setTempHour(prev => prev === 0 ? 23 : prev - 1);
+    }
+  };
+
+  const adjustMinute = (direction: 'up' | 'down') => {
+    if (direction === 'up') {
+      setTempMinute(prev => prev === 59 ? 0 : prev + 1);
+    } else {
+      setTempMinute(prev => prev === 0 ? 59 : prev - 1);
+    }
   };
 
   const selectedTimes: string[] = useMemo(() => {
@@ -271,28 +295,119 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
 
       {/* Time input dialog */}
       <Dialog open={timeDialogOpen} onOpenChange={setTimeDialogOpen}>
-        <DialogContent className="sm:max-w-xs max-w-[90vw]">
+        <DialogContent className="sm:max-w-lg max-w-[95vw]">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-xl font-bold text-center">
               {editingSlot === "morning" && "朝の時間を設定"}
               {editingSlot === "noon" && "昼の時間を設定"}
               {editingSlot === "evening" && "晩の時間を設定"}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <Label htmlFor="time-input" className="sr-only">時間</Label>
-            <input
-              id="time-input"
-              type="time"
-              value={tempTime}
-              onChange={(e) => setTempTime(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-center text-lg"
-            />
-            <div className="flex gap-3">
-              <Button variant="secondary" className="flex-1" onClick={() => setTimeDialogOpen(false)}>
+          <div className="space-y-6">
+            {/* Large time display */}
+            <div className="text-center">
+              <div className="text-4xl font-bold text-primary mb-2">
+                {tempHour.toString().padStart(2, '0')}:{tempMinute.toString().padStart(2, '0')}
+              </div>
+              <div className="text-sm text-muted-foreground">選択した時間</div>
+            </div>
+            
+            {/* Time picker with large buttons */}
+            <div className="flex justify-center gap-8">
+              {/* Hour picker */}
+              <div className="flex flex-col items-center space-y-2">
+                <Label className="text-sm font-medium">時</Label>
+                <div className="flex flex-col items-center space-y-1">
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => adjustHour('up')}
+                    className="h-12 w-12"
+                  >
+                    <ChevronUp className="h-6 w-6" />
+                  </Button>
+                  <div className="h-16 w-16 flex items-center justify-center bg-muted rounded-lg text-2xl font-bold">
+                    {tempHour.toString().padStart(2, '0')}
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => adjustHour('down')}
+                    className="h-12 w-12"
+                  >
+                    <ChevronDown className="h-6 w-6" />
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Minute picker */}
+              <div className="flex flex-col items-center space-y-2">
+                <Label className="text-sm font-medium">分</Label>
+                <div className="flex flex-col items-center space-y-1">
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => adjustMinute('up')}
+                    className="h-12 w-12"
+                  >
+                    <ChevronUp className="h-6 w-6" />
+                  </Button>
+                  <div className="h-16 w-16 flex items-center justify-center bg-muted rounded-lg text-2xl font-bold">
+                    {tempMinute.toString().padStart(2, '0')}
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => adjustMinute('down')}
+                    className="h-12 w-12"
+                  >
+                    <ChevronDown className="h-6 w-6" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Quick time presets */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">よく使う時間</Label>
+              <div className="grid grid-cols-4 gap-2">
+                {[
+                  { label: "8:00", hour: 8, minute: 0 },
+                  { label: "12:00", hour: 12, minute: 0 },
+                  { label: "18:00", hour: 18, minute: 0 },
+                  { label: "20:00", hour: 20, minute: 0 }
+                ].map((preset) => (
+                  <Button
+                    key={preset.label}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setTempHour(preset.hour);
+                      setTempMinute(preset.minute);
+                    }}
+                    className="h-10 text-sm"
+                  >
+                    {preset.label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            
+            {/* Action buttons */}
+            <div className="flex gap-3 pt-2">
+              <Button 
+                variant="secondary" 
+                size="lg"
+                className="flex-1 h-12 text-base" 
+                onClick={() => setTimeDialogOpen(false)}
+              >
                 キャンセル
               </Button>
-              <Button className="flex-1" onClick={saveTime}>
+              <Button 
+                size="lg"
+                className="flex-1 h-12 text-base" 
+                onClick={saveTime}
+              >
                 保存
               </Button>
             </div>
