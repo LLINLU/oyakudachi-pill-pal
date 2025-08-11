@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お薬服用のお知らせ</title>
+    <style>
+        body {
+            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .header .subtitle {
+            margin-top: 8px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .medication-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .medication-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .pill-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #2196f3;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: white;
+            font-size: 12px;
+        }
+        .medication-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1976d2;
+            margin: 0;
+        }
+        .medication-info {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 500;
+            color: #666;
+        }
+        .info-value {
+            font-weight: 600;
+            color: #333;
+        }
+        .time-highlight {
+            background-color: #fff3e0;
+            color: #e65100;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .status-badge {
+            display: inline-block;
+            background-color: #4caf50;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        .footer-text {
+            color: #6c757d;
+            font-size: 12px;
+            margin: 0;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            text-align: center;
+            flex: 1;
+        }
+        .btn-primary {
+            background-color: #2196f3;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+        .health-tip {
+            background-color: #e8f5e8;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .health-tip h3 {
+            margin: 0 0 8px 0;
+            color: #2e7d32;
+            font-size: 16px;
+        }
+        .health-tip p {
+            margin: 0;
+            color: #388e3c;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>お薬服用のお知らせ</h1>
+            <div class="subtitle">Medication Intake Notification</div>
+        </div>
+        
+        <div class="content">
+            <div class="medication-card">
+                <div class="medication-header">
+                    <div class="pill-icon">💊</div>
+                    <h2 class="medication-title">次のお薬</h2>
+                </div>
+                
+                <div class="medication-info">
+                    <div class="info-row">
+                        <span class="info-label">薬品名</span>
+                        <span class="info-value">薬</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">スケジュール時間</span>
+                        <span class="info-value time-highlight">09:00</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">服用状態</span>
+                        <span class="status-badge">服用済み</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">服用時刻</span>
+                        <span class="info-value">2025/08/02 01:36</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="#" class="btn btn-primary">お薬の確認</a>
+                    <a href="#" class="btn btn-secondary">服薬記録を確認</a>
+                </div>
+            </div>
+            
+            <div class="health-tip">
+                <h3>💡 健康管理のヒント</h3>
+                <p>定期的な服薬は健康維持の基本です。時間を守って服用することで、より効果的な治療が期待できます。</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p class="footer-text">本人より自動送信 | Auto-sent by the user</p>
+            <p class="footer-text">LINE Reminder Bot - 健康管理をサポート</p>
+        </div>
+    </div>
+</body>
+</html> 
