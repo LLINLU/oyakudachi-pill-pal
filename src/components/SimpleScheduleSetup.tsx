@@ -201,11 +201,11 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
           {/* 食事のタイミング */}
           <div>
             <h2 className="text-base font-semibold mb-3">食事のタイミング</h2>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => setMealTiming("after_meals")}
-                className={`rounded-lg px-3 py-3 text-sm border-2 transition-colors ${
+                className={`flex-1 rounded-lg px-3 py-3 text-sm border-2 transition-colors ${
                   mealTiming === "after_meals" ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
                 }`}
                 aria-pressed={mealTiming === "after_meals"}
@@ -215,7 +215,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
               <button
                 type="button"
                 onClick={() => setMealTiming("before_meals")}
-                className={`rounded-lg px-3 py-3 text-sm border-2 transition-colors ${
+                className={`flex-1 rounded-lg px-3 py-3 text-sm border-2 transition-colors ${
                   mealTiming === "before_meals" ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
                 }`}
                 aria-pressed={mealTiming === "before_meals"}
@@ -225,7 +225,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
               <button
                 type="button"
                 onClick={() => setMealTiming("specific")}
-                className={`rounded-lg px-3 py-3 text-sm border-2 transition-colors ${
+                className={`flex-1 rounded-lg px-3 py-3 text-sm border-2 transition-colors ${
                   mealTiming === "specific" ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
                 }`}
                 aria-pressed={mealTiming === "specific"}
