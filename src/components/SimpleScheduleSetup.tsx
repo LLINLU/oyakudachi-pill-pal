@@ -225,7 +225,7 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
               <button
                 type="button"
                 onClick={() => setMealTiming("specific")}
-                className={`flex-1 rounded-lg px-3 py-3 text-sm border-2 transition-colors ${
+                className={`flex-1 rounded-lg px-3 py-3 text-sm border-2 transition-colors whitespace-nowrap ${
                   mealTiming === "specific" ? "border-primary/80 bg-primary/10" : "border-muted-foreground/20 bg-muted/60"
                 }`}
                 aria-pressed={mealTiming === "specific"}
