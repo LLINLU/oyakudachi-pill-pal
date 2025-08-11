@@ -124,7 +124,7 @@ main (stable, production-ready)
 │
 ├── develop (optional: integration testing)
 │
-├── feature/* (Qi's exploratory features)
+├── feature/* (devS's exploratory features)
 │   ├── feature/pace-tracker
 │   ├── feature/filler-detector
 │   ├── feature/gap-analysis
