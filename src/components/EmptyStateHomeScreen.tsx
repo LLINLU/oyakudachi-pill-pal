@@ -17,14 +17,12 @@ export const EmptyStateHomeScreen: React.FC<EmptyStateHomeScreenProps> = ({
       <Card className="w-full rounded-3xl overflow-hidden bg-white border-0 shadow-none">
         <CardContent className="p-6 text-center space-y-6">
           {/* Welcome message */}
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold text-gray-800 leading-tight">
-              設定完了
-            </h1>
-            <p className="text-lg text-gray-600">
-              お薬を登録して服薬管理を始めましょう
-            </p>
-          </div>
+          <h1 className="text-3xl font-bold text-gray-800 leading-tight">
+            設定完了
+          </h1>
+          <p className="text-lg text-gray-600">
+            お薬を登録して服薬管理を始めましょう
+          </p>
 
           {/* Empty state illustration */}
           <div className="bg-gray-50 rounded-3xl p-8 space-y-4">
