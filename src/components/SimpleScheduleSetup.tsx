@@ -400,11 +400,26 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
             <div className="space-y-2">
               <Label className="text-sm font-medium">よく使う時間</Label>
               <div className="grid grid-cols-3 gap-2">
-                {[
-                  { label: "8:00", hour: 8, minute: 0 },
-                  { label: "9:00", hour: 9, minute: 0 },
-                  { label: "10:00", hour: 10, minute: 0 }
-                ].map((preset) => (
+                {(() => {
+                  const presets = {
+                    morning: [
+                      { label: "7:00", hour: 7, minute: 0 },
+                      { label: "8:00", hour: 8, minute: 0 },
+                      { label: "9:00", hour: 9, minute: 0 }
+                    ],
+                    noon: [
+                      { label: "12:00", hour: 12, minute: 0 },
+                      { label: "13:00", hour: 13, minute: 0 },
+                      { label: "14:00", hour: 14, minute: 0 }
+                    ],
+                    evening: [
+                      { label: "18:00", hour: 18, minute: 0 },
+                      { label: "19:00", hour: 19, minute: 0 },
+                      { label: "20:00", hour: 20, minute: 0 }
+                    ]
+                  };
+                  return (presets[editingSlot!] || presets.morning);
+                })().map((preset) => (
                   <Button
                     key={preset.label}
                     variant="outline"
