@@ -50,8 +50,25 @@ export const SimpleScheduleSetup: React.FC<SimpleScheduleSetupProps> = ({ onBack
         noon: slot === "noon", 
         evening: slot === "evening"
       });
+    } else if (frequency === 2) {
+      // For twice daily, only allow two slots to be active
+      setActiveSlots((prev) => {
+        const newState = { ...prev };
+        const currentlyActive = Object.values(prev).filter(Boolean).length;
+        
+        if (prev[slot]) {
+          // If the slot is currently active, deactivate it
+          newState[slot] = false;
+        } else if (currentlyActive < 2) {
+          // If less than 2 slots are active, activate this slot
+          newState[slot] = true;
+        }
+        // If 2 slots are already active and this slot is not active, do nothing
+        
+        return newState;
+      });
     } else {
-      // For multiple times daily, allow toggle behavior
+      // For three times daily, allow toggle behavior
       setActiveSlots((prev) => ({ ...prev, [slot]: !prev[slot] }));
     }
   };
