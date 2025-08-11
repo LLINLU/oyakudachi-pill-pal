@@ -77,104 +77,560 @@ oyakudachi-pill-pal/
 
 ## Development Workflow
 
-### 1. Feature Development
+## Team Collaboration Workflow Guide
 
-#### Starting a New Feature
-1. **Create a feature branch**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
+## 📚 Table of Contents
+1. [Quick Reference](#quick-reference)
+2. [Branch Strategy](#branch-strategy)
+3. [Feature Development Workflow](#feature-development-workflow)
+4. [UI/UX Exploration Workflow](#uiux-exploration-workflow)
+5. [Testing Without Merging](#testing-without-merging)
+6. [Git Commands Cheatsheet](#git-commands-cheatsheet)
+7. [Conflict Resolution](#conflict-resolution)
+8. [Best Practices](#best-practices)
 
-2. **Follow the component structure**
-   - Place new components in `src/components/`
-   - Create custom hooks in `src/hooks/`
-   - Add types in `src/types/`
-   - Update utilities in `src/utils/`
+---
 
-3. **Component Development Guidelines**
-   - Use TypeScript for all components
-   - Follow the existing naming conventions
-   - Use shadcn/ui components when possible
-   - Implement responsive design with Tailwind CSS
+## 🚀 Quick Reference
 
-#### Code Organization
-- **Components**: Functional components with TypeScript
-- **Hooks**: Custom hooks for business logic
-- **Types**: Shared TypeScript interfaces
-- **Utils**: Pure functions and helpers
+### Daily Commands You'll Use Most
+```bash
+# Start your day - sync with latest
+git fetch --all
+git pull origin main
 
-### 2. Voice Feature Development
+# Create new feature
+git checkout -b feature/your-feature-name
 
-The app includes comprehensive voice control capabilities:
+# Save your work
+git add -A
+git commit -m "feat: describe your change"
 
-#### Voice Components
-- `VoiceInterface.tsx` - Main voice control interface
-- `VoiceControls.tsx` - Voice control buttons
-- `VoiceConversationPage.tsx` - Voice conversation UI
-- `useVoiceManager.ts` - Voice management hook
+# Share your work
+git push origin feature/your-feature-name
 
-#### Voice Workflow
-1. **Speech Recognition**: Uses Web Speech API
-2. **Command Processing**: Parses voice commands
-3. **Action Execution**: Triggers appropriate app actions
-4. **Feedback**: Provides voice confirmation
+# Test someone else's work
+git checkout origin/their-branch  # Detached HEAD for testing
+git checkout -                    # Return to your branch
+```
 
-### 3. Medication Management Features
+---
 
-#### Core Features
-- **Medication Tracking**: Record and monitor medication intake
-- **Reminders**: Set up medication reminders
-- **Family Notifications**: Alert family members
-- **OCR Scanning**: Scan medication labels
-- **Voice Input**: Voice-controlled medication logging
+## 🌳 Branch Strategy
 
-#### Key Components
-- `MedicationCard.tsx` - Individual medication display
-- `MedicationReminder.tsx` - Reminder functionality
-- `MedicationHandbookScanner.tsx` - OCR scanning
-- `FamilyDashboard.tsx` - Family coordination
+### Branch Structure
+```
+main (stable, production-ready)
+│
+├── develop (optional: integration testing)
+│
+├── feature/* (Qi's exploratory features)
+│   ├── feature/pace-tracker
+│   ├── feature/filler-detector
+│   ├── feature/gap-analysis
+│   └── feature/memo-generation
+│
+└── UI/* (UI team's explorations)
+    ├── UI/ver1-minimal
+    ├── UI/ver2-dashboard
+    └── UI/ver3-presenter-focus
+```
 
-### 4. Mobile Development
+### When to Merge to Main
 
-#### Capacitor Integration
-- **Platform Support**: iOS and Android
-- **Native Features**: Push notifications, local notifications
-- **Mobile UI**: Touch-optimized interface
+| Merge to Main ✅ | Keep in Feature Branch 🧪 |
+|------------------|---------------------------|
+| Core infrastructure (ASR, Audio) | Experimental features |
+| Stable, tested features | Multiple competing versions |
+| Bug fixes | UI-specific experiments |
+| Documentation updates | Breaking changes |
+| Team-agreed essentials | Features under active development |
 
-#### Mobile-Specific Considerations
-- Touch targets should be at least 44px
-- Implement proper mobile navigation
-- Test on actual devices
-- Handle mobile-specific permissions
+---
 
-## Key Features & Components
+## 💡 Feature Development Workflow
 
-### Onboarding Flow
-The app includes a comprehensive onboarding process:
-- Welcome screen
-- Permission requests
-- Family setup
-- Notification preferences
-- LINE integration
+### For Feature Developers (Qi's Workflow)
 
-### Voice Interface
-- Speech-to-text for medication input
-- Text-to-speech for feedback
-- Voice command recognition
-- Conversation history
+#### 1. Starting a New Feature
+```bash
+# Always start from latest main
+git checkout main
+git pull origin main
+git checkout -b feature/tracker-pace-v1
 
-### Medication Management
-- Add/edit medications
-- Set schedules and reminders
-- Track completion
-- Family notifications
-- OCR label scanning
+# Work on your feature
+# ... make changes ...
 
-### Family Coordination
-- Family member management
-- Notification sharing
-- Dashboard for family oversight
-- Emergency contacts
+# Commit regularly
+git add -A
+git commit -m "feat: implement basic pace tracking"
+```
+
+#### 2. Sharing Feature for Testing (Without Merging to Main)
+```bash
+# Push to remote
+git push origin feature/tracker-pace-v1
+
+# Announce in Slack
+"🧪 New feature ready for testing: Pace Tracker
+Branch: feature/tracker-pace-v1
+To test: git merge origin/feature/tracker-pace-v1"
+```
+
+#### 3. Creating Feature Documentation
+Create a `README.md` in your feature branch:
+```markdown
+# Feature: Pace Tracker
+
+## Description
+Real-time speaking pace tracker with visual warnings
+
+## Integration
+`git merge origin/feature/tracker-pace-v1`
+
+## Dependencies
+- Requires: feature/ASR-integration
+- Conflicts: None
+- Optional: feature/visual-indicators
+
+## Configuration
+No additional configuration needed
+
+## Testing
+1. Start recording session
+2. Speak at different paces
+3. Observe pace warnings
+```
+
+---
+
+## 🎨 Design Exploration Workflow
+
+### For Design
+
+#### 1. Starting a UI Version
+```bash
+# Start from main or develop
+git checkout main
+git pull origin main
+git checkout -b UI/ver2-dashboard
+
+# Work on UI version
+# ... make changes ...
+```
+
+#### 2. Testing Dev's Features (LEGO Approach)
+
+**Option A: Temporary Testing (Recommended for exploration)**
+```bash
+# Save your current work
+git stash
+
+# Test a feature
+git merge origin/feature/pace-tracker
+
+# Test it out
+npm run dev
+
+# If you like it, keep it
+git commit -m "integrate: add pace tracker to UI v2"
+
+# If you don't like it, remove it
+git reset --hard HEAD~1
+```
+
+**Option B: Cherry-Pick Specific Commits**
+```bash
+# View commits in a feature branch
+git log origin/feature/pace-tracker --oneline
+
+# Cherry-pick specific commits you want
+git cherry-pick abc1234
+git cherry-pick def5678
+```
+
+**Option C: Create Integration Branch**
+```bash
+# Create a temporary branch combining multiple features
+git checkout -b integration/UI-v2-with-trackers
+git merge origin/UI/ver2-dashboard
+git merge origin/feature/pace-tracker
+git merge origin/feature/gap-analysis
+
+# Test the combination
+npm run dev
+
+# If successful, can merge back to your UI branch
+git checkout UI/ver2-dashboard
+git merge integration/UI-v2-with-trackers
+```
+
+---
+
+## 🧪 Testing Without Merging
+
+### Quick Test Script
+Create `test-branch.sh`:
+```bash
+#!/bin/bash
+# Usage: ./test-branch.sh feature/pace-tracker
+
+BRANCH=$1
+CURRENT=$(git branch --show-current)
+
+echo "Testing branch: $BRANCH"
+git stash push -m "Testing $BRANCH"
+git checkout origin/$BRANCH
+npm install
+npm run dev
+
+echo "Press any key to return to $CURRENT"
+read -n 1
+git checkout $CURRENT
+git stash pop
+```
+
+### Testing Multiple Features Together
+```bash
+# Create a test branch
+git checkout -b test/combined-features
+git merge origin/feature/pace-tracker
+git merge origin/feature/filler-detector
+git merge origin/feature/gap-analysis
+
+# Test the combination
+npm run dev
+
+# Clean up when done
+git checkout main
+git branch -D test/combined-features
+```
+
+---
+
+## 📝 Git Commands Cheatsheet
+
+### Essential Commands
+
+#### Viewing & Navigation
+```bash
+# See all branches (local and remote)
+git branch -a
+
+# See your current branch
+git branch --show-current
+
+# View commit history
+git log --oneline -10
+git log --graph --pretty=oneline --abbrev-commit
+
+# See what changed
+git status
+git diff                    # Unstaged changes
+git diff --staged          # Staged changes
+git diff main...HEAD       # All changes since main
+```
+
+#### Syncing with Team
+```bash
+# Get latest without merging
+git fetch --all
+
+# Get latest and merge
+git pull origin main
+
+# Update your feature branch with main
+git checkout feature/your-feature
+git merge origin/main       # or git rebase origin/main
+```
+
+#### Saving Work
+```bash
+# Save everything
+git add -A
+git commit -m "type: description"
+
+# Save specific files
+git add src/specific-file.ts
+git commit -m "fix: correct specific issue"
+
+# Amend last commit
+git commit --amend -m "new message"
+
+# Temporary save (stashing)
+git stash                   # Save current changes
+git stash list             # See all stashes
+git stash pop              # Restore latest stash
+git stash apply stash@{1}  # Apply specific stash
+```
+
+#### Branch Management
+```bash
+# Create and switch to new branch
+git checkout -b feature/new-feature
+
+# Switch branches
+git checkout main
+git checkout -              # Previous branch
+
+# Delete branches
+git branch -d feature/completed    # Local
+git push origin --delete feature/completed  # Remote
+
+# Rename branch
+git branch -m old-name new-name
+```
+
+#### Sharing Work
+```bash
+# First time pushing a branch
+git push -u origin feature/your-feature
+
+# Subsequent pushes
+git push
+
+# Force push (use with caution!)
+git push --force-with-lease
+```
+
+---
+
+## 🔧 Conflict Resolution
+
+### When Conflicts Occur
+```bash
+# 1. See conflicted files
+git status
+
+# 2. Open conflicted files and resolve
+# Look for <<<<<<< HEAD markers
+
+# 3. After resolving
+git add <resolved-files>
+git commit -m "resolve: merge conflicts with main"
+```
+
+### Conflict Prevention
+```bash
+# Regularly sync with main
+git fetch origin main
+git merge origin/main
+
+# Before starting new work
+git checkout main
+git pull origin main
+git checkout -b feature/new-work
+```
+
+---
+
+## ✅ Best Practices
+
+### 1. Commit Message Convention
+```bash
+# Format: <type>: <description>
+
+feat: add pace tracking algorithm
+fix: correct calculation in gap analysis
+docs: update API documentation
+refactor: simplify tracker service
+test: add unit tests for memo generator
+style: format code according to standards
+chore: update dependencies
+```
+
+### 2. Branch Naming Convention
+```bash
+feature/pace-tracker-v1      # New features
+feature/pace-tracker-v2      # Alternative versions
+bugfix/transcript-timing      # Bug fixes
+UI/minimal-dashboard          # UI versions
+experiment/new-approach       # Experiments
+refactor/service-layer       # Refactoring
+```
+
+### 3. Daily Workflow
+```bash
+# Morning routine
+git fetch --all
+git checkout main
+git pull origin main
+git checkout feature/your-current-work
+git merge origin/main  # Stay updated
+
+# Before ending day
+git add -A
+git commit -m "WIP: description of progress"
+git push origin feature/your-current-work
+```
+
+### 4. Communication Protocol
+
+**When creating a feature:**
+```markdown
+Slack: "@team New feature available for testing
+Branch: feature/gap-analysis
+Integrates with: ASR, pace-tracker
+Test with: git merge origin/feature/gap-analysis"
+```
+
+**When ready for main:**
+```markdown
+Slack: "@team Feature ready for review
+PR: #123 - Gap Analysis Implementation
+Tested with: UI/ver1, UI/ver2
+No conflicts with main"
+```
+
+### 5. Cleanup Regular
+```bash
+# List merged branches
+git branch --merged main
+
+# Delete merged local branches
+git branch -d $(git branch --merged main | grep -v main)
+
+# Clean up remote tracking
+git remote prune origin
+```
+
+---
+
+## 🚨 Emergency Commands
+
+### Undo Changes
+```bash
+# Undo last commit (keep changes)
+git reset --soft HEAD~1
+
+# Undo last commit (discard changes)
+git reset --hard HEAD~1
+
+# Undo a merge
+git reset --hard HEAD~1
+
+# Recover deleted branch
+git reflog
+git checkout -b recovered-branch HEAD@{1}
+```
+
+### Fix Mistakes
+```bash
+# Accidentally committed to wrong branch
+git reset HEAD~1           # Undo commit
+git stash                   # Save changes
+git checkout correct-branch
+git stash pop              # Apply changes
+
+# Forgot to add files to commit
+git add forgotten-file.ts
+git commit --amend --no-edit
+```
+
+---
+
+## 📊 Decision Matrix
+
+### Should I Merge This Feature?
+
+| Question | Yes → | No → |
+|----------|-------|------|
+| Is it stable and tested? | ✅ Continue | 🧪 Keep in feature branch |
+| Does the team need it? | ✅ Continue | 🧪 Keep in feature branch |
+| Will it break existing code? | ❌ Don't merge | ✅ Continue |
+| Is it one of multiple options? | 🧪 Keep in feature branch | ✅ Continue |
+| Has it been code reviewed? | ✅ Can merge to main | 📝 Get review first |
+
+---
+
+## 🤝 Team Scenarios
+
+### Scenario 1: UI team needs multiple features
+```bash
+# UI team creates integration branch
+git checkout -b UI/ver1-integrated
+git merge origin/feature/pace-tracker
+git merge origin/feature/gap-analysis
+# Test together
+```
+
+### Scenario 2: Qi needs to test UI version
+```bash
+# Quick test without affecting current work
+git stash
+git checkout origin/UI/ver2-dashboard
+npm run dev
+# Return to work
+git checkout -
+git stash pop
+```
+
+### Scenario 3: Feature has multiple versions
+```bash
+# Keep both versions separate
+feature/tracker-simple
+feature/tracker-advanced
+
+# UI team can test both
+git checkout -b test/ui-with-simple
+git merge origin/UI/ver1
+git merge origin/feature/tracker-simple
+
+git checkout -b test/ui-with-advanced
+git merge origin/UI/ver1
+git merge origin/feature/tracker-advanced
+```
+
+---
+
+## 📅 Weekly Workflow
+
+### Monday - Planning
+- Review branches: `git branch -a`
+- Clean old branches
+- Plan week's features
+
+### Daily
+- Morning sync: `git fetch --all`
+- Share progress in Slack
+- Test others' work
+
+### Friday - Cleanup
+- Review what's ready for main
+- Create PRs for stable features
+- Document completed work
+
+---
+
+## 🆘 Getting Help
+
+### Commands for Investigation
+```bash
+# Who changed what
+git blame file.ts
+
+# Find when bug introduced
+git bisect start
+git bisect bad HEAD
+git bisect good abc1234
+
+# Search commits
+git log --grep="pace tracker"
+
+# Find lost work
+git reflog
+```
+
+### Team Contacts
+- **Feature Development**: Qi (@qc)
+- **UI/UX**: Lindsay (@lindsay)
+- **Git Issues**: Post in #dev-help Slack channel
+
+---
+
+*Last Updated: August 2025*
+*Version: 1.0*
 
 ## Testing & Quality Assurance
 
