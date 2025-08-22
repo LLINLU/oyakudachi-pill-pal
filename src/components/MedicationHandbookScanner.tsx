@@ -26,33 +26,52 @@ const MedicationHandbookScanner: React.FC<MedicationHandbookScannerProps> = ({
   const [ocrProgress, setOcrProgress] = useState<OCRProgress>({ status: '', progress: 0 });
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const startCamera = () => {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices
-        .getUserMedia({ video: { facingMode: 'environment' } })
-        .then(stream => {
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
-        })
-        .catch(err => {
-          console.error('Camera access denied:', err);
-          toast.error('カメラにアクセスできません', {
-            description: 'カメラの使用を許可してください'
-          });
+  const startCamera = async () => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      toast.error('このデバイスはカメラをサポートしていません');
+      return;
+    }
+
+    try {
+      // Try rear camera first (environment)
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.warn('Rear camera not available, trying fallback:', err);
+      try {
+        // Fallback to any available camera
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+        toast.info('前面カメラを使用しています', {
+          description: 'より良い結果のために背面カメラを使用することをお勧めします'
         });
+      } catch (fallbackErr) {
+        console.error('Camera access denied:', fallbackErr);
+        toast.error('カメラにアクセスできません', {
+          description: 'カメラの使用を許可してください'
+        });
+      }
     }
   };
 
   useEffect(() => {
     startCamera();
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
+      // Fix: Store video reference to prevent cleanup issues
+      const video = videoRef.current;
+      if (video?.srcObject) {
+        const stream = video.srcObject as MediaStream;
         stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
       }
     };
-  }, []);
+  }, []); // Removed videoRef dependency to fix React warning
 
   const handleHandbookScan = async () => {
     if (!videoRef.current) {
