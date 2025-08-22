@@ -4,16 +4,20 @@ export const parseMedicationFromText = (ocrText: string): ScannedMedication[] =>
   const medications: ScannedMedication[] = [];
   const lines = ocrText.split('\n').filter(line => line.trim().length > 0);
   
-  // More precise medication patterns to avoid over-detection
+  // More lenient medication patterns for better OCR tolerance
   const medicationPatterns = [
     // Primary pattern: Japanese medications with suffixes (most reliable)
-    /([ァ-ヾ一-龯\w]+(?:錠|カプセル|散剤?|顆粒|液剤?|軟膏|クリーム|シロップ|点眼|点鼻|吸入|貼付|坐薬|注射|内服液?)(?:\d+(?:mg|μg|g|ml))?)/g,
+    /([ァ-ヾ一-龯\w]{2,}(?:錠|カプセル|散剤?|顆粒|液剤?|軟膏|クリーム|シロップ|点眼|点鼻|吸入|貼付|坐薬|注射|内服液?)(?:\d+(?:mg|μg|g|ml|㎎))?)/gi,
     // Brand names with dosage embedded (e.g., "ロキソニン60mg錠")  
-    /([ァ-ヾ一-龯]{3,}\d+(?:mg|μg|g|ml)錠?)/g,
+    /([ァ-ヾ一-龯]{2,}\d+(?:mg|μg|g|ml|㎎)錠?)/gi,
     // Well-known medication names (specific list to avoid false positives)
-    /(アムロジピン|リシノプリル|メトホルミン|ロキソプロフェン|セレコキシブ|アスピリン|イブプロフェン|パラセタモール)(?:錠|散|液)?/g,
-    // English medication names (more specific)
-    /([A-Za-z]{4,}(?:tin|cin|ol|ine|ate|ide|pril|sartan|statin))/gi
+    /(アムロジピン|リシノプリル|メトホルミン|ロキソプロフェン|セレコキシブ|アスピリン|イブプロフェン|パラセタモール|レボドパ|カルバマゼピン|フェニトイン|バルプロ酸|リスペリドン|オランザピン|アリピプラゾール|セルトラリン|パロキセチン|フルオキセチン)(?:錠|散|液)?/gi,
+    // English medication names (more tolerant)
+    /([A-Za-z]{3,}(?:tin|cin|ol|ine|ate|ide|pril|sartan|statin|pine|zole|mab))/gi,
+    // Japanese katakana medication names (broader pattern)
+    /([ァ-ヾ]{3,}(?:[0-9])*)/g,
+    // Any reasonable medication-like text (fallback)
+    /([ァ-ヾ一-龯]{3,}[\w\d]*)/g
   ];
   
   // Enhanced dosage patterns
