@@ -125,23 +125,32 @@ export const parseMedicationFromText = (ocrText: string): ScannedMedication[] =>
         }
       }
       
-      // Try to find frequency (prioritize numerical patterns over time patterns)
-      if (!currentMedication.frequency) {
-        let bestFrequency = '';
-        let bestPriority = 999;
-        
+      // Try to find frequency (allow overriding with higher priority patterns)
+      let bestFrequency = currentMedication.frequency || '';
+      let bestPriority = 999;
+      
+      // If we already have a frequency, find its priority
+      if (currentMedication.frequency) {
         for (let i = 0; i < frequencyPatterns.length; i++) {
-          const pattern = frequencyPatterns[i];
-          const matches = trimmedLine.match(pattern);
-          if (matches && i < bestPriority) {
-            bestFrequency = matches[0];
+          if (frequencyPatterns[i].test(currentMedication.frequency)) {
             bestPriority = i;
+            break;
           }
         }
-        
-        if (bestFrequency) {
-          currentMedication.frequency = bestFrequency;
+      }
+      
+      // Look for better frequency patterns in current line
+      for (let i = 0; i < frequencyPatterns.length; i++) {
+        const pattern = frequencyPatterns[i];
+        const matches = trimmedLine.match(pattern);
+        if (matches && i < bestPriority) {
+          bestFrequency = matches[0];
+          bestPriority = i;
         }
+      }
+      
+      if (bestFrequency) {
+        currentMedication.frequency = bestFrequency;
       }
       
       // Collect instructions (only if we don't have other attributes)
