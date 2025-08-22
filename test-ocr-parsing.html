@@ -182,13 +182,18 @@
                     for (let i = 0; i < frequencyPatterns.length; i++) {
                         const pattern = frequencyPatterns[i];
                         const matches = trimmedLine.match(pattern);
-                        if (matches && i < bestPriority) {
-                            bestFrequency = matches[0];
-                            bestPriority = i;
+                        if (matches) {
+                            console.log(`📊 Line "${trimmedLine}" matched pattern ${i}: "${matches[0]}" (current priority: ${bestPriority})`);
+                            if (i < bestPriority) {
+                                console.log(`⬆️ Upgrading frequency from "${currentMedication.frequency}" to "${matches[0]}"`);
+                                bestFrequency = matches[0];
+                                bestPriority = i;
+                            }
                         }
                     }
                     
-                    if (bestFrequency) {
+                    if (bestFrequency && bestFrequency !== currentMedication.frequency) {
+                        console.log(`✅ Setting frequency to: "${bestFrequency}"`);
                         currentMedication.frequency = bestFrequency;
                     }
                     
@@ -219,11 +224,13 @@
 
         window.testParsing = function() {
             const input = document.getElementById('input').value;
+            console.log('🧪 Input text:', input);
             const results = parseMedicationFromText(input);
             
             let html = `<h3>✅ Found ${results.length} medications:</h3>`;
             
             results.forEach((med, index) => {
+                console.log(`🔍 Medication ${index + 1}:`, med);
                 html += `
                     <div class="medication">
                         <h4>💊 ${med.name}</h4>
@@ -236,6 +243,7 @@
             });
             
             document.getElementById('results').innerHTML = html;
+            console.log('🎯 Final results:', results);
         }
     </script>
 </body>
