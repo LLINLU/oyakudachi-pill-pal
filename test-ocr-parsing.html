@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>OCR Parsing Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        textarea { width: 100%; height: 150px; margin: 10px 0; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; }
+        .result { background: #f8f9fa; padding: 15px; margin: 10px 0; border: 1px solid #dee2e6; }
+        .medication { background: #e7f3ff; padding: 10px; margin: 5px 0; border-left: 4px solid #007bff; }
+    </style>
+</head>
+<body>
+    <h1>🧪 OCR Medication Parsing Test</h1>
+    
+    <h3>Sample Japanese Medication Text:</h3>
+    <textarea id="input">ロキソニン錠60mg
+朝食後 1錠
+1日3回
+
+アムロジピン錠5mg  
+夕食前 1錠
+毎日
+
+ビタミンB1散
+朝昼夕 各1包
+1日3回服用</textarea>
+
+    <button onclick="testParsing()">🔍 Test OCR Parsing</button>
+    
+    <div id="results"></div>
+
+    <script type="module">
+        // Copy our improved parsing logic
+        const medicationPatterns = [
+            // Primary pattern: Japanese medications with suffixes (most reliable)
+            /([ァ-ヾ一-龯\w]+(?:錠|カプセル|散剤?|顆粒|液剤?|軟膏|クリーム|シロップ|点眼|点鼻|吸入|貼付|坐薬|注射|内服液?)(?:\d+(?:mg|μg|g|ml))?)/g,
+            // Brand names with dosage embedded (e.g., "ロキソニン60mg錠")  
+            /([ァ-ヾ一-龯]{3,}\d+(?:mg|μg|g|ml)錠?)/g,
+            // Well-known medication names (specific list to avoid false positives)
+            /(アムロジピン|リシノプリル|メトホルミン|ロキソプロフェン|セレコキシブ|アスピリン|イブプロフェン|パラセタモール)(?:錠|散|液)?/g,
+            // English medication names (more specific)
+            /([A-Za-z]{4,}(?:tin|cin|ol|ine|ate|ide|pril|sartan|statin))/gi
+        ];
+
+        const dosagePatterns = [
+            /(\d+(?:\.\d+)?)\s*(?:mg|μg|g|ml|錠|カプセル|包|滴|回分)/gi,
+            /(\d+)\s*(?:錠|カプセル|包|滴|粒|回分)/gi,
+            /(\d+\.\d+)\s*(?:mg|g|ml)/gi,
+            /(\d+[-~]\d+)\s*(?:錠|カプセル|包)/gi
+        ];
+
+        const timePatterns = [
+            /(\d{1,2}):(\d{2})/g,
+            /(朝食前|朝食後|昼食前|昼食後|夕食前|夕食後|就寝前|起床時)/g,
+            /(朝|昼|夕方?|夜|寝る前|食前|食後)/g,
+            /(\d+時(?:\d+分)?)/g,
+            /(朝[・･]?昼[・･]?夕?|朝[・･]?夕|昼[・･]?夕)/g
+        ];
+
+        const frequencyPatterns = [
+            /(毎日|1日\d+回|週\d+回|月\d+回|隔日|必要時)/g,
+            /(朝昼夕|朝夕|朝昼|昼夕|1日[１-９1-9]回|毎食後|毎食前)/g,
+            /(daily|twice|once|bid|tid|qid)/gi,
+            /(\d+時間毎|\d+時間おき)/g
+        ];
+
+        function convertJapaneseTimeToTime(japaneseTime) {
+            const timeMap = {
+                '朝': '08:00', '昼': '12:00', '夕': '18:00', '夕方': '18:00', '夜': '20:00',
+                '朝食前': '07:30', '朝食後': '08:30', '昼食前': '11:30', '昼食後': '12:30',
+                '夕食前': '17:30', '夕食後': '18:30', '食前': '07:30', '食後': '08:30',
+                '就寝前': '22:00', '寝る前': '22:00', '起床時': '07:00',
+                '朝昼夕': '08:00,12:00,18:00', '朝夕': '08:00,18:00', '朝昼': '08:00,12:00', '昼夕': '12:00,18:00'
+            };
+            
+            const hourMatch = japaneseTime.match(/(\d+)時(?:(\d+)分)?/);
+            if (hourMatch) {
+                const hour = hourMatch[1].padStart(2, '0');
+                const minute = (hourMatch[2] || '00').padStart(2, '0');
+                return `${hour}:${minute}`;
+            }
+            
+            return timeMap[japaneseTime] || '08:00';
+        }
+
+        function parseMedicationFromText(ocrText) {
+            const medications = [];
+            const lines = ocrText.split('\n').filter(line => line.trim().length > 0);
+            
+            let currentMedication = {};
+            
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+                
+                // Skip lines that are clearly not medication names (time/frequency only)
+                if (/^(朝|昼|夕|夜|食前|食後|毎日|1日\d+回|週\d+回|\d+時間)/.test(trimmedLine) && !currentMedication.name) {
+                    continue;
+                }
+                
+                // Try to find medication names - only accept strong matches
+                let foundMedication = false;
+                for (const pattern of medicationPatterns) {
+                    const matches = trimmedLine.match(pattern);
+                    if (matches) {
+                        const medName = matches[0];
+                        
+                        // Avoid duplicates by checking if this name is already found
+                        if (medications.some(med => med.name === medName) || currentMedication.name === medName) {
+                            continue;
+                        }
+                        
+                        // If we already have a medication being processed, save it
+                        if (currentMedication.name) {
+                            medications.push(createMedicationFromPartial(currentMedication));
+                        }
+                        
+                        currentMedication = {
+                            name: medName,
+                            dosage: '',
+                            frequency: '',
+                            time: '',
+                            instructions: ''
+                        };
+                        foundMedication = true;
+                        break;
+                    }
+                }
+                
+                // Only process attributes if we have a current medication and haven't just found a new one
+                if (currentMedication.name && !foundMedication) {
+                    // Try to find dosage
+                    if (!currentMedication.dosage) {
+                        for (const pattern of dosagePatterns) {
+                            const matches = trimmedLine.match(pattern);
+                            if (matches) {
+                                currentMedication.dosage = matches[0];
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Try to find time
+                    if (!currentMedication.time) {
+                        for (const pattern of timePatterns) {
+                            const matches = trimmedLine.match(pattern);
+                            if (matches) {
+                                if (pattern.source.includes(':')) {
+                                    currentMedication.time = matches[0];
+                                } else {
+                                    currentMedication.time = convertJapaneseTimeToTime(matches[0]);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Try to find frequency
+                    if (!currentMedication.frequency) {
+                        for (const pattern of frequencyPatterns) {
+                            const matches = trimmedLine.match(pattern);
+                            if (matches) {
+                                currentMedication.frequency = matches[0];
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Collect instructions (only if we don't have other attributes)
+                    if (!currentMedication.instructions && !currentMedication.dosage && !currentMedication.time && !currentMedication.frequency) {
+                        currentMedication.instructions = trimmedLine;
+                    }
+                }
+            }
+            
+            // Add the last medication if exists
+            if (currentMedication.name) {
+                medications.push(createMedicationFromPartial(currentMedication));
+            }
+            
+            return medications;
+        }
+
+        function createMedicationFromPartial(partial) {
+            return {
+                name: partial.name || '不明な薬',
+                dosage: partial.dosage || '1錠',
+                frequency: partial.frequency || '1日1回',
+                time: partial.time || '08:00',
+                instructions: partial.instructions || '医師の指示に従ってください'
+            };
+        }
+
+        window.testParsing = function() {
+            const input = document.getElementById('input').value;
+            const results = parseMedicationFromText(input);
+            
+            let html = `<h3>✅ Found ${results.length} medications:</h3>`;
+            
+            results.forEach((med, index) => {
+                html += `
+                    <div class="medication">
+                        <h4>💊 ${med.name}</h4>
+                        <p><strong>用量:</strong> ${med.dosage}</p>
+                        <p><strong>頻度:</strong> ${med.frequency}</p>
+                        <p><strong>時間:</strong> ${med.time}</p>
+                        <p><strong>指示:</strong> ${med.instructions}</p>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('results').innerHTML = html;
+        }
+    </script>
+</body>
+</html>

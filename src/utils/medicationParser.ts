@@ -4,18 +4,16 @@ export const parseMedicationFromText = (ocrText: string): ScannedMedication[] =>
   const medications: ScannedMedication[] = [];
   const lines = ocrText.split('\n').filter(line => line.trim().length > 0);
   
-  // Improved medication patterns for better Japanese recognition
+  // More precise medication patterns to avoid over-detection
   const medicationPatterns = [
-    // Japanese medications with comprehensive suffixes
-    /([ァ-ヾ一-龯\w]+(?:錠|カプセル|散剤?|顆粒|液剤?|軟膏|クリーム|シロップ|点眼|点鼻|吸入|貼付|坐薬|注射|内服))/g,
-    // Brand names with dosage numbers (e.g., "ロキソニン60mg")
-    /([ァ-ヾ一-龯]{2,}(?:\d+(?:mg|μg|g|ml)?)?錠?)/g,
-    // Generic medication names (2-8 characters, common patterns)
-    /([ァ-ヾ一-龯]{2,8})(?=\s*(?:\d+(?:mg|μg|g)|錠|カプセル|散|液))/g,
-    // English medication names (improved patterns)
-    /([A-Za-z]{3,}(?:tin|cin|ol|ine|ate|ide|pril|sartan|statin))/gi,
-    // Common Japanese generic patterns
-    /(アムロジピン|リシノプリル|メトホルミン|ロキソプロフェン|セレコキシブ)/g
+    // Primary pattern: Japanese medications with suffixes (most reliable)
+    /([ァ-ヾ一-龯\w]+(?:錠|カプセル|散剤?|顆粒|液剤?|軟膏|クリーム|シロップ|点眼|点鼻|吸入|貼付|坐薬|注射|内服液?)(?:\d+(?:mg|μg|g|ml))?)/g,
+    // Brand names with dosage embedded (e.g., "ロキソニン60mg錠")  
+    /([ァ-ヾ一-龯]{3,}\d+(?:mg|μg|g|ml)錠?)/g,
+    // Well-known medication names (specific list to avoid false positives)
+    /(アムロジピン|リシノプリル|メトホルミン|ロキソプロフェン|セレコキシブ|アスピリン|イブプロフェン|パラセタモール)(?:錠|散|液)?/g,
+    // English medication names (more specific)
+    /([A-Za-z]{4,}(?:tin|cin|ol|ine|ate|ide|pril|sartan|statin))/gi
   ];
   
   // Enhanced dosage patterns
@@ -61,60 +59,83 @@ export const parseMedicationFromText = (ocrText: string): ScannedMedication[] =>
   for (const line of lines) {
     const trimmedLine = line.trim();
     
-    // Try to find medication names
+    // Skip lines that are clearly not medication names (time/frequency only)
+    if (/^(朝|昼|夕|夜|食前|食後|毎日|1日\d+回|週\d+回|\d+時間)/.test(trimmedLine) && !currentMedication.name) {
+      continue;
+    }
+    
+    // Try to find medication names - only accept strong matches
+    let foundMedication = false;
     for (const pattern of medicationPatterns) {
       const matches = trimmedLine.match(pattern);
       if (matches) {
+        const medName = matches[0];
+        
+        // Avoid duplicates by checking if this name is already found
+        if (medications.some(med => med.name === medName) || currentMedication.name === medName) {
+          continue;
+        }
+        
         // If we already have a medication being processed, save it
         if (currentMedication.name) {
           medications.push(createMedicationFromPartial(currentMedication));
         }
         
         currentMedication = {
-          name: matches[0],
+          name: medName,
           dosage: '',
           frequency: '',
           time: '',
           instructions: ''
         };
+        foundMedication = true;
         break;
       }
     }
     
-    // Try to find dosage
-    for (const pattern of dosagePatterns) {
-      const matches = trimmedLine.match(pattern);
-      if (matches && currentMedication.name) {
-        currentMedication.dosage = matches[0];
-        break;
-      }
-    }
-    
-    // Try to find time
-    for (const pattern of timePatterns) {
-      const matches = trimmedLine.match(pattern);
-      if (matches && currentMedication.name) {
-        if (pattern.source.includes(':')) {
-          currentMedication.time = matches[0];
-        } else {
-          currentMedication.time = convertJapaneseTimeToTime(matches[0]);
+    // Only process attributes if we have a current medication and haven't just found a new one
+    if (currentMedication.name && !foundMedication) {
+      // Try to find dosage
+      if (!currentMedication.dosage) {
+        for (const pattern of dosagePatterns) {
+          const matches = trimmedLine.match(pattern);
+          if (matches) {
+            currentMedication.dosage = matches[0];
+            break;
+          }
         }
-        break;
       }
-    }
-    
-    // Try to find frequency
-    for (const pattern of frequencyPatterns) {
-      const matches = trimmedLine.match(pattern);
-      if (matches && currentMedication.name) {
-        currentMedication.frequency = matches[0];
-        break;
+      
+      // Try to find time
+      if (!currentMedication.time) {
+        for (const pattern of timePatterns) {
+          const matches = trimmedLine.match(pattern);
+          if (matches) {
+            if (pattern.source.includes(':')) {
+              currentMedication.time = matches[0];
+            } else {
+              currentMedication.time = convertJapaneseTimeToTime(matches[0]);
+            }
+            break;
+          }
+        }
       }
-    }
-    
-    // Collect instructions
-    if (currentMedication.name && !currentMedication.instructions) {
-      currentMedication.instructions = trimmedLine;
+      
+      // Try to find frequency
+      if (!currentMedication.frequency) {
+        for (const pattern of frequencyPatterns) {
+          const matches = trimmedLine.match(pattern);
+          if (matches) {
+            currentMedication.frequency = matches[0];
+            break;
+          }
+        }
+      }
+      
+      // Collect instructions (only if we don't have other attributes)
+      if (!currentMedication.instructions && !currentMedication.dosage && !currentMedication.time && !currentMedication.frequency) {
+        currentMedication.instructions = trimmedLine;
+      }
     }
   }
   
