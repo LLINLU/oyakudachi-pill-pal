@@ -4,30 +4,56 @@ export const parseMedicationFromText = (ocrText: string): ScannedMedication[] =>
   const medications: ScannedMedication[] = [];
   const lines = ocrText.split('\n').filter(line => line.trim().length > 0);
   
-  // Common medication patterns
+  // Improved medication patterns for better Japanese recognition
   const medicationPatterns = [
-    // Japanese medication names (often end with specific suffixes)
-    /([ァ-ヾ一-龯\w]+(?:錠|カプセル|散|液|軟膏|クリーム|シロップ))/g,
-    // English medication names
-    /([A-Za-z]+(?:tin|cin|ol|ine|ate|ide))/g,
+    // Japanese medications with comprehensive suffixes
+    /([ァ-ヾ一-龯\w]+(?:錠|カプセル|散剤?|顆粒|液剤?|軟膏|クリーム|シロップ|点眼|点鼻|吸入|貼付|坐薬|注射|内服))/g,
+    // Brand names with dosage numbers (e.g., "ロキソニン60mg")
+    /([ァ-ヾ一-龯]{2,}(?:\d+(?:mg|μg|g|ml)?)?錠?)/g,
+    // Generic medication names (2-8 characters, common patterns)
+    /([ァ-ヾ一-龯]{2,8})(?=\s*(?:\d+(?:mg|μg|g)|錠|カプセル|散|液))/g,
+    // English medication names (improved patterns)
+    /([A-Za-z]{3,}(?:tin|cin|ol|ine|ate|ide|pril|sartan|statin))/gi,
+    // Common Japanese generic patterns
+    /(アムロジピン|リシノプリル|メトホルミン|ロキソプロフェン|セレコキシブ)/g
   ];
   
-  // Dosage patterns
+  // Enhanced dosage patterns
   const dosagePatterns = [
-    /(\d+(?:\.\d+)?)\s*(?:mg|g|ml|錠|カプセル)/gi,
-    /(\d+)\s*(?:錠|カプセル)/gi
+    // Standard dosage with units
+    /(\d+(?:\.\d+)?)\s*(?:mg|μg|g|ml|錠|カプセル|包|滴|回分)/gi,
+    // Japanese counting patterns
+    /(\d+)\s*(?:錠|カプセル|包|滴|粒|回分)/gi,
+    // Decimal dosages
+    /(\d+\.\d+)\s*(?:mg|g|ml)/gi,
+    // Range dosages (e.g., "1-2錠")
+    /(\d+[-~]\d+)\s*(?:錠|カプセル|包)/gi
   ];
   
-  // Time patterns
+  // Enhanced time patterns for comprehensive Japanese time parsing
   const timePatterns = [
+    // Specific time formats
     /(\d{1,2}):(\d{2})/g,
-    /(朝|昼|夕|夜|食前|食後|寝る前)/g
+    // Japanese meal-related times
+    /(朝食前|朝食後|昼食前|昼食後|夕食前|夕食後|就寝前|起床時)/g,
+    // General time periods
+    /(朝|昼|夕方?|夜|寝る前|食前|食後)/g,
+    // Time with Japanese hour notation
+    /(\d+時(?:\d+分)?)/g,
+    // Multiple times pattern (e.g., "朝・昼・夕")
+    /(朝[・･]?昼[・･]?夕?|朝[・･]?夕|昼[・･]?夕)/g
   ];
   
-  // Frequency patterns
+  // Enhanced frequency patterns
   const frequencyPatterns = [
-    /(毎日|1日\d+回|週\d+回|月\d+回)/g,
-    /(daily|twice|once)/gi
+    // Japanese frequency patterns
+    /(毎日|1日\d+回|週\d+回|月\d+回|隔日|必要時)/g,
+    // Specific count patterns
+    /(朝昼夕|朝夕|朝昼|昼夕|1日[１-９1-9]回|毎食後|毎食前)/g,
+    // English patterns
+    /(daily|twice|once|bid|tid|qid)/gi,
+    // Time-based frequency
+    /(\d+時間毎|\d+時間おき)/g
   ];
   
   let currentMedication: Partial<ScannedMedication> = {};
@@ -112,15 +138,41 @@ const createMedicationFromPartial = (partial: Partial<ScannedMedication>): Scann
 };
 
 const convertJapaneseTimeToTime = (japaneseTime: string): string => {
+  // Enhanced time mapping for comprehensive Japanese time expressions
   const timeMap: { [key: string]: string } = {
+    // Basic time periods
     '朝': '08:00',
     '昼': '12:00',
     '夕': '18:00',
+    '夕方': '18:00',
     '夜': '20:00',
+    // Meal-related times
+    '朝食前': '07:30',
+    '朝食後': '08:30',
+    '昼食前': '11:30',
+    '昼食後': '12:30',
+    '夕食前': '17:30',
+    '夕食後': '18:30',
     '食前': '07:30',
     '食後': '08:30',
-    '寝る前': '22:00'
+    // Sleep-related times
+    '就寝前': '22:00',
+    '寝る前': '22:00',
+    '起床時': '07:00',
+    // Multiple time patterns
+    '朝昼夕': '08:00,12:00,18:00',
+    '朝夕': '08:00,18:00',
+    '朝昼': '08:00,12:00',
+    '昼夕': '12:00,18:00'
   };
+  
+  // Handle time with hour notation (e.g., "8時", "8時30分")
+  const hourMatch = japaneseTime.match(/(\d+)時(?:(\d+)分)?/);
+  if (hourMatch) {
+    const hour = hourMatch[1].padStart(2, '0');
+    const minute = (hourMatch[2] || '00').padStart(2, '0');
+    return `${hour}:${minute}`;
+  }
   
   return timeMap[japaneseTime] || '08:00';
 };
