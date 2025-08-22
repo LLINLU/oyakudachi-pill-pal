@@ -16,6 +16,10 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const firstTime = isFirstTimeUser();
+  
+  console.log('App rendering - firstTime:', firstTime);
+  console.log('Current URL:', window.location.href);
+  console.log('Search params:', window.location.search);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -28,9 +32,20 @@ const App = () => {
             <Route 
               path="/" 
               element={
-                window.location.search.includes('code=') ? 
-                <InviteBind /> : 
-                (firstTime ? <OnboardingFlow /> : <Navigate to="/app" replace />)
+                (() => {
+                  try {
+                    console.log('Root route - checking conditions...');
+                    if (window.location.search.includes('code=')) {
+                      console.log('LINE login redirect detected');
+                      return <InviteBind />;
+                    }
+                    console.log('First time user:', firstTime);
+                    return firstTime ? <OnboardingFlow /> : <Navigate to="/app" replace />;
+                  } catch (error) {
+                    console.error('Error in root route:', error);
+                    return <Navigate to="/app" replace />;
+                  }
+                })()
               } 
             />
             <Route path="/onboarding" element={<OnboardingFlow />} />

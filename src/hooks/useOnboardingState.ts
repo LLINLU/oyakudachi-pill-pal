@@ -130,7 +130,14 @@ export const useOnboardingState = (): OnboardingState & OnboardingActions => {
 };
 
 export const isFirstTimeUser = (): boolean => {
-  return localStorage.getItem(ONBOARDING_STORAGE_KEY) !== 'true';
+  try {
+    const result = localStorage.getItem(ONBOARDING_STORAGE_KEY) !== 'true';
+    console.log('isFirstTimeUser check:', result, 'localStorage value:', localStorage.getItem(ONBOARDING_STORAGE_KEY));
+    return result;
+  } catch (error) {
+    console.error('Error checking first time user:', error);
+    return true; // Default to showing onboarding if localStorage fails
+  }
 };
 
 export const getFamilyContacts = (): FamilyContact[] => {
