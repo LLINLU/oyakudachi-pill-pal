@@ -60,10 +60,18 @@
         ];
 
         const frequencyPatterns = [
-            /(毎日|1日\d+回|週\d+回|月\d+回|隔日|必要時)/g,
-            /(朝昼夕|朝夕|朝昼|昼夕|1日[１-９1-9]回|毎食後|毎食前)/g,
+            // Prioritize numerical frequency patterns first
+            /(1日\d+回|週\d+回|月\d+回)/g,
+            // General patterns
+            /(毎日|隔日|必要時)/g,
+            // Meal-based patterns (lower priority)
+            /(毎食後|毎食前)/g,
+            // English patterns
             /(daily|twice|once|bid|tid|qid)/gi,
-            /(\d+時間毎|\d+時間おき)/g
+            // Time-based frequency
+            /(\d+時間毎|\d+時間おき)/g,
+            // Time period patterns (lowest priority, only if no other frequency found)
+            /(朝昼夕|朝夕|朝昼|昼夕)/g
         ];
 
         function convertJapaneseTimeToTime(japaneseTime) {
@@ -156,14 +164,22 @@
                         }
                     }
                     
-                    // Try to find frequency
+                    // Try to find frequency (prioritize numerical patterns over time patterns)
                     if (!currentMedication.frequency) {
-                        for (const pattern of frequencyPatterns) {
+                        let bestFrequency = '';
+                        let bestPriority = 999;
+                        
+                        for (let i = 0; i < frequencyPatterns.length; i++) {
+                            const pattern = frequencyPatterns[i];
                             const matches = trimmedLine.match(pattern);
-                            if (matches) {
-                                currentMedication.frequency = matches[0];
-                                break;
+                            if (matches && i < bestPriority) {
+                                bestFrequency = matches[0];
+                                bestPriority = i;
                             }
+                        }
+                        
+                        if (bestFrequency) {
+                            currentMedication.frequency = bestFrequency;
                         }
                     }
                     
